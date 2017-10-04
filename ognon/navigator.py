@@ -6,8 +6,9 @@ class Navigator():
     """docstring for Navigator"""
     def __init__(self, parent):
         self.parent = parent
-        self.anim = self.parent.anim
+        self.anim = parent.animation
         self._cursor = 0
+        self.is_playing = False
 
     @property
     def cursor(self):
@@ -29,52 +30,54 @@ class Navigator():
             return value
 
     def reset(self):
-        pass
+        self.parent.reset()
 
-    ##############
-    # OPERATIONS #
-    ##############
+    def current_cell(self):
+        return self.anim[self.cursor]
 
-    @Operation
-    def go_to_frm(self, i):
-        """Permet d'acceder à une frm i"""
-        self.cursor = i
-        self.reset()
-
-    @Operation
-    def next_frm(self):
-        """Permet d'acceder à la frm suivante"""
-        self.cursor += 1
-        self.reset()
-
-    @Operation
-    def prev_frm(self):
-        """Permet d'acceder à la frm précédente"""
-        self.cursor -= 1
-        self.reset()
-
-    @Operation
-    def go_to_first_frm(self):
-        """Permet d'acceder à la frm suivante"""
-        self.cursor = 0
-        self.reset()
-
-    @Operation
-    def go_to_last_frm(self):
-        """Permet d'acceder à la frm précédente"""
-        self.cursor = len(self.anim)-1
-        self.reset()
-
-    @Operation
     def run(self):
         """Cette fonction s'occupe de la lecture de l'anim
         elle est appellée par play et n'est effective que si is_playing"""
         if self.is_playing:
             self.cursor += 1
-            self.after(int(1000/settings["play speed"]), self.run)
+            self.parent.after(int(1000/settings["play speed"]), self.run)
             self.reset()
 
-    @Operation
+    ##############
+    # OPERATIONS #
+    ##############
+
+    @operation(int, name="Aller à telle image", shortcut="/")
+    def go_to_cell(self, i):
+        """Permet d'acceder à une cell i"""
+        self.cursor = i
+        self.reset()
+
+    @operation(name="Image suivante", shortcut=".")
+    def next_cell(self):
+        """Permet d'acceder à la cell suivante"""
+        self.cursor += 1
+        self.reset()
+
+    @operation(name="Image précédente", shortcut=",")
+    def prev_cell(self):
+        """Permet d'acceder à la cell précédente"""
+        self.cursor -= 1
+        self.reset()
+
+    @operation(name="Première image", shortcut="Shift_,")
+    def go_to_first_cell(self):
+        """Permet d'acceder à la cell suivante"""
+        self.cursor = 0
+        self.reset()
+
+    @operation(name="Dernière image", shortcut="Shift_.")
+    def go_to_last_cell(self):
+        """Permet d'acceder à la cell précédente"""
+        self.cursor = len(self.anim)-1
+        self.reset()
+
+    @operation(name="Play", shortcut=" ")
     def play(self):
         """Permet de lire ou de stopper l'anim"""
         self.is_playing = not self.is_playing

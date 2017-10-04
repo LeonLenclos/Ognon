@@ -1,6 +1,0 @@
-menu_bar = Menu(board)
-file_menu = Menu(menu_bar, tearoff=0)
-file_menu.add_command(label="Save Frames", command=board.save_all_frames)
-file_menu.add_command(label="Settings", command=settings.edit)
-menu_bar.add_cascade(label="Fichier", menu=file_menu)
-board.config(menu=menu_bar)

@@ -21,64 +21,60 @@ class CommandBoard(Frame):
         on y innitialise les variables et evenements qui servent au dessin"""
 
         super().__init__(master=parent)
-        self.board = parent.board
+        self.anim = parent.animation
+        self.nav = parent.navigator
 
-        # On règle les dimensions
-        # sw = self.winfo_screenwidth()
-        # sh = self.winfo_screenheight()
-        # wh = 50
-        # self.geometry("{}x{}+{}+{}".format(sw-10, wh, 5, sh-wh-5))
-        # self.resizable(width=False, height=False)
-        # self.title("Ognon's Command Board")
-        # On importe les icones
         self.icns = {}
         for f in os.listdir("icns"):
             if re.search(r'.+\.xbm', f):
                 self.icns[f] = BitmapImage(file="icns/"+f)
         #
-        self.frms_pack = Frame(self)
-        self.frms_pack.pack()
+        self.cells_pack = Frame(self)
+        self.cells_pack.pack()
 
         # On crée les boutons
         self.buttons_pack = Frame(self)
         self.buttons_pack.pack()
-        LittleButton(self.buttons_pack, img="add_frm_before", command=lambda e: self.board.add_frm_before(), r=1)
-        LittleButton(self.buttons_pack, img="add_frm_after", command=lambda e: self.board.add_frm_after(), r=1)
-        LittleButton(self.buttons_pack, img="clone_frm_after", command=lambda e: self.board.clone_frm(), r=1)
-        LittleButton(self.buttons_pack, img="copy_frm_after", command=lambda e: self.board.copy_frm(), r=1)
-        LittleButton(self.buttons_pack, img="del_frm", command=lambda e: self.board.del_frm(), r=1)
-        LittleButton(self.buttons_pack, img="del_frm_content", command=lambda e: self.board.clear_frm(), r=1)
-        LittleButton(self.buttons_pack, img="move_frm_before", command=lambda e: self.board.move_frm_backward(), r=1)
-        LittleButton(self.buttons_pack, img="move_frm_after", command=lambda e: self.board.move_frm_forward(), r=1)
-        LittleButton(self.buttons_pack, img="prev_frm", command=lambda e: self.board.prev_frm(), r=1)
-        LittleButton(self.buttons_pack, img="next_frm", command=lambda e: self.board.next_frm(), r=1)
-        LittleButton(self.buttons_pack, img="first_frm", command=lambda e: self.board.go_to_first_frm(), r=1)
-        LittleButton(self.buttons_pack, img="last_frm", command=lambda e: self.board.go_to_last_frm(), r=1)
-        LittleButton(self.buttons_pack, img="play", command=lambda e: self.board.play(), r=1)
-        self.frms_buttons = []
+        # LittleButton(self.buttons_pack, img="add_cell_before", command=lambda e: self.board.add_cell_before(), r=1)
+        # LittleButton(self.buttons_pack, img="add_cell_after", command=lambda e: self.board.add_cell_after(), r=1)
+        # LittleButton(self.buttons_pack, img="clone_cell_after", command=lambda e: self.board.clone_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="copy_cell_after", command=lambda e: self.board.copy_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="del_cell", command=lambda e: self.board.del_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="del_cell_content", command=lambda e: self.board.clear_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="move_cell_before", command=lambda e: self.board.move_cell_backward(), r=1)
+        # LittleButton(self.buttons_pack, img="move_cell_after", command=lambda e: self.board.move_cell_forward(), r=1)
+        # LittleButton(self.buttons_pack, img="prev_cell", command=lambda e: self.board.prev_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="next_cell", command=lambda e: self.board.next_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="first_cell", command=lambda e: self.board.go_to_first_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="last_cell", command=lambda e: self.board.go_to_last_cell(), r=1)
+        # LittleButton(self.buttons_pack, img="play", command=lambda e: self.board.play(), r=1)
+        self.cells_buttons = []
 
         # On reset une première fois
         self.reset()
 
+    def add_button(self, img, command):
+        LittleButton(self.buttons_pack, img=img, command=lambda e: command(), r=1)
+
     def reset(self):
-        # On détruits tous les frms buttons
-        for button in self.frms_buttons:
+        # On détruits tous les cells buttons
+        for button in self.cells_buttons:
             button.destroy()
         LittleButton.column_index_of_raw[0] = -1
 
-        # On recrée un bouton par frm
+        # On recrée un bouton par cell
         i = 0
-        for frm in self.board.animation:
-            icone = 'frm'
-            if i == self.board.cursor:
-                if frm.occurrences > 1:
+        for cell in self.anim:
+            icone = 'cell'
+            if i == self.nav.cursor:
+                if cell.occurrences > 1:
                     icone += "_clone"
                 icone += "_select"
-            elif frm is self.board.current_frm:
+            elif cell is self.nav.current_cell():
                 icone += "_clone"
-            self.frms_buttons.append(LittleButton(
-                self.frms_pack, img=icone,
-                command=lambda e: self.board.go_to_frm(e.widget.id),
+            self.cells_buttons.append(LittleButton(
+                self.cells_pack, img=icone,
+                command=lambda e: self.nav.go_to_cell(e.widget.id),
                 r=0, id=i))
             i += 1
 
@@ -88,7 +84,7 @@ class LittleButton(Label):
 
     def __init__(self, master, img="none", command=None, r=0, id=0, text=""):
         super().__init__(master)
-        self.icn = master.master.icns[img + ".xbm"]
+        self.icn = master.master.icns[img + ".xbm"] if img + ".xbm" in master.master.icns else master.master.icns["none.xbm"]
         self.config(image=self.icn, width=self.icn.width(), height=self.icn.height(), borderwidth=2, relief=RAISED)
         self.id = id
         if r in LittleButton.column_index_of_raw:
