@@ -9,6 +9,7 @@ from tkinter import filedialog
 import PIL.Image
 import PIL.ImageDraw
 
+from operation import *
 from animation import *
 from settings import *
 
@@ -124,7 +125,7 @@ class Board(Frame):
         def do_it_and_reset_current_frm(*args, **kwargs):
             ret = fun(*args, **kwargs)
             self = args[0]
-            self.cursor = self.cursor  # au cas ou out of range.
+            #self.cursor = self.cursor  # au cas ou out of range.
             self.current_frm = self.animation[self.cursor]
             self.reset()
             return ret
@@ -155,42 +156,35 @@ class Board(Frame):
         """Permet d'acceder à la frm précédente"""
         self.cursor = len(self.animation)-1
 
-    @navigation
     def add_frm_after(self):
         """Permet d'ajouter une frm après l'actuelle"""
         self.animation.add_frm(self.cursor+1)
         self.next_frm()
 
-    @navigation
     def add_frm_before(self):
         """Permet d'ajouter une frm avant l'actuelle"""
         self.animation.add_frm(self.cursor)
 
-    @navigation
     def clone_frm(self):
         """Permet de supprimer la frm actuelle"""
         self.animation.clone_frm(self.cursor)
         self.next_frm()
 
-    @navigation
     def move_frm_forward(self):
         """Permet de supprimer la frm actuelle"""
         self.animation.move_frm_to(self.cursor, self.cursor + 1)
         self.next_frm()
 
-    @navigation
     def move_frm_backward(self):
         """Permet de supprimer la frm actuelle"""
         self.animation.move_frm_to(self.cursor, self.cursor - 1)
         self.prev_frm()
 
-    @navigation
     def copy_frm(self):
         """Permet de supprimer la frm actuelle"""
         self.animation.copy_frm(self.cursor)
         self.move_frm_forward()
 
-    @navigation
     def del_frm(self):
         """Permet de supprimer la frm actuelle"""
         self.animation.del_frm(self.cursor)
@@ -201,6 +195,7 @@ class Board(Frame):
         self.current_frm.clear()
         self.reset()
 
+    @Operation
     def play(self):
         """Permet de lire ou de stopper l'animation"""
         self.is_playing = not self.is_playing

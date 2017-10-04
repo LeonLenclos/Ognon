@@ -9,6 +9,7 @@ Ognon est un logiciel pour la création d'animation 2D
 from tkinter import *
 from tkinter.ttk import *
 
+from navigator import *
 from board import *
 from command_board import *
 
@@ -23,6 +24,7 @@ class Ognon(Tk):
         self.title("Ognon")
 
         self.anim = Animation(200, 200)
+        self.navig = Navigator(self)
 
         self.board = Board(self)
         self.board.pack(pady=10)
