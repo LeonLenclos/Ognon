@@ -10,20 +10,26 @@ from tkinter import *
 from tkinter.ttk import *
 
 from board import *
+from command_board import *
+
 from settings import *
 
 
-#création de la fenetre et du board
-board = Board(800, 600)
+class Ognon(Tk):
+    """L'application"""
+    def __init__(self):
+        super().__init__()
+        self.geometry("{}x{}".format(self.winfo_screenwidth(), self.winfo_screenheight()-100))
+        self.title("Ognon")
 
-# Création du menu
-menu_bar = Menu(board)
-file_menu = Menu(menu_bar, tearoff=0)
-file_menu.add_command(label="Save Frames", command=board.save_all_frames)
-file_menu.add_command(label="Settings", command=settings.edit)
-menu_bar.add_cascade(label="Fichier", menu=file_menu)
-board.config(menu=menu_bar)
+        self.anim = Animation(200, 200)
 
+        self.board = Board(self)
+        self.board.pack(pady=10)
 
-#lancement de la boucle
-board.mainloop()
+        self.command_board = CommandBoard(self)
+        self.command_board.pack(side=BOTTOM, pady=10)
+
+if __name__ == '__main__':
+    root = Ognon()
+    root.mainloop()

@@ -10,26 +10,26 @@ import re
 # from tkinter.ttk import *
 
 
-class CommandBoard(Toplevel):
+class CommandBoard(Frame):
     """C'est là où on dessine
 
     C'est un objet qui hérite de tkinter.Frame et qui cree un tkinter.canvas"""
 
-    def __init__(self, board):
+    def __init__(self, parent):
         """Constructeur du board.
 
         on y innitialise les variables et evenements qui servent au dessin"""
 
-        super().__init__(master=board)
-        self.board = board
+        super().__init__(master=parent)
+        self.board = parent.board
 
         # On règle les dimensions
-        sw = self.winfo_screenwidth()
-        sh = self.winfo_screenheight()
-        wh = 50
-        self.geometry("{}x{}+{}+{}".format(sw-10, wh, 5, sh-wh-5))
-        self.resizable(width=False, height=False)
-        self.title("Ognon's Command Board")
+        # sw = self.winfo_screenwidth()
+        # sh = self.winfo_screenheight()
+        # wh = 50
+        # self.geometry("{}x{}+{}+{}".format(sw-10, wh, 5, sh-wh-5))
+        # self.resizable(width=False, height=False)
+        # self.title("Ognon's Command Board")
         # On importe les icones
         self.icns = {}
         for f in os.listdir("icns"):
@@ -89,8 +89,7 @@ class LittleButton(Label):
     def __init__(self, master, img="none", command=None, r=0, id=0, text=""):
         super().__init__(master)
         self.icn = master.master.icns[img + ".xbm"]
-        print(self.icn)
-        self.config(image=self.icn, width=self.icn.width(), height=self.icn.height())
+        self.config(image=self.icn, width=self.icn.width(), height=self.icn.height(), borderwidth=2, relief=RAISED)
         self.id = id
         if r in LittleButton.column_index_of_raw:
             LittleButton.column_index_of_raw[r] += 1

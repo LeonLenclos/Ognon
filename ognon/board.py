@@ -10,31 +10,27 @@ import PIL.Image
 import PIL.ImageDraw
 
 from animation import *
-from command_board import *
 from settings import *
 
 
-class Board(Tk):
+class Board(Frame):
     """C'est là où on dessine
 
     C'est un objet qui hérite de tkinter.Tk et qui cree un tkinter.canvas"""
 
-    def __init__(self, w, h):
+    def __init__(self, parent):
         """Constructeur du board.
 
         on y innitialise les variables et evenements qui servent au dessin"""
-        super().__init__()
-
-        #Taille et apparence de la fenetre
-        self.w = w
-        self.h = h
-        self.geometry("{}x{}".format(self.w+20, self.h+20))
-        self.resizable(width=False, height=False)
-        self.configure(background='PeachPuff3')
-        self.title("Ognon's Board")
+        super().__init__(parent)
+        # On cree le cursor
+        self._cursor = 0
+        # on recup l'animation et une premiere frm qu'on memorise dans current_frm
+        self.animation = self.master.anim
+        self.current_frm = self.animation[self.cursor]
         # Création du Canvas
-        self.canvas = Canvas(self, width=w, height=h, cursor='pencil')
-        self.canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.canvas = Canvas(self, width=self.animation.width, height=self.animation.height, borderwidth=1, relief=RIDGE, cursor='pencil')
+        self.canvas.pack()
         # Les evenements qui font le dessin
         self.canvas.bind('<Button 1>', self._start_drawing)
         self.canvas.bind('<ButtonRelease 1>', self._stop_drawing)
@@ -47,13 +43,8 @@ class Board(Tk):
         self.is_playing = False
         # Là où on stock les coordonées de la ligne que l'on dessine
         self.current_line_coord = []
-        # On cree le cursor
-        self._cursor = 0
-        # on cree l'animation et une premiere frm qu'on memorise dans current_frm
-        self.animation = Animation()
-        self.current_frm = self.animation[self.cursor]
         # On cree le tableau de commande
-        self.command_board = CommandBoard(self)
+        # self.command_board = CommandBoard(self)
 
     def constrain_film_index(self, value, loop=settings["play in loop"]):
         """Retourne une valeur contrainte entre 0 et la longueur de l'animation."""
@@ -90,6 +81,7 @@ class Board(Tk):
 
     def _start_drawing(self, event):
         """Cette fonction commence le trait"""
+        print("DEBUG")
         # On réinnitialise les variables
         self.p_mouse_x = event.x
         self.p_mouse_y = event.y
@@ -170,7 +162,7 @@ class Board(Tk):
         self.next_frm()
 
     @navigation
-    def add_frm_before(self):  # PAS ENCORE EN MARCHE
+    def add_frm_before(self):
         """Permet d'ajouter une frm avant l'actuelle"""
         self.animation.add_frm(self.cursor)
 
@@ -248,4 +240,4 @@ class Board(Tk):
         for l in self.current_frm.lines:
             self.canvas.create_line(tuple(l), activedash=[1, 1])
         # on appelle aussi le reset du commandboard
-        self.command_board.reset()
+        self.master.command_board.reset()

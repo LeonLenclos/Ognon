@@ -10,9 +10,12 @@ class Animation():
     elle permet de supprimer, ajouter, copier, cloner, déplacer des frm
     """
 
-    def __init__(self):
+    def __init__(self, w, h, title="sans-titre"):
         """Le constructeur de Animation
         on cree une animation avec une frm"""
+        self.width = w
+        self.height = h
+        self.title = title
         #une liste avec des frms
         self._frms = []
         #une liste avec les id des frms dans l'ordre
