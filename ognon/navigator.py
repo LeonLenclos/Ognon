@@ -4,11 +4,12 @@ from operation import *
 
 class Navigator():
     """docstring for Navigator"""
-    def __init__(self, parent):
+    def __init__(self, parent, reset_callback):
         self.parent = parent
         self.anim = parent.animation
         self._cursor = 0
         self.is_playing = False
+        self.reset = reset_callback
 
     @property
     def cursor(self):
@@ -29,8 +30,8 @@ class Navigator():
         else:
             return value
 
-    def reset(self):
-        self.parent.reset()
+    # def reset(self):
+    #     self.parent.reset()
 
     def current_cell(self):
         return self.anim[self.cursor]
@@ -47,38 +48,38 @@ class Navigator():
     # OPERATIONS #
     ##############
 
-    @operation(int, name="Aller à telle image", shortcut="/")
-    def go_to_cell(self, i):
-        """Permet d'acceder à une cell i"""
-        self.cursor = i
-        self.reset()
+    @operation(name="Play", shortcut="q")
+    def play(self):
+        """Permet de lire ou de stopper l'anim"""
+        self.is_playing = not self.is_playing
+        self.run()
 
-    @operation(name="Image suivante", shortcut=".")
-    def next_cell(self):
-        """Permet d'acceder à la cell suivante"""
-        self.cursor += 1
-        self.reset()
-
-    @operation(name="Image précédente", shortcut=",")
+    @operation(name="Image précédente", shortcut="w")
     def prev_cell(self):
         """Permet d'acceder à la cell précédente"""
         self.cursor -= 1
         self.reset()
 
-    @operation(name="Première image", shortcut="Shift_,")
+    @operation(name="Image suivante", shortcut="e")
+    def next_cell(self):
+        """Permet d'acceder à la cell suivante"""
+        self.cursor += 1
+        self.reset()
+
+    @operation(name="Première image", shortcut="r")
     def go_to_first_cell(self):
         """Permet d'acceder à la cell suivante"""
         self.cursor = 0
         self.reset()
 
-    @operation(name="Dernière image", shortcut="Shift_.")
+    @operation(name="Dernière image", shortcut="t")
     def go_to_last_cell(self):
         """Permet d'acceder à la cell précédente"""
         self.cursor = len(self.anim)-1
         self.reset()
 
-    @operation(name="Play", shortcut=" ")
-    def play(self):
-        """Permet de lire ou de stopper l'anim"""
-        self.is_playing = not self.is_playing
-        self.run()
+    @operation("int", name="Aller à telle image", shortcut="y")
+    def go_to_cell(self, i):
+        """Permet d'acceder à une cell i"""
+        self.cursor = i
+        self.reset()

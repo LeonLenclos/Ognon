@@ -1,9 +1,4 @@
 # -*-coding:Utf-8 -*
-
-"""
-Ce module est pour la fenetre principale : Board
-On y définie la class Board qui hérite de tkinter.Tk
-"""
 from tkinter import *
 
 from settings import *
@@ -11,12 +6,10 @@ from settings import *
 
 class Board(Frame):
     """C'est là où on dessine
-
-    C'est un objet qui hérite de tkinter.Tk et qui cree un tkinter.canvas"""
+    C'est un objet qui hérite de Frame et qui cree un canvas"""
 
     def __init__(self, parent):
         """Constructeur du board.
-
         on y innitialise les variables et evenements qui servent au dessin"""
         super().__init__(parent)
         # on recup l'anim et une premiere cell qu'on memorise dans current_cell
@@ -29,6 +22,7 @@ class Board(Frame):
         self.canvas.bind('<Button 1>', self._start_drawing)
         self.canvas.bind('<ButtonRelease 1>', self._stop_drawing)
         self.canvas.bind('<Motion>', self._keep_drawing)
+        self.canvas.bind_all('<BackSpace>', self._erase)
         # Là où est la souris au moment -1
         self.p_mouse_x = 0
         self.p_mouse_y = 0
@@ -41,7 +35,6 @@ class Board(Frame):
 
     def _start_drawing(self, event):
         """Cette fonction commence le trait"""
-        print("DEBUG")
         # On réinnitialise les variables
         self.p_mouse_x = event.x
         self.p_mouse_y = event.y
@@ -78,10 +71,20 @@ class Board(Frame):
             self.p_mouse_x = event.x
             self.p_mouse_y = event.y
 
-    def clear_cell(self):
-        """Permet d'effacer la cell actuelle"""
-        self.nav.current_cell().clear()
-        self.reset()
+    def _erase(self, event):
+        """Cette fonction efface un trait"""
+        if not self.is_drawing:
+            # on récupere l'id de l'ellement sous la souris
+            id_to_del = self.canvas.find_withtag(CURRENT)[0]
+            # on récupère les tags de cet element -> ["l4", "current"] (par exemple, pour la 4ème ligne)
+            # on prend le premier tag -> "l4"
+            # on enlève le premier caractère -> "4"
+            # on transforme en int -> 4
+            line_to_del = int(self.canvas.gettags(id_to_del)[0][1:])
+            # on suprime la ligne directement dans la liste lines de la current_cell
+            del self.nav.current_cell().lines[line_to_del]
+            # on reset
+            self.reset()
 
     def onion(self):
         # On affiche la pelure d'oninon s'il faut
@@ -104,7 +107,11 @@ class Board(Frame):
         pour actualiser l'affichage de la fenetre"""
         # On commence par tout effacer
         self.canvas.delete("all")
-        # On affiche le contenu de current_cell
+        # On affiche l'onion
         self.onion()
+        # On affiche le contenu de current_cell
+        i = 0
         for l in self.nav.current_cell().lines:
-            self.canvas.create_line(tuple(l), activedash=[1, 1])
+            #on donne le tag "l{i}" pour pouvoir retrouver les lignes (cf: _erease())
+            self.canvas.create_line(tuple(l), activedash=[1, 1], tag="l{}".format(i))
+            i += 1

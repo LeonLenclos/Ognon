@@ -1,27 +1,26 @@
-"""Ce module est pour la gestion de l'animation.
-Un objet Animation
-Un objet Cell
-"""
+"""Ce module est pour la definition de la classe Animation"""
+
 from cell import *
 
 
 class Animation():
-    """Cette classe est pour l'animation c'est à dire l'ensemble des cell.
-    Elle permet de gérer un ordre pour les cell (self.film) independant de celui de leur creation (self.cells)
-    elle permet de supprimer, ajouter, copier, cloner, déplacer des cell
+    """
+    L'objet animation permet d'organiser un ensemble de d'objets cell
     """
 
     def __init__(self, w, h, title="sans-titre"):
         """Le constructeur de Animation
         on cree une animation avec une cell"""
+        # Les dimensios de l'animation
         self.width = w
         self.height = h
+        # Le titre de l'animation
         self.title = title
-        #une liste avec des cells
+        # Une liste avec des cells
         self._cells = []
-        #une liste avec les id des cells dans l'ordre
+        # Une liste avec les id des cells dans l'ordre
         self._film = []
-        #une premiere cell
+        # On cree une première cell
         self.add_cell(0)
 
     def __len__(self):
@@ -85,5 +84,3 @@ class Animation():
         else:
             self[index].occurrences -= 1
             del self._film[index]
-
-
