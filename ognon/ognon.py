@@ -6,21 +6,15 @@ Ognon is a a software application for the creation of 2D animation
 Ognon est un logiciel pour la création d'animation 2D
 
 """
-from tkinter import *
-from tkinter.ttk import *
 
-from animation import *
-from navigator import *
-from organizer import *
-from recorder import *
-from board import *
-from command_board import *
+import tkinter as tk
+#from tkinter import ttk
 
-from settings import *
-from operation import *
+from interface import board, button_table, drawing_board, time_line
+from control import navigator, operation, organizer, recorder
 
 
-class Ognon(Tk):
+class Ognon(tk.Tk):
     """L'application"""
     def __init__(self):
 
@@ -33,78 +27,97 @@ class Ognon(Tk):
         self.animation = None
         self.navigator = None
         self.organizer = None
-        self.recorder = Recorder(self)
+        self.recorder = recorder.Recorder(self)
 
         # On affiche le logo Ognon
-        self.logo = BitmapImage(file="img/logo.xbm")
-        self.logo_label = Label(self, image=self.logo)
-        self.logo_label.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.logo = tk.BitmapImage(file="resources/logo.xbm")
+        self.logo_label = tk.Label(self, image=self.logo)
+        self.logo_label.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
         # On cree deux boutons pour commencer
-        self.command_board = CommandBoard(self)
-        self.command_board.pack(side=BOTTOM, pady=10)
-        new_o = Operation.dic['recorder']['new_ognon']
-        open_o = Operation.dic['recorder']['open_ognon']
+        self.button_table = button_table.ButtonTable(self)
+        self.button_table.pack(side=tk.BOTTOM, pady=10)
+        new_o = operation.Operation.dic['control.recorder']['new_ognon']
+        open_o = operation.Operation.dic['control.recorder']['open_ognon']
         new_o.target = self.recorder
         open_o.target = self.recorder
-        self.command_board.add_button('new_ognon', new_o)
-        self.command_board.add_button('open_ognon', open_o)
+        self.button_table.add_button('new_ognon', new_o)
+        self.button_table.add_button('open_ognon', open_o)
 
-    def reset(self):
-        """permet de reseter tout ce qui doit l'etre"""
-        self.board.reset()
-        self.time_line.reset()
+        self.load_menu()
 
-    def reset_navig(self):
-        """permet de reseter tout ce qui doit l'etre lorsque navig demande un reset"""
-        self.board.reset()
-        self.time_line.soft_reset()
-
-    def load(self, animation):
+    def load(self, anim):
         """permet de charger une nouvelle anim"""
         #on supprime tous les widget
         for child in self.winfo_children():
             child.destroy()
 
         #on reinitialise les machines
-        self.animation = animation
-        self.navigator = Navigator(self, self.reset_navig)
-        self.organizer = Organizer(self)
-        self.recorder = Recorder(self)
+        self.animation = anim
+        self.navigator = navigator.Navigator(self.animation)
+        self.organizer = organizer.Organizer(self.navigator)
+        self.recorder = recorder.Recorder(self)
 
         # on cree un board
-        self.board = Board(self)
-        self.board.pack(pady=10)
+        self.board = drawing_board.DrawingBoard(self)
+        self.board.add_navigator(self.navigator)
+        self.board.pack(fill="both", expand=1)
+
+        # on cree un deuxième board
+        # self.alt_board_win = Toplevel()
+        # self.alt_board_win.title("Ognon Live")
+        # self.alt_board_win.geometry("{}x{}".format(300, 300))
+        # self.alt_board = Board(self.alt_board_win, animation=self.animation, navigator=self.navigator)
+        # self.alt_board.pack(fill="both", expand=1)
 
         # on cree le tableau de commande et la timeline
-        self.command_board = CommandBoard(self)
-        self.command_board.pack(side=BOTTOM, pady=10)
-        self.time_line = TimeLine(self)
-        self.time_line.pack(side=BOTTOM, pady=10)
+        self.button_table = button_table.ButtonTable(self)
+        self.button_table.pack(side=tk.BOTTOM)  # , pady=10)
+        self.time_line = time_line.TimeLine(self, self.navigator)
+        self.time_line.pack(side=tk.BOTTOM)  # , pady=10)
 
-        # on cree les boutons
+        # on cree les boutons et le menu
         self.shortcuts = dict()
-        for m in Operation.dic:
-            if m == 'navigator':
+        operations = operation.Operation.dic
+        for m in operations:
+            if m == 'control.navigator':
                 target = self.navigator
-            elif m == 'organizer':
+            elif m == 'control.organizer':
                 target = self.organizer
-            elif m == 'recorder':
+            elif m == 'control.recorder':
                 target = self.recorder
-            for o in Operation.dic[m]:
-                op = Operation.dic[m][o]
+            for o in operations[m]:
+                op = operations[m][o]
                 op.target = target
-                print("fonction {}, shortcut : {}".format(op.name, op.shortcut))
                 self.shortcuts[op.shortcut] = op
                 self.bind_all("<KeyPress>".format(op.shortcut), self.shortcut)
-                self.command_board.add_button(o, op)
-
-        # on reset
-        self.reset()
+                self.button_table.add_button(o, op)
+        self.load_menu()
 
     def shortcut(self, event):
-        self.shortcuts[event.keysym]()
+        if event.keysym in self.shortcuts:
+            self.shortcuts[event.keysym]()
 
+    def load_menu(self):
+        self.menubar = tk.Menu(self)
+        self.sub_menu = dict()
+        self.shortcuts = dict()
+        operations = operation.Operation.dic
+        for m in operations:
+            if m == 'control.navigator':
+                target = self.navigator
+            elif m == 'control.organizer':
+                target = self.organizer
+            elif m == 'control.recorder':
+                target = self.recorder
+            self.sub_menu[m] = tk.Menu(self.menubar)
+            for o in operations[m]:
+                op = operations[m][o]
+                op.target = target
+                self.shortcuts[op.shortcut] = op
+                self.sub_menu[m].add_command(label=op.name, command=op)
+            self.menubar.add_cascade(label=m, menu=self.sub_menu[m])
+        self.config(menu=self.menubar)
 
 if __name__ == '__main__':
     root = Ognon()
