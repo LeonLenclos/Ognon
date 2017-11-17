@@ -41,13 +41,14 @@ class Operation():
 
     def __init__(self, fun, *args, **kwargs):
         # Le nom et le shortcut sont passés par le décorateur
+        self.data = kwargs
         self.name = "NONE"
         self.shortcut = ""
-        if 'name' in kwargs:
-            self.name = kwargs['name']
-        if 'shortcut' in kwargs:
-            self.shortcut = kwargs['shortcut']
-        
+        if 'name' in self.data:
+            self.name = self.data['name']
+        if 'shortcut' in self.data:
+            self.shortcut = self.data['shortcut']
+
         # un tuple contenant les arguments necessaire
         # (renseignés sous la forme d'une str ou d'un tuple de deux str ou d'un tuple de deux str + une var par deffaut)
         self.args_required = args
@@ -62,6 +63,13 @@ class Operation():
             Operation.dic[fun.__module__] = {}
         # on met self dedans
         Operation.dic[fun.__module__][fun.__name__] = self
+
+    def copy(self):
+        return Operation(self._fun, *self.args_required, **self.data)
+
+    def __repr__(self):
+        return "Operation(name=%r, shortcut=%r, _fun=%r, target=%r)" \
+               % (self.name, self.shortcut, self._fun, self.target)
 
     def __get__(self, obj, objtype):
         """Support instance methods."""

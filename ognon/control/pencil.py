@@ -2,14 +2,15 @@
 
 
 class Pencil():
-    """C'est ce qui dessine"""
+    """Allow to draw on cells"""
 
     def __init__(self):
-        """Constructeur du crayon"""
-        # Là où on stock les coordonées de la ligne que l'on dessine
+        """Construct a Pencil"""
         self.is_drawing = False
 
     def draw_tmp_line(self, line, cell):
+        """Add a new line to the cell that will be deleted if the drawing
+        continue"""
         if self.is_drawing:
             del cell.lines[-1]
         else:
@@ -17,24 +18,45 @@ class Pencil():
         cell.add_line(line)
 
     def save_line(self):
+        """Finish the drawing"""
         self.is_drawing = False
 
-    # ERASE = PB ENCORE A REGLER !!!
+    def erase(self, line, cell):
+        """Delete cell's lines that intersects with the given line."""
+        for i, l in enumerate(cell.lines):
+            if self.intersection(line, l):
+                cell.remove_line(i)
+                break
 
-    def _erase(self, event):
-        """Cette fonction efface un trait"""
-        if not self.is_drawing:
-            # on récupere l'id de l'ellement sous la souris
-            current_list = self.canvas.find_withtag(CURRENT)
-            if current_list:
-                id_to_del = current_list[0]
-                if len(self.canvas.gettags(id_to_del)) > 1:
-                    # on récupère les tags de cet element -> ["l4", "current"] (par exemple, pour la 4ème ligne)
-                    # on prend le premier tag -> "l4"
-                    # on enlève le premier caractère -> "4"
-                    # on transforme en int -> 4
-                    line_to_del = int(self.canvas.gettags(id_to_del)[0][1:])
-                    # on suprime la ligne directement dans la liste lines de la current_cell
-                    del self.nav.current_cell().lines[line_to_del]
-                    # on reset
-                    self.reset()
+    def intersection(self, poly1, poly2):
+        """Tell whether there is an intersection between the two polylines."""
+        # A Point class to deal with the intersect function.
+        class Point():
+            def __init__(self, t):
+                self.x = t[0]
+                self.y = t[1]
+
+        # A good function that I dont understand
+        def intersect(A, B, C, D):
+            def ccw(A, B, C):
+                return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
+            return ccw(A, C, D) != ccw(B, C, D) \
+               and ccw(A, B, C) != ccw(A, B, D)
+
+        #grouping lines coords two by two
+        poly1 = tuple(zip(poly1[0::2], poly1[1::2]))
+        poly2 = tuple(zip(poly2[0::2], poly2[1::2]))
+
+        #for each segment of the first check each segment of the second
+        for i, p1_first_point in enumerate(poly1[:-1]):
+            p1_second_point = poly1[i + 1]
+
+            for j, p2_first_point in enumerate(poly2[:-1]):
+                p2_second_point = poly2[j + 1]
+
+                if intersect(Point(p1_first_point),
+                             Point(p1_second_point),
+                             Point(p2_first_point),
+                             Point(p2_second_point)):
+                    return True
+        return False

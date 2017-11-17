@@ -1,8 +1,10 @@
+"""Provide a Navigator class to navigate into Animation"""
+
 from control import operation as op
 
 
 class Navigator():
-    """docstring for Navigator"""
+    """Allow to navigate into one Animation."""
     def __init__(self, animation):
         self.anim = animation
         self._cursor = 0
@@ -20,6 +22,7 @@ class Navigator():
         self._cursor = self.constrain_film_index(value)
 
     def add_listener(self, callback):
+        self.anim.listeners.append(callback)
         self.listeners.append(callback)
 
     def reset(self):
@@ -38,19 +41,19 @@ class Navigator():
             return value
 
     def current_cell(self):
+        self.cursor = self.cursor
         return self.anim[self.cursor]
 
     def current_onion_cells(self):
-        prev = self.constrain_film_index(self.cursor - 1)
-        next = self.constrain_film_index(self.cursor + 1)
-        if prev == next:
-            return ()
-        elif prev == self.cursor:
-            return (self.anim[next])
-        elif next == self.cursor:
-            return (self.anim[prev])
-        else:
-            return (self.anim[prev], self.anim[next])
+        if not self.is_playing:
+            prev = self.constrain_film_index(self.cursor - 1)
+            next = self.constrain_film_index(self.cursor + 1)
+            if prev == next == self.cursor:
+                return []
+            elif prev == next:
+                return [self.anim[prev]]
+            else:
+                return [self.anim[prev], self.anim[next]]
 
     def run(self):
         """Cette fonction s'occupe de la lecture de l'anim
