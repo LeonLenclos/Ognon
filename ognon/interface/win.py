@@ -13,10 +13,14 @@ class AnimationWindow(tk.Toplevel):
         self.title("Animation")
         self.geometry("{}x{}".format(300, 300))
 
+        self.bind("<Button-1>", lambda e: self.focus_set())
+
+
         #innitialisation des machines
         self.animation = None
         self.navigator = None
         self.organizer = None
+
 
     def load(self, anim):
         """permet de charger une nouvelle anim"""
@@ -42,7 +46,6 @@ class AnimationWindow(tk.Toplevel):
         self.organizer_table = table.OperationTable(self, self.organizer).pack(side=tk.BOTTOM)
         self.navigator_table = table.OperationTable(self, self.navigator).pack(side=tk.BOTTOM)
 
-
 class BoardWindow(tk.Toplevel):
     """Fenetre d'animation"""
     def __init__(self):
@@ -55,7 +58,20 @@ class BoardWindow(tk.Toplevel):
         self.board = board.Board(self)
         self.board.pack(fill="both", expand=1)
         self.board.show_onion = False
+        self.state = False
+        self.bind_all("<F11>", self.toggle_fullscreen)
+        self.bind_all("<Escape>", self.end_fullscreen)
 
+    def toggle_fullscreen(self, event=None):
+        self.state = not self.state  # Just toggling the boolean
+        self.attributes("-fullscreen", self.state)
+        print("toggle fullscreen")
+        return "break"
+
+    def end_fullscreen(self, event=None):
+        self.state = False
+        self.attributes("-fullscreen", False)
+        return "break"
     def add_navigator(self, nav):
         """permet de charger une nouvelle anim"""
         self.board.add_navigator(nav)

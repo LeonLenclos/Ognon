@@ -18,11 +18,13 @@ class ButtonTable(tk.Frame):
         super().__init__(parent)
         self.shortcuts_dict = {}
 
-    def add_button(self, img, command, key=None):
-        return ButtonTable.Button(self, img=img, command=lambda e: command())
+    def add_button(self, img, operation, key=None):
         if key is not None:
-            self.shortcuts_dict[operation.shortcut] = operation
-            self.bind_all("<KeyPress %s>" % operation.shortcut, self.shortcut)
+            self.shortcuts_dict[key] = operation
+            self.master.bind("<KeyPress %s>" % key, self.shortcut)
+        return ButtonTable.Button(self, img=img, command=lambda e: operation())
+
+
 
     def shortcut(self, event):
         key = event.keysym
@@ -51,7 +53,6 @@ class ButtonTable(tk.Frame):
             if len(icns) == 0:
                 for f in os.listdir("resources/icns"):
                     if re.search(r'.+\.xbm', f):
-                        print("f : %r" % f)
                         icns[f] = tk.BitmapImage(file="resources/icns/"+f)
 
             self.id = id
@@ -71,7 +72,7 @@ class OperationTable(ButtonTable):
         for name in operations_dict:
             operation = operations_dict[name].copy()
             operation.target = self.controler
-            self.add_button(name, operation, key="operation.shortcut")
+            self.add_button(name, operation, key=operation.shortcut)
 
 
 class Clock(ButtonTable):
@@ -85,8 +86,9 @@ class Clock(ButtonTable):
         self.after_id = ""
         if nav is not None:
             self.add_navigator(nav)
-        self.add_button('run', self.run, key=' ')
-        self.add_button('autorun', self.autorun, key='enter')
+        self.add_button('run', self.run, key='BackSpace')
+        self.add_button('autorun', self.autorun, key='Return')
+        self.autorun()
 
     def add_navigator(self, nav):
         self.nav.append(nav)

@@ -22,11 +22,12 @@ class Board(tk.Frame):
 
         # Preferences
         self.show_onion = True
-        self.stroke_weight = 2
+        self.bg_color = 'white'
+        self.stroke_color = 'black'
+        self.stroke_weight = 10
 
         self.nav = []
 
-        self.config(bg='black')
         self.canvas = tk.Canvas(self, cursor='pencil', width=10, height=10)
         self.canvas.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
@@ -43,11 +44,13 @@ class Board(tk.Frame):
         """Redraw the Board's content.
 
         Must be call when something move in linked Animation or Navagitor."""
+        self.canvas.config(bg=self.bg_color)
+
         self.canvas.delete("all")
         # on affiche la current frm de chaque nav.
         for n in self.nav:
             self.draw_onion(n.current_onion_cells())
-            self.draw_cell(n.current_cell())
+            self.draw_cell(n.current_cell(), fill=self.stroke_color)
 
     def draw_cell(self, cell, fill="black"):
         """Draw the passed cell in the Board"""
@@ -59,10 +62,10 @@ class Board(tk.Frame):
     def draw_onion(self, cells):
         # On affiche la pelure d'oninon s'il faut cells est un tuple avec 0 ou 1 ou 2 cells
         if self.show_onion and cells is not None:
-            fill_color = "tomato"
+            fill_color = "red3"
             for c in cells:
                 self.draw_cell(c, fill=fill_color)
-                fill_color = "aquamarine"
+                fill_color = "green4"
 
 
 class DrawingBoard(Board):
@@ -93,7 +96,7 @@ class DrawingBoard(Board):
 
         if event.num == 1:
             self.is_drawing = True
-        if event.num == 2:
+        else :
             self.is_erasing = True
 
     def _stop_drawing(self, event):

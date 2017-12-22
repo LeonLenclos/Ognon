@@ -18,6 +18,11 @@ class Cell():
     def __repr__(self):
         return "Cell(id=%r, parent=%r)" % (self.id, self.parent)
 
+    def __getstate__(self):
+        state = self.__dict__
+        state['listeners'] = []
+        return state
+
     @touch
     def add_line(self, coords):
         """cette fonction ajoute une nouvelle ligne à la Cell"""

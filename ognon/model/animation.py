@@ -26,10 +26,10 @@ class Animation():
         self.add_cell(0)
 
     def __repr__(self):
-        return "Animation(title=%r, w=%r, h=%r, len=%r)" % (self.title, self.w, self.h, len(self))
+        return "Animation(title=%r, w=%r, h=%r, len=%r)" % (self.title, self.width, self.height, len(self))
 
     def __getstate__(self):
-        state = dict(self.__dict__)
+        state = self.__dict__
         state['listeners'] = []
         return state
 

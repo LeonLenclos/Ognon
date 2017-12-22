@@ -73,31 +73,31 @@ class Navigator():
         self.is_playing = not self.is_playing
         self.run()
 
-    @op.operation(name="Image précédente", shortcut="w")
+    @op.operation(name="Image précédente", shortcut="z")
     def prev_cell(self):
         """Permet d'acceder à la cell précédente"""
         self.cursor -= 1
         self.reset()
 
-    @op.operation(name="Image suivante", shortcut="e")
+    @op.operation(name="Image suivante", shortcut="s")
     def next_cell(self):
         """Permet d'acceder à la cell suivante"""
         self.cursor += 1
         self.reset()
 
-    @op.operation(name="Première image", shortcut="r")
+    @op.operation(name="Première image", shortcut="e")
     def go_to_first_cell(self):
         """Permet d'acceder à la cell suivante"""
         self.cursor = 0
         self.reset()
 
-    @op.operation(name="Dernière image", shortcut="t")
+    @op.operation(name="Dernière image", shortcut="d")
     def go_to_last_cell(self):
         """Permet d'acceder à la cell précédente"""
         self.cursor = len(self.anim)-1
         self.reset()
 
-    @op.operation("int", name="Aller à telle image", shortcut="y")
+    @op.operation("int", name="Aller à telle image")
     def go_to_cell(self, i):
         """Permet d'acceder à une cell i"""
         self.cursor = i
