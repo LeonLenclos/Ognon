@@ -47,7 +47,7 @@ class AnimationWindow(tk.Toplevel):
         self.navigator_table = table.OperationTable(self, self.navigator).pack(side=tk.BOTTOM)
 
 class BoardWindow(tk.Toplevel):
-    """Fenetre d'animation"""
+    """Window for displaying animations"""
     def __init__(self):
         super().__init__()
 

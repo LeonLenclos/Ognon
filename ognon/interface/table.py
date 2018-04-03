@@ -8,6 +8,10 @@ import tkinter as tk
 import os
 import re
 
+from pythonosc import dispatcher
+from pythonosc import osc_server
+import threading
+
 from control import operation as op
 
 
@@ -88,7 +92,18 @@ class Clock(ButtonTable):
             self.add_navigator(nav)
         self.add_button('run', self.run, key='BackSpace')
         self.add_button('autorun', self.autorun, key='Return')
+        self.add_button('reset', self.reset)
         self.autorun()
+        self.must_run = False;
+        self.must_reset = False;
+
+    def do_what_you_must_do(self):
+        if self.must_run:
+            self.run()
+            self.must_run = False
+        elif self.must_reset:
+            self.reset()
+            self.must_reset = False
 
     def add_navigator(self, nav):
         self.nav.append(nav)
@@ -104,6 +119,10 @@ class Clock(ButtonTable):
         else:
             self.stop()
 
+    def reset(self):
+        for n in self.nav:
+            n.go_to_first_cell()
+
     def start(self):
         self.run()
         time_in_ms = int(1000 / self.ips)
@@ -111,6 +130,31 @@ class Clock(ButtonTable):
 
     def stop(self):
         self.after_cancel(self.after_id)
+
+    def osc_sync(self, ip="192.168.1.2", port=5005):
+        """ Synchronise the clock with an osc signal
+        """
+
+        def step(arg):
+            self.must_run = True
+            print(arg)
+
+        def reset(arg):
+            self.must_reset = True
+            print(arg)
+
+        my_dispatcher = dispatcher.Dispatcher()
+
+        my_dispatcher.map("/step", step)
+        my_dispatcher.map("/reset", reset)
+        my_dispatcher.map("/debug", print)
+
+        print((ip, port))
+        self.server = osc_server.ThreadingOSCUDPServer((ip, port), my_dispatcher)
+        print("Serving on %s on port %s" % self.server.server_address)
+        # server.serve_forever()
+        server_thread = threading.Thread(target=self.server.serve_forever)
+        server_thread.start()
 
 
 class TimeLine(ButtonTable):
