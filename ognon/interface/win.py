@@ -55,8 +55,11 @@ class BoardWindow(tk.Toplevel):
         self.title("Board")
         self.geometry("{}x{}".format(300, 300))
 
+
+
         self.board = board.Board(self)
         self.board.pack(fill="both", expand=1)
+        self.board.configure(background='black')
         self.board.show_onion = False
         self.state = False
         self.bind_all("<F11>", self.toggle_fullscreen)
