@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+# /usr/bin/python3
+# !
 # -*-coding:Utf-8 -*
 
 """
@@ -83,7 +84,7 @@ class Ognon(tk.Tk):
 
         # create n AnimationWindow
         for i in range(0, n):
-            self.anims.append(self.rec.new_animation(width=800, height=800))
+            self.anims.append(self.rec.new_animation(width=1280, height=800))
             a = self.anims[i]
             w = win.AnimationWindow()
             w.load(a)
@@ -136,4 +137,5 @@ if __name__ == '__main__':
     if osc_sync:
         secondloop()
     root.mainloop()
-    root.clock_win.clock.server.shutdown()
+    if root.clock_win.clock.server :
+        root.clock_win.clock.server.shutdown()

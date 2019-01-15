@@ -97,6 +97,8 @@ class Clock(ButtonTable):
         self.must_run = False;
         self.must_reset = False;
 
+        self.server = None
+
     def do_what_you_must_do(self):
         if self.must_run:
             self.run()
@@ -135,11 +137,11 @@ class Clock(ButtonTable):
         """ Synchronise the clock with an osc signal
         """
 
-        def step(arg):
+        def step(*arg):
             self.must_run = True
             print(arg)
 
-        def reset(arg):
+        def reset(*arg):
             self.must_reset = True
             print(arg)
 
