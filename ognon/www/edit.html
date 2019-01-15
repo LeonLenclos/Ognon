@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>ogn edit : {project}</title>
+
+	<script>const PROJECT = "{project}";</script>
+	<script src="/js/lib/pixi.min.js"></script>
+	<script src="/js/lib/jquery.min.js"></script>
+	<script src="/js/script.js"></script>
+	<link rel="shortcut icon" type="image/png" href="/favicon.ico?v=2"/>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<div class="statusbar">
+	<h1><a href="/">Ognon</a> edit <a href="/project/{project}">{project}</a></h1>
+	<label>cursor</label>
+	<span id="cursor_idx"></span>
+	<label>frm</label>
+	<span id="frm_idx"></span>
+	<label>layer</label>
+	<span id="layer_idx"></span>
+	<label>anim</label>
+	<span id="anim_name"></span>
+</div>
+<div class="toolbar"  id="control">
+	<div class="section" id="animsmanager">
+		<label>anims</label>
+		<input list="anims_list" id="anim_name" name="name"/>
+		<button id="select_anim" data-required="name">select</button>
+		<button id="new_anim" data-required="name">new</button>
+		<button id="del_anim" data-required="name">del</button>
+	</div>
+	<div class="section" id="navigator">
+		<label>navigation</label>
+		<button id="play">play</button>
+		<button id="run">run</button>
+		<button id="prev_frm">prev</button>
+		<button id="next_frm">next</button>
+		<button id="first_frm">first</button>
+		<button id="last_frm">last</button>
+	</div>
+	<div class="section" id="organizer">
+		<label>organization</label>
+		<button id="move_ognobject_forward">&lt; move</button>
+		<button id="move_ognobject_backward">move &gt;</button>
+		<button id="pop_ognobject">del</button>
+		<label>cell</label>
+		<button id="add_cell_after">&lt; add</button>
+		<button id="add_cell_before">add &gt;</button>
+		<label>anim</label>
+		<input id="anim_name" name="name"/>
+		<button id="add_anim_after" data-required="name">&lt; add</button>
+		<button id="add_anim_before" data-required="name">add &gt;</button>
+		<label>tag</label>
+		<input id="tag_description" name="description"/>
+		<button id="add_tag_after" data-required="description">&lt; add</button>
+		<button id="add_tag_before" data-required="description">add &gt;</button>
+		<label>layer</label>
+		<button id="add_layer">add</button>
+		<button id="move_layer_up">move up</button>
+		<button id="move_layer_down">move down</button>
+	</div>
+	<div class="section" id="drawer">
+		<label>drawing</label>
+		<button id="clear">clear</button>
+		<label>tools</label>
+		<button id="use_pen">pen</button>
+		<button id="use_eraser">eraser</button>
+	</div>
+</div>
+
+<div class="toolbar"  id="project">
+	<div class="section">
+		<label>project</label>
+		<button id="load">load</button>
+		<button id="save">save</button>
+	</div>
+	<div class="section" id="cursor">
+		<label>cursor</label>
+		<button id="new_cursor">new cursor</button>
+		<button id="del_cursor">del cursor</button>
+		<select id="cursors">
+		</select>
+	</div>
+
+</div>
+
+<table id="timeline"></table>
+
+<canvas id="display"></canvas>
+
+</body>
+</html>
