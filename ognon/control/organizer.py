@@ -1,62 +1,65 @@
-from model import Cell, Layer
+from ..model import Cell, Layer, AnimRef
+from .navigator import next_frm, prev_frm
 
-class Organizer():
-    def __init__(self, ognproject):
-        self.ognproject = ognproject
+def add_element_after(cursor, element):
+    i, _, _ = cursor.get_element_pos()
+    cursor.get_layer().elements.insert(i+1, element)
+    next_frm(cursor)
 
-    def add_ognobject_at(self, cursor, ognobject, i):
-        if cursor.get_layer() is not None:
-            cursor.get_layer().frms.insert(i, ognobject)
+def add_element_before(cursor, element):
+    i, _, _ = cursor.get_element_pos()
+    cursor.get_layer().elements.insert(i, element)
 
-    def add_ognobject_after(self, cursor, ognobject):
-        if cursor.get_frm_idx() is not None:
-            self.add_ognobject_at(cursor, ognobject, cursor.get_frm_idx())
+def add_cell_after(cursor):
+    add_element_after(cursor, Cell())
 
-    def add_ognobject_before(self, cursor, ognobject):
-        if cursor.get_frm_idx() is not None:
-            self.add_ognobject_at(cursor, ognobject, cursor.get_frm_idx()-1)
+def add_cell_before(cursor):
+    add_element_before(cursor, Cell())
 
-    def add_cell_after(self, cursor):
-        self.add_ognobject_after(cursor, Cell())
+def add_animref_after(cursor, name):
+    add_element_after(cursor, AnimRef(name))
 
-    def add_cell_before(self, cursor):
-        self.add_ognobject_before(cursor, Cell())
+def add_animref_before(cursor, name):
+    add_element_before(cursor, AnimRef(name))
 
-    def add_anim_after(self, cursor, name):
-        self.add_ognobject_after(cursor, self.ognobject.anims[name])
+        
+def del_element(cursor):
+    i, _, _ = cursor.get_element_pos()
+    cursor.get_layer().elements.pop(i)
 
-    def add_anim_before(self, cursor, name):
-        self.add_ognobject_before(cursor, self.ognobject.anims[name])
+def move_element_forward(cursor):
+    i, _, _ = cursor.get_element_pos()
+    if i < len(cursor.get_layer().elements)-1:
+        cursor.get_layer().elements.insert(i+1, _pop_element_at(cursor, i))
+        next_frm(cursor)
 
-    def pop_ognobject_at(self, cursor, i):
-        if cursor.get_layer() is not None:
-            return cursor.get_layer().frms.pop(i)
+def move_element_backward(cursor):
+    i, _, _ = cursor.get_element_pos()
+    if i>0:
+        cursor.get_layer().elements.insert(i-1, _pop_element_at(cursor, i))
+        prev_frm(cursor)
 
-    def pop_ognobject(self, cursor):
-        if cursor.get_frm_idx() is not None:
-            return self.pop_ognobject_at(cursor, cursor.get_frm_idx())
+def copy_element(cursor):
+    pass
+    # self.add_element_after(cursor, cursor.get_frm().copy())
 
-    def move_ognobject_from_to(self, cursor, idx, dest):
-        ognobject = self.pop_ognobject_at(cursor, idx)
-        self.add_ognobject_at(cursor, ognobject, dest)
+def clone_element(cursor):
+    pass
+    # if cursor.get_frm() is not None:
+    #     self.add_element_after(cursor, cursor.get_frm())
 
-    def move_ognobject_forward(self, cursor):
-        if cursor.get_frm_idx() is not None:
-            self.move_ognobject_from_to(cursor, cursor.get_frm_idx(), cursor.get_frm_idx())
+def add_layer(cursor):
+    idx = cursor.get_pos('layer')
+    cursor.get_anim().layers.insert(idx, Layer())
 
-    def move_ognobject_backward(self, cursor):
-        if cursor.get_frm_idx() is not None:
-            self.move_ognobject_from_to(cursor, cursor.get_frm_idx(), cursor.get_frm_idx()-1)
+def del_layer(cursor):
+    pass
 
-    def copy_ognobject(self, cursor):
-        if cursor.get_frm() is not None:
-            self.add_ognobject_after(cursor, cursor.get_frm().copy())
+def move_layer_up(cursor):
+    pass
 
-    def clone_cell(self, cursor):
-        if cursor.get_frm() is not None:
-            self.add_ognobject_after(cursor, cursor.get_frm())
+def move_layer_down(cursor):
+    pass
 
-    def add_layer(self, cursor):
-        if cursor.get_anim() is not None :
-            idx = cursor.get_layer_idx() or 0
-            cursor.get_anim().layers.insert(idx, Layer())
+def _pop_element_at(cursor, i):
+    return cursor.get_layer().elements.pop(i)

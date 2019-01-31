@@ -111,22 +111,22 @@ td:hover{
 	border: 2px solid black;
 }
 
-th, td.layer {
+.frms-row td, .layer-row td:first-child {
 	height:4px;
 	width: 4px;
 	border:1px solid black;
 	border-radius: 4px;
 	background: #fff;
 }
-th.active, .active td.layer{
+.frms-row td.active,  .layer-row.active td:first-child{
 	background: #000;
 }
-th:hover, td.layer:hover{
+.frms-row td:hover, .layer-row td:first-child:hover{
 	height:2px;
 	width:2px;
 	border: 2px solid black;
 }
 
-th.layer{
+.frms-row td:first-child{
   visibility: hidden;
 }
