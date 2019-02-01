@@ -2,7 +2,7 @@
 
 Ognon is a 2D animation software
 
-## ⚠️ Disclaimer
+## ⚠️ Disclaimer
 
 - Ognon is in development (for now and maybe forever)
 - I'm not really a programmer (if you are, you will probably find strange or bad things in Ognon's code)
