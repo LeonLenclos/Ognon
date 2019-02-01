@@ -179,17 +179,12 @@ def test_organizer(cursor):
 	assert len(cursor.get_anim().layers) == 3
 
 def test_projectmanager(cursor):
-
-	# _get_path
 	import os
-	path = control.projectmanager._get_path(cursor)
-	assert path
-	assert control.projectmanager._get_path(cursor, 'foo').startswith(path)
-
+	from ..view import get_path
 	# load
 	assert control.projectmanager.load(cursor, 'fresh_new_project') is None
 	assert cursor.proj.name == 'fresh_new_project'
-	assert os.path.isdir(control.projectmanager._get_path(cursor))
+	assert os.path.isdir(get_path(cursor))
 
 	# assert control.projectmanager.load(cursor, 'testing') is None
 	# assert cursor.proj.name == 'testing'
@@ -206,8 +201,8 @@ def test_projectmanager(cursor):
 	# clean
 	import shutil
 	control.projectmanager.load(cursor, 'fresh_new_project')
-	shutil.rmtree(control.projectmanager._get_path(cursor))
+	shutil.rmtree(get_path(cursor))
 	control.projectmanager.load(cursor, 'another_project')
-	shutil.rmtree(control.projectmanager._get_path(cursor))
+	shutil.rmtree(get_path(cursor))
 	control.projectmanager.load(cursor, 'testing')
-	shutil.rmtree(control.projectmanager._get_path(cursor))
+	shutil.rmtree(get_path(cursor))

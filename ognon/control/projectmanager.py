@@ -1,28 +1,24 @@
 """This module provide control functions to manage projects"""
 import os, pickle, shutil, configparser
-from ..model import Project
+
 from .. import model
-from .. import WORKING_DIR
-
-def _get_path(cursor, file=""):
-    """Return path to the project (or path to a file in the project)."""
-    return os.path.join(WORKING_DIR, cursor.proj.name, file)
-
+from .. import view
 
 def load(cursor, name=None):
     """Load from files. If files does not exist, create they"""
     name = name or cursor.proj.name
-    cursor.proj = Project(name)
-    if not os.path.isdir(_get_path(cursor)):
-        os.mkdir(_get_path(cursor))
-        shutil.copy('ognon/config.ini', _get_path(cursor))
+    cursor.proj = model.Project(name)
+    if not os.path.isdir(view.get_path(cursor)):
+        os.mkdir(view.get_path(cursor))
+        os.mkdir(view.get_path(cursor, 'export'))
+        shutil.copy('ognon/config.ini', view.get_path(cursor))
         save(cursor)
 
     # Load anims (*.ogn)
     cursor.proj.anims = {}
-    for file in os.listdir(_get_path(cursor)):
+    for file in os.listdir(view.get_path(cursor)):
         if file.endswith('.ogn'):
-            with open(_get_path(cursor, file), 'rb') as fi:
+            with open(view.get_path(cursor, file), 'rb') as fi:
                 cursor.proj.anims[file[:-4]] = pickle.load(fi)
     # Load config (config.ini)
     config = configparser.ConfigParser()
@@ -34,6 +30,6 @@ def save(cursor):
     """Save to files."""
     # Save anims (*.ogn)
     for name, anim in cursor.proj.anims.items():
-        with open(_get_path(cursor, name + '.ogn'), 'wb') as fi:
+        with open(view.get_path(cursor, name + '.ogn'), 'wb') as fi:
             pickle.dump(anim, fi)
 

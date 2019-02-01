@@ -1,4 +1,11 @@
-from .model import Cell, AnimRef
+import os
+
+from . import model
+from . import WORKING_DIR
+
+def get_path(cursor, file=""):
+    """Return path to the project (or path to a file in the project)."""
+    return os.path.join(WORKING_DIR, cursor.proj.name, file)
 
 def get_projects(cursor):
     pass
@@ -35,9 +42,9 @@ def get_lines(cursor, frm=None):
         pos = cursor.get_element_pos(layer=i, frm=frm)
         if pos is not None:
             _, element, at = pos
-            if type(element) is Cell:
+            if type(element) is model.Cell:
                 lines += [line.coords for line in element.lines]
-            if type(element) is AnimRef:
+            if type(element) is model.AnimRef:
                 index, element, at = cursor.get_element_pos(layer=i)
                 lines += get_lines(cursor, anim=element.name, frm=at)
 
