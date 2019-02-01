@@ -50,9 +50,13 @@ def get_lines(cursor, frm=None):
 
     return lines
 
-def get_onion_skin(cursor):
+def get_onion_skin(cursor, onion_range=(0)):
     frm = cursor.get_pos('frm')
     return {
-        -1: get_lines(cursor, frm=cursor.constrain_frm(frm-1)),
-        1: get_lines(cursor, frm=cursor.constrain_frm(frm+1)),
+        idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx))
+        for idx in onion_range
     }
+    # return {
+    #     -1: get_lines(cursor, frm=cursor.constrain_frm(frm-1)),
+    #     1: get_lines(cursor, frm=cursor.constrain_frm(frm+1)),
+    # }

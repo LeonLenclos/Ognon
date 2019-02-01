@@ -74,9 +74,9 @@ const clearCanvas = (ctx) => {
 
 class Canvas extends Module {
 
-    constructor(id) {
+    constructor(id, noOnionSkin=false) {
         super(id);
-        this.onAnimChange = this.onDraw = this.onCursorMove = this.draw
+        this.onAnimChange = this.onDraw = this.onCursorMove = noOnionSkin ? this.draw : this.update
     }
 
     setup() {
@@ -86,6 +86,21 @@ class Canvas extends Module {
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
         this.elmt.addEventListener('mouseup',   onCanvasMouseUp);
+    }
+
+    update() {
+        /*
+        Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
+        */
+        fetch('/view/get_cursor_infos/', initOptions())
+        .then(response => response.json())
+        .then(json =>{
+            if (json.playing) {
+                this.draw()
+            } else {
+                this.drawOnionSkin()
+            }
+        })
     }
 
     draw() {
@@ -102,19 +117,15 @@ class Canvas extends Module {
 
     drawOnionSkin() {
         /*
-        Draw lines given by /view/get_lines/ 
+        Draw lines given by /view/get_lines/ and /view/get_onion_skin/""
         */
-        fetch('/view/get_lines/', initOptions())
+        fetch('/view/get_onion_skin/', initOptions({onion_range:[-1,0,1]}))
         .then(response => response.json())
-        .then(lines => {
-            fetch('/view/get_onion_skin/', initOptions())
-            .then(response => response.json())
-            .then(onionSkin => {
-                clearCanvas(this.ctx);
-                drawLines(onionSkin[-1], {lineWidth:1, lineColor:"#ff0000"}, this.ctx);
-                drawLines(onionSkin[1], {lineWidth:1, lineColor:"#00ff00"}, this.ctx);
-                drawLines(lines, {lineWidth:2, lineColor:"#ffffff"}, this.ctx);
-            });
+        .then(onionSkin => {
+            clearCanvas(this.ctx);
+            drawLines(onionSkin[-1], {lineWidth:1, lineColor:"#ff0000"}, this.ctx);
+            drawLines(onionSkin[1], {lineWidth:1, lineColor:"#00ff00"}, this.ctx);
+            drawLines(onionSkin[0], {lineWidth:2, lineColor:"#ffffff"}, this.ctx);
         });
     }
 }
