@@ -12,6 +12,31 @@
 <body>
 	<h1><a href="/">Ognon</a> export <a href="/project/{project}"></a>{project}</h1>
 
+	<div id="statusbar">
+		<h1><a href="/">Ognon</a> edit</a></h1>
+		<label>project</label><span id="project_name"></span>
+		<label>frm</label><span id="frm_idx"></span>
+		<label>layer</label><span id="layer_idx"></span>
+		<label>anim</label><span id="anim_name"></span>
+		<label>loop</label><span id="loop"></span>
+		<label>playing</label><span id="playing"></span>
+	</div>
+
+	<div id="toolbar">
+		<div class="section" id="projectmanager">
+			<label>project</label>
+			<input id="project_name" name="name"/>
+			<button id="load" data-required="name">load</button>
+			<button id="save">save</button>
+		</div>
+		<div class="section" id="animsmanager">
+			<label>anims</label>
+			<input id="anim_name" name="name"/>
+			<button id="select_anim" data-required="name">select</button>
+			<button id="new_anim" data-required="name">new</button>
+			<button id="del_anim" data-required="name">del</button>
+		</div>
+	</div>
 
 	<ul>
 		<li><a href="#"></a>gif</li>
