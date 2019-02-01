@@ -15,24 +15,6 @@ def test_animsmanager(cursor):
 	assert control.animsmanager.del_anim(cursor, 'fresh-new-anim') is None
 	assert 'fresh-new-anim' not in cursor.proj.anims
 
-
-def test_drawer(cursor):
-
-	# draw
-	assert control.drawer.draw(cursor, 0,0,100,100) is None
-	assert cursor.get_element().lines[0].coords == (0,0,100,100)
-
-	# erease
-	assert control.drawer.erease(cursor, 100,0,0,100) is None
-	assert len(cursor.get_element().lines) == 0
-
-	# draw
-	assert control.drawer.draw(cursor, 0,0,100,100) is None
-	assert len(cursor.get_element().lines) == 1
-	assert control.drawer.clear(cursor) is None
-	assert len(cursor.get_element().lines) == 0
-
-
 def test_navigator(cursor):
 
 	# run & play

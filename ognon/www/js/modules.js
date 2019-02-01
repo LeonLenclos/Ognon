@@ -32,10 +32,7 @@ const onCanvasMouseMove = (e) => {
     if(canvas.pMouseX){
         let tool = document.getElementById('tool-selector').value
         fetch('/control/drawer/'+tool+'/', initOptions({
-            x1:canvas.pMouseX,
-            y1:canvas.pMouseY,
-            x2:e.offsetX,
-            y2:e.offsetY
+            coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]
         }))
         .then(()=>callModulesMethod('onDraw'))
         canvas.pMouseX = e.offsetX;
@@ -56,7 +53,9 @@ const drawLines = (lines, style, ctx) => {
     ctx.beginPath();
     lines.forEach((line) => {
         ctx.moveTo(line[0], line[1]);
-        ctx.lineTo(line[2], line[3]);
+        for (var i = 2; i < line.length; i+=2) {
+            ctx.lineTo(line[i], line[i+1]);
+        }
     });
     ctx.stroke();
 

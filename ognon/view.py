@@ -36,9 +36,9 @@ def get_cursor_infos(cursor):
     infos.update(cursor.get_pos())
     return infos
 
-def get_lines(cursor, frm=None):
+def get_lines(cursor, frm=None, anim=None):
     lines=[]
-    for i in range(len(cursor.get_anim().layers)):
+    for i in range(len(cursor.get_anim(anim).layers)):
         pos = cursor.get_element_pos(layer=i, frm=frm)
         if pos is not None:
             _, element, at = pos

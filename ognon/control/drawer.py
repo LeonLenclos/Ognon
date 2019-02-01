@@ -1,6 +1,6 @@
 """This module provide control functions to draw on cells"""
 
-from ..model import Line
+from .. import model
 
 def clear(cursor):
     cursor.get_element().lines = []
@@ -9,10 +9,16 @@ def clear(cursor):
 # def use_tool(cursor, tool, *args):
 #     globals()[tool](cursor, *args)
 
-def draw(cursor, x1, y1, x2, y2):
-    cursor.get_element().lines.append(Line(x1, y1, x2, y2))
+def draw(cursor, coords):
+    e = cursor.get_element()
+    try:
+        assert e.lines[-1].coords[-2:] == coords[:2]
+        e.lines[-1].coords.extend(coords[2:])
+    except (AssertionError, IndexError):
+        e.lines.append(model.Line(coords))
 
-def erease(cursor, x1, y1, x2, y2):
+
+def erease(cursor, coords):
     def intersect(line1, line2):
         A, B, C, D = (
             line1.coords[:2],
@@ -25,6 +31,6 @@ def erease(cursor, x1, y1, x2, y2):
         return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
 
     for i, l in enumerate(cursor.get_element().lines):
-        if intersect(l, Line(x1, y1, x2, y2)):
+        if intersect(l, model.Line(coords)):
             del cursor.get_element().lines[i]
             continue

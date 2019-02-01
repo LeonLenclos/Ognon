@@ -22,6 +22,6 @@ class AnimRef():
         self.name = name
 
 class Line():
-    def __init__(self, x1, y1, x2, y2):
-        self.coords = (x1, y1, x2, y2)
+    def __init__(self, coords):
+        self.coords = coords
 
