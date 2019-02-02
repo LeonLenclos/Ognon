@@ -1,0 +1,305 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ognon.cursor &#8212; Ognon v1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ognon.cursor</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines the Cursor class.</span>
+<span class="sd">The cursor is the most importants object of the ognon&#39;s structure.</span>
+<span class="sd">It is a required argument for every control and view functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">model</span>
+
+<div class="viewcode-block" id="Cursor"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor">[docs]</a><span class="k">class</span> <span class="nc">Cursor</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Cursor is a point of view on an ognon project, a *tape head*.</span>
+
+<span class="sd">    It store informations about his position and his state and a reference to</span>
+<span class="sd">    the project. It provides a bunch of getters and setters to move the cursor,</span>
+<span class="sd">    know where it is and access to the ellements under it.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    </span>
+<span class="sd">    - `proj` : a model.Project instance.</span>
+<span class="sd">    - `_pos` : a dict that store the cursor position.</span>
+<span class="sd">        - `_pos[&#39;anim&#39;]` : The name of an animation in the project anims dict.</span>
+<span class="sd">        - `_pos[&#39;layer&#39;]` : The index of a layer in the animation layers list.</span>
+<span class="sd">        - `_pos[&#39;frm&#39;]` : A specific instant of the animation.</span>
+<span class="sd">    - `playing` : The cursor state (playing or not playing)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init a cursor</span>
+
+<span class="sd">        :param proj: An ognon project (optional)</span>
+<span class="sd">        :type proj: model.Project</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">proj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;anim&#39;</span><span class="p">:</span><span class="s1">&#39;master&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;layer&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;frm&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">playing</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1">#TODO: remove loop from cursor. Make it a config option</span>
+
+<div class="viewcode-block" id="Cursor.get_pos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.get_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the cursor position.</span>
+
+<span class="sd">        If a key is passed, return the specified position.</span>
+<span class="sd">        This method first call set_pos without arguments to ensure that the</span>
+<span class="sd">        position is valid (e.g. not pointing an inexisting layer)</span>
+
+<span class="sd">        :param key: A position key (&#39;anim&#39;, &#39;layer&#39; or &#39;frm&#39;) </span>
+<span class="sd">        :type key: str</span>
+<span class="sd">        :return: the position dict or the specified position value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_pos</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span></div>
+
+<div class="viewcode-block" id="Cursor.set_pos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.set_pos">[docs]</a>    <span class="k">def</span> <span class="nf">set_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the cursor position. (anim, layer and frm)</span>
+
+<span class="sd">        Positions are constrained to valid values : frm is constained using the</span>
+<span class="sd">        constrain_frm method, anim is set to &#39;masster&#39; if current value refer</span>
+<span class="sd">        to an unexisting animation and layer is set to 0 if the current value is</span>
+<span class="sd">        an out of range index.</span>
+
+<span class="sd">        If the anim argument is passed but layer or frm are not, set them to 0.</span>
+
+<span class="sd">        If no arguments are passed, just constain the three values.</span>
+
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :param layert: The index of the layer (optional)</span>
+<span class="sd">        :type layert: int</span>
+<span class="sd">        :param frm: The current frm position in the animation (optional)</span>
+<span class="sd">        :type frm: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set position.</span>
+        <span class="k">if</span> <span class="n">anim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;anim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">anim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;frm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
+        <span class="k">if</span> <span class="n">frm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;frm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frm</span>
+        <span class="c1"># Constain anim.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;anim&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;anim&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;master&#39;</span>
+        <span class="c1"># Constrain layer.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;anim&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span> \
+        <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span>  <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;layer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>   
+        <span class="c1"># Constrain frm.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;frm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constrain_frm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;frm&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Cursor.constrain_frm"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.constrain_frm">[docs]</a>    <span class="k">def</span> <span class="nf">constrain_frm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frm</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a frm position constrained in the current anim length.</span>
+
+<span class="sd">        Result will be different depending on whether the loop mode is on or off.</span>
+
+<span class="sd">        :param frm: The frm position to constrain</span>
+<span class="sd">        :type frm: int</span>
+<span class="sd">        :return: The constrained frm position.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">frm</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim_len</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">frm</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">frm</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim_len</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim_len</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">frm</span></div>
+
+<div class="viewcode-block" id="Cursor.get_anim"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.get_anim">[docs]</a>    <span class="k">def</span> <span class="nf">get_anim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current anim or the specified anim</span>
+<span class="sd">        </span>
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :return: The animation.</span>
+<span class="sd">        :rtype: model.Anim</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anim</span> <span class="o">=</span> <span class="n">anim</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;anim&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">anim</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Cursor.get_layer"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.get_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current layer or the specified layer in the specified anim</span>
+<span class="sd">        </span>
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :param layert: The index of the layer (optional)</span>
+<span class="sd">        :type layert: int</span>
+<span class="sd">        :return: The layer.</span>
+<span class="sd">        :rtype: model.Layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span> <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_anim</span><span class="p">(</span><span class="n">anim</span><span class="p">)</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Cursor.get_element_pos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.get_element_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_element_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a tuple with the index of the element in the layer, the</span>
+<span class="sd">        element object and the position of the cursor inside the element</span>
+<span class="sd">        Return None if no element.</span>
+<span class="sd">        </span>
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :param layert: The index of the layer (optional)</span>
+<span class="sd">        :type layert: int</span>
+<span class="sd">        :param frm: The current frm position in the animation (optional)</span>
+<span class="sd">        :type frm: int</span>
+<span class="sd">        :return: (element_index_in_layer, element, relative_frm_position).</span>
+<span class="sd">        :rtype: tuple : (int, model.Element, int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">anim</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+        <span class="n">frm</span> <span class="o">=</span> <span class="n">frm</span> <span class="k">if</span> <span class="n">frm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span>
+        <span class="n">frm_</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
+            <span class="n">frm_</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frm_</span> <span class="o">&gt;</span> <span class="n">frm</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">frm_</span> <span class="o">-</span> <span class="n">frm</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Cursor.get_element"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.get_element">[docs]</a>    <span class="k">def</span> <span class="nf">get_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current element or the element on the specified frm in the</span>
+<span class="sd">        specified layer in the specified anim</span>
+<span class="sd">        </span>
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :param layert: The index of the layer (optional)</span>
+<span class="sd">        :type layert: int</span>
+<span class="sd">        :param frm: The current frm position in the animation (optional)</span>
+<span class="sd">        :type frm: int</span>
+<span class="sd">        :return: the element.</span>
+<span class="sd">        :rtype: model.Element</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">(</span><span class="n">anim</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">frm</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Cursor.anim_len"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.anim_len">[docs]</a>    <span class="k">def</span> <span class="nf">anim_len</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the length of the current anim or specified anim</span>
+<span class="sd">        </span>
+<span class="sd">        :param anim: The name of the animation (optional)</span>
+<span class="sd">        :type anim: str</span>
+<span class="sd">        :return: The animation length.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">anim</span> <span class="o">=</span> <span class="n">anim</span> <span class="k">if</span> <span class="n">anim</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="s1">&#39;anim&#39;</span><span class="p">]</span>
+        <span class="n">layer_len</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">layer</span> <span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element_len</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">elements</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">layer_len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">anim</span><span class="p">]</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">layer_len</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Cursor.element_len"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.cursor.Cursor.element_len">[docs]</a>    <span class="k">def</span> <span class="nf">element_len</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elmt</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the length of the given element</span>
+<span class="sd">        </span>
+<span class="sd">        :param elmt: The element</span>
+<span class="sd">        :type elmt: model.Element</span>
+<span class="sd">        :return: The element length.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elmt</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elmt</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">AnimRef</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim_len</span><span class="p">(</span><span class="n">elmt</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unknow element type&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Ognon</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ognon_pkg_documentation.html">ognon package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Léon Lenclos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

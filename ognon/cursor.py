@@ -14,8 +14,7 @@ class Cursor():
     the project. It provides a bunch of getters and setters to move the cursor,
     know where it is and access to the ellements under it.
 
-    Attributes
-    ----------
+    Attributes:
     
     - `proj` : a model.Project instance.
     - `_pos` : a dict that store the cursor position.

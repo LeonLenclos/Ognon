@@ -1,3 +1,5 @@
+"""This module provide control functions to export frms and anims"""
+
 from itertools import repeat
 
 import PIL.Image
