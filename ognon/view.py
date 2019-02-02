@@ -1,3 +1,8 @@
+"""
+This module contain bunch of stateless functions. They all takes a
+:class:`Cursor` object as first argument and return a JSON serializable value.
+"""
+
 import os
 
 from . import model
@@ -56,7 +61,3 @@ def get_onion_skin(cursor, onion_range=(0)):
         idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx))
         for idx in onion_range
     }
-    # return {
-    #     -1: get_lines(cursor, frm=cursor.constrain_frm(frm-1)),
-    #     1: get_lines(cursor, frm=cursor.constrain_frm(frm+1)),
-    # }

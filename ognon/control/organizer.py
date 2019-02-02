@@ -1,3 +1,6 @@
+"""This module provide control functions to create, delete and move elements
+into layers and layers into animation"""
+
 from ..model import Cell, Layer, AnimRef
 from .navigator import next_frm, prev_frm
 

@@ -1,9 +1,5 @@
-#!/usr/bin/python3
-# -*-coding:Utf-8 -*
-
 """
-Ognon2 is a a software application for the creation of 2D animation
-Run this script to run the server. And browse lacalhost:40460
+This module defines the ognon http server
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
