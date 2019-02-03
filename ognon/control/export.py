@@ -12,15 +12,15 @@ def _frm_to_pilimage(cursor, frm=None):
     width, height = 800, 600
     scale = 1
     stroke = 2
-    bg_color = '#222222'
-    line_color = '#FFFFFF'
+    bg_color = '#FFFFFF'
+    line_color = '#212229'
 
     img = PIL.Image.new("RGB", (width*scale, height*scale), bg_color)
     draw = PIL.ImageDraw.Draw(img)
         
     for line in view.get_lines(cursor, frm=frm):
-        coords = [coord * scale for coord in line_color]
-        draw.line(coords, line_color, width=stroke*scale)
+        coords = [coord * scale for coord in line]
+        draw.line(tuple(coords), line_color, width=stroke*scale)
 
     return img
 

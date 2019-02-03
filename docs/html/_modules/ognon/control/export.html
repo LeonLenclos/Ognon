@@ -43,15 +43,15 @@
     <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">600</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">stroke</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">bg_color</span> <span class="o">=</span> <span class="s1">&#39;#222222&#39;</span>
-    <span class="n">line_color</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span>
+    <span class="n">bg_color</span> <span class="o">=</span> <span class="s1">&#39;#FFFFFF&#39;</span>
+    <span class="n">line_color</span> <span class="o">=</span> <span class="s1">&#39;#212229&#39;</span>
 
     <span class="n">img</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="o">*</span><span class="n">scale</span><span class="p">,</span> <span class="n">height</span><span class="o">*</span><span class="n">scale</span><span class="p">),</span> <span class="n">bg_color</span><span class="p">)</span>
     <span class="n">draw</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
         
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">get_lines</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">):</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">coord</span> <span class="o">*</span> <span class="n">scale</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">line_color</span><span class="p">]</span>
-        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">stroke</span><span class="o">*</span><span class="n">scale</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">coord</span> <span class="o">*</span> <span class="n">scale</span> <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">line</span><span class="p">]</span>
+        <span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">line_color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">stroke</span><span class="o">*</span><span class="n">scale</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">img</span>
 

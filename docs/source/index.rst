@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Ognon's documentation!
-=================================
+Ognon's documentation!
+======================
 
 Ognon is a a local-only web application for the creation of 2D animation.
 
