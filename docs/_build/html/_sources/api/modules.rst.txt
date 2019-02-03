@@ -1,7 +1,0 @@
-ognon
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   ognon
