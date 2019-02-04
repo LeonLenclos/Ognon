@@ -30,56 +30,85 @@
             
   <h1>Source code for ognon.server</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module defines the ognon http server</span>
+<span class="sd">This module defines dictionaries, functions and classes to run the ognon server.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">http.server</span> <span class="k">import</span> <span class="n">HTTPServer</span><span class="p">,</span> <span class="n">SimpleHTTPRequestHandler</span><span class="p">,</span> <span class="n">BaseHTTPRequestHandler</span>
+<span class="kn">import</span> <span class="nn">http.server</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 
-<span class="kn">from</span> <span class="nn">.cursor</span> <span class="k">import</span> <span class="n">Cursor</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cursor</span>
 
 <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">cursors</span> <span class="o">=</span> <span class="p">{}</span>
+
 <div class="viewcode-block" id="get_function"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.get_function">[docs]</a><span class="k">def</span> <span class="nf">get_function</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-    <span class="n">py_path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">module_path</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">fun_name</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a function from the functions dict.</span>
+
+<span class="sd">    If the asked function does not exists in the dict, import it, store it in</span>
+<span class="sd">    the dict and return it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">functions</span><span class="p">[</span><span class="n">py_path</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">functions</span><span class="p">[</span><span class="n">path</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">+</span><span class="n">module_path</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;ognon&#39;</span><span class="p">)</span>
-        <span class="n">functions</span><span class="p">[</span><span class="n">py_path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">fun_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">functions</span><span class="p">[</span><span class="n">py_path</span><span class="p">]</span></div>
+        <span class="n">splited</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">module_path</span><span class="p">,</span> <span class="n">fun_name</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">splited</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">splited</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">module_path</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;ognon&#39;</span><span class="p">)</span>
+        <span class="n">functions</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">fun_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">functions</span><span class="p">[</span><span class="n">path</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="OgnRequestHandler"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler">[docs]</a><span class="k">class</span> <span class="nc">OgnRequestHandler</span><span class="p">(</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cursor"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.get_cursor">[docs]</a><span class="k">def</span> <span class="nf">get_cursor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a cursor from the cursors dict.</span>
 
-    <span class="n">cursors</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="sd">    If the asked cursor does not exists, store a new cursor in the dict and</span>
+<span class="sd">    return it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cursors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">cursors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">Cursor</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cursors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OgnRequestHandler"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler">[docs]</a><span class="k">class</span> <span class="nc">OgnRequestHandler</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is used to handle the HTTP requests that arrive at the server.</span>
+
+<span class="sd">    We wait two kinds of requests :</span>
+<span class="sd">    </span>
+<span class="sd">    - GET requests to provide client pages.</span>
+<span class="sd">    - POST requests to call functions from view or control.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="OgnRequestHandler.do_GET"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.do_GET">[docs]</a>    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Handler for GET request</span>
+<span class="sd">        Handler for GET request.</span>
+
+<span class="sd">        append the path to the base url of client files and call the parrent</span>
+<span class="sd">        do_GET method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+=</span> <span class="s1">&#39;index.html&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;ognon/www&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
-        <span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;ognon/client&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">baseurl</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;/index.html&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="OgnRequestHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Handler for POST request&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handler for POST request.</span>
+
+<span class="sd">        The path tell which function to call. Args are given in the post body.</span>
+<span class="sd">        Convert the function to json and send it as a response.</span>
+<span class="sd">        If calling the function raise an exception, send an error message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">content_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">post_body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">content_len</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
 
-        <span class="n">cursor_name</span> <span class="o">=</span> <span class="n">post_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cursor&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursors</span><span class="p">[</span><span class="n">cursor_name</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursors</span><span class="p">[</span><span class="n">cursor_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Cursor</span><span class="p">()</span>
-
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">get_cursor</span><span class="p">(</span><span class="n">post_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cursor&#39;</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">post_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">fun</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">reply</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">fun</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;err&#39;</span><span class="p">:</span> <span class="n">e</span><span class="p">}</span>
@@ -93,11 +122,14 @@
 <div class="viewcode-block" id="OgnRequestHandler.end_headers"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.end_headers">[docs]</a>    <span class="k">def</span> <span class="nf">end_headers</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1">#TODO: check if this is really useful ! </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="p">,</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span><span class="p">)</span>
-        <span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="p">,</span> <span class="s1">&#39;POST, GET&#39;</span><span class="p">)</span>
+        <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">adress</span><span class="p">):</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="n">HTTPServer</span><span class="p">(</span><span class="n">adress</span><span class="p">,</span> <span class="n">OgnRequestHandler</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Serve forever on the given adress.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">adress</span><span class="p">,</span> <span class="n">OgnRequestHandler</span><span class="p">)</span>
     <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span></div>
 </pre></div>
 

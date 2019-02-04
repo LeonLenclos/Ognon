@@ -308,26 +308,32 @@ an out of range index.</p>
 </div>
 <div class="section" id="module-ognon.server">
 <span id="ognon-server"></span><h2>ognon.server<a class="headerlink" href="#module-ognon.server" title="Permalink to this headline">¶</a></h2>
-<p>This module defines the ognon http server</p>
+<p>This module defines dictionaries, functions and classes to run the ognon server.</p>
 <dl class="class">
 <dt id="ognon.server.OgnRequestHandler">
 <em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnRequestHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>directory=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">http.server.SimpleHTTPRequestHandler</span></code></p>
-<dl class="attribute">
-<dt id="ognon.server.OgnRequestHandler.cursors">
-<code class="descname">cursors</code><em class="property"> = {}</em><a class="headerlink" href="#ognon.server.OgnRequestHandler.cursors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>This class is used to handle the HTTP requests that arrive at the server.</p>
+<p>We wait two kinds of requests :</p>
+<ul class="simple">
+<li>GET requests to provide client pages.</li>
+<li>POST requests to call functions from view or control.</li>
+</ul>
 <dl class="method">
 <dt id="ognon.server.OgnRequestHandler.do_GET">
 <code class="descname">do_GET</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler.do_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler.do_GET" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for GET request</p>
+<dd><p>Handler for GET request.</p>
+<p>append the path to the base url of client files and call the parrent
+do_GET method.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ognon.server.OgnRequestHandler.do_POST">
 <code class="descname">do_POST</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler.do_POST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler.do_POST" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handler for POST request</p>
+<dd><p>Handler for POST request.</p>
+<p>The path tell which function to call. Args are given in the post body.
+Convert the function to json and send it as a response.
+If calling the function raise an exception, send an error message</p>
 </dd></dl>
 
 <dl class="method">
@@ -339,14 +345,26 @@ an out of range index.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ognon.server.get_cursor">
+<code class="descclassname">ognon.server.</code><code class="descname">get_cursor</code><span class="sig-paren">(</span><em>name='default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#get_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.get_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a cursor from the cursors dict.</p>
+<p>If the asked cursor does not exists, store a new cursor in the dict and
+return it.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ognon.server.get_function">
 <code class="descclassname">ognon.server.</code><code class="descname">get_function</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#get_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.get_function" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return a function from the functions dict.</p>
+<p>If the asked function does not exists in the dict, import it, store it in
+the dict and return it.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="ognon.server.serve">
 <code class="descclassname">ognon.server.</code><code class="descname">serve</code><span class="sig-paren">(</span><em>adress</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#serve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.serve" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Serve forever on the given adress.</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-ognon.view">

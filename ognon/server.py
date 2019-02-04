@@ -1,54 +1,83 @@
 """
-This module defines the ognon http server
+This module defines dictionaries, functions and classes to run the ognon server.
 """
 
-from http.server import HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
+import http.server
 import json
-from importlib import import_module
+import importlib
 
-from .cursor import Cursor
+from . import cursor
 
 functions = {}
+cursors = {}
+
 def get_function(path):
-    path = path.strip('/').split('/')
-    py_path = '.'.join(path)
-    module_path = '.'.join(path[:-1])
-    fun_name = path[-1]
+    """
+    Return a function from the functions dict.
+
+    If the asked function does not exists in the dict, import it, store it in
+    the dict and return it.
+    """
     try:
-        return functions[py_path]
+        return functions[path]
     except KeyError:
-        module = import_module('.'+module_path, package='ognon')
-        functions[py_path] = getattr(module, fun_name)
-        return functions[py_path]
+        splited = path.strip('/').split('/')
+        module_path, fun_name = '.'.join(splited[:-1]), splited[-1]
+        module = importlib.import_module('.' + module_path, package='ognon')
+        functions[path] = getattr(module, fun_name)
+        return functions[path]
 
-class OgnRequestHandler(SimpleHTTPRequestHandler):
+def get_cursor(name='default'):
+    """
+    Return a cursor from the cursors dict.
 
-    cursors = {}
+    If the asked cursor does not exists, store a new cursor in the dict and
+    return it.
+    """
+    try:
+        return cursors[name]
+    except KeyError:
+        cursors[name] = cursor.Cursor()
+        return cursors[name]
+
+class OgnRequestHandler(http.server.SimpleHTTPRequestHandler):
+    """
+    This class is used to handle the HTTP requests that arrive at the server.
+
+    We wait two kinds of requests :
+    
+    - GET requests to provide client pages.
+    - POST requests to call functions from view or control.
+    """
 
     def do_GET(self):
         """
-        Handler for GET request
+        Handler for GET request.
+
+        append the path to the base url of client files and call the parrent
+        do_GET method.
         """
-        if self.path == '/' :
-            self.path += 'index.html'
-        self.path = 'ognon/www' + self.path
-        SimpleHTTPRequestHandler.do_GET(self)
+        baseurl = 'ognon/client'
+        self.path = baseurl + ('/index.html' if self.path == '/' else self.path)
+        http.server.SimpleHTTPRequestHandler.do_GET(self)
         
     def do_POST(self):
-        """Handler for POST request"""
+        """
+        Handler for POST request.
+
+        The path tell which function to call. Args are given in the post body.
+        Convert the function to json and send it as a response.
+        If calling the function raise an exception, send an error message
+        """
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len).decode('utf-8'))
 
-        cursor_name = post_body.get('cursor', 'default')
-        try:
-            cursor = self.cursors[cursor_name]
-        except KeyError:
-            cursor = self.cursors[cursor_name] = Cursor()
-
+        cur = get_cursor(post_body.get('cursor'))
         args = post_body.get('args', {})
         fun = get_function(self.path)
+
         try:
-            reply = fun(cursor, **args)
+            reply = fun(cur, **args)
             self.send_response(200)
         except Exception as e:
             reply = {'err': e}
@@ -62,9 +91,12 @@ class OgnRequestHandler(SimpleHTTPRequestHandler):
     def end_headers (self):
         #TODO: check if this is really useful ! 
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        SimpleHTTPRequestHandler.end_headers(self)
+        self.send_header('Access-Control-Allow-Methods', 'POST, GET')
+        http.server.SimpleHTTPRequestHandler.end_headers(self)
 
 def serve(adress):
-    server = HTTPServer(adress, OgnRequestHandler)
+    """
+    Serve forever on the given adress.
+    """
+    server = http.server.HTTPServer(adress, OgnRequestHandler)
     server.serve_forever()
