@@ -24,7 +24,7 @@ ognon.cursor
     :show-inheritance:
 
 ognon.projects
-------------
+--------------
 
 .. automodule:: ognon.projects
     :members:
@@ -71,10 +71,10 @@ ognon.control.drawer
     :undoc-members:
     :show-inheritance:
 
-ognon.control.export
-^^^^^^^^^^^^^^^^^^^^
+ognon.control.exporter
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: ognon.control.export
+.. automodule:: ognon.control.exporter
     :members:
     :undoc-members:
     :show-inheritance:

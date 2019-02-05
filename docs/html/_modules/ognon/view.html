@@ -37,22 +37,62 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">model</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">WORKING_DIR</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">PROJECTS_DIR</span>
 
 <div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return path to the project (or path to a file in the project).&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">WORKING_DIR</span><span class="p">,</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return path to the project (or path to a file in the project).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PROJECTS_DIR</span><span class="p">,</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_projects"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_projects">[docs]</a><span class="k">def</span> <span class="nf">get_projects</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="get_projects_tree"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_projects_tree">[docs]</a><span class="k">def</span> <span class="nf">get_projects_tree</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dict withs all projects in the projects dir as keys and a list of</span>
+<span class="sd">    the projects&#39; anims as values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_anims</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">[</span>
+        <span class="n">file</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PROJECTS_DIR</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ogn&#39;</span><span class="p">)</span>
+    <span class="p">]</span>
+    
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">project_name</span><span class="p">:</span><span class="n">list_anims</span><span class="p">(</span><span class="n">project_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">project_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">PROJECTS_DIR</span><span class="p">)</span>
+    <span class="p">}</span></div>
 
 <div class="viewcode-block" id="get_anims"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_anims">[docs]</a><span class="k">def</span> <span class="nf">get_anims</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a list of the projects&#39; anims.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">anim</span> <span class="k">for</span> <span class="n">anim</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="get_playing"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_playing">[docs]</a><span class="k">def</span> <span class="nf">get_playing</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the value of cursor.playing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">playing</span></div>
 
 <div class="viewcode-block" id="get_timeline"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_timeline">[docs]</a><span class="k">def</span> <span class="nf">get_timeline</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dict with informations about organization of the anim.</span>
+
+<span class="sd">    The &#39;len&#39; field contain the animation length. </span>
+<span class="sd">    The &#39;layers&#39; field contain a list of layers as lists of elements. </span>
+<span class="sd">    Each element is describe as a dict with his type and his length.</span>
+
+<span class="sd">    So the output may look like this :</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &#39;len&#39;:4,</span>
+<span class="sd">            &#39;layers&#39;:[</span>
+<span class="sd">                [{&#39;len&#39;:1, &#39;type&#39;:&#39;Cell&#39;}],</span>
+<span class="sd">                [{&#39;len&#39;:1, &#39;type&#39;:&#39;Cell&#39;}, {&#39;len&#39;:1, &#39;type&#39;:&#39;Cell&#39;}],</span>
+<span class="sd">                [{&#39;len&#39;:1, &#39;type&#39;:&#39;Cell&#39;}, {&#39;len&#39;:3, &#39;type&#39;:&#39;Animref&#39;}]</span>
+<span class="sd">            ]</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;len&#39;</span><span class="p">:</span><span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">(),</span>
         <span class="s1">&#39;layers&#39;</span><span class="p">:[[{</span>
@@ -64,6 +104,11 @@
     <span class="p">}</span></div>
 
 <div class="viewcode-block" id="get_cursor_infos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_cursor_infos">[docs]</a><span class="k">def</span> <span class="nf">get_cursor_infos</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dict containing informations about the cursor state</span>
+
+<span class="sd">    keys are : &#39;project_name&#39;, &#39;playing&#39;, &#39;loop&#39;, &#39;anim&#39;, &#39;frm&#39;, &#39;layer&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">infos</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;project_name&#39;</span><span class="p">:</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
         <span class="s1">&#39;playing&#39;</span><span class="p">:</span><span class="n">cursor</span><span class="o">.</span><span class="n">playing</span><span class="p">,</span>
@@ -73,20 +118,37 @@
     <span class="k">return</span> <span class="n">infos</span></div>
 
 <div class="viewcode-block" id="get_lines"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_lines">[docs]</a><span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a list of all current lines.</span>
+
+<span class="sd">    Alternatives frm index and anim name can be passed.</span>
+
+<span class="sd">    The output is a list of lists since ognon lines can be describe as list of</span>
+<span class="sd">    coords. (e.g. [x1, y1, x2, y2, x3, y3])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lines</span><span class="o">=</span><span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_anim</span><span class="p">(</span><span class="n">anim</span><span class="p">)</span><span class="o">.</span><span class="n">layers</span><span class="p">)):</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">at</span> <span class="o">=</span> <span class="n">pos</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="ow">is</span> <span class="n">model</span><span class="o">.</span><span class="n">Cell</span><span class="p">:</span>
                 <span class="n">lines</span> <span class="o">+=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">coords</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">lines</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="ow">is</span> <span class="n">model</span><span class="o">.</span><span class="n">AnimRef</span><span class="p">:</span>
-                <span class="n">index</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">at</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">index</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">at</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">)</span>
                 <span class="n">lines</span> <span class="o">+=</span> <span class="n">get_lines</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">anim</span><span class="o">=</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">at</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">lines</span></div>
 
-<div class="viewcode-block" id="get_onion_skin"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_onion_skin">[docs]</a><span class="k">def</span> <span class="nf">get_onion_skin</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">onion_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+<div class="viewcode-block" id="get_onion_skin"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.view.get_onion_skin">[docs]</a><span class="k">def</span> <span class="nf">get_onion_skin</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">onion_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dict of anim lines.</span>
+
+<span class="sd">    Keys are given by the onion_range arg and are the frm to look at, relatively</span>
+<span class="sd">    to the current frm. (eg. `onion_range=(-1,0)` means : &#39;look at the current</span>
+<span class="sd">    frm and the previous frm&#39;)</span>
+
+<span class="sd">    Values are given by the get_lines function passing the frm argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">frm</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="n">idx</span><span class="p">:</span> <span class="n">get_lines</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">constrain_frm</span><span class="p">(</span><span class="n">frm</span><span class="o">+</span><span class="n">idx</span><span class="p">))</span>

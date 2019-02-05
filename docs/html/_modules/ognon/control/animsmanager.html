@@ -31,11 +31,11 @@
   <h1>Source code for ognon.control.animsmanager</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provide control functions to manage project&#39;s anims&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">..model</span> <span class="k">import</span> <span class="n">Anim</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">model</span>
 
 <div class="viewcode-block" id="new_anim"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.animsmanager.new_anim">[docs]</a><span class="k">def</span> <span class="nf">new_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Add a new Anim to anims dict.&quot;&quot;&quot;</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Anim</span><span class="p">()</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Anim</span><span class="p">()</span>
     <span class="n">select_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="select_anim"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.animsmanager.select_anim">[docs]</a><span class="k">def</span> <span class="nf">select_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>

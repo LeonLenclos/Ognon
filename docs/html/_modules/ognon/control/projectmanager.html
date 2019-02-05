@@ -35,36 +35,22 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">model</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">view</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">projects</span>
 
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Load from files. If files does not exist, create they&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Just call the projects.get function so it first try to get an already loaded</span>
+<span class="sd">    project, then to load project from default directory, then to create it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">)):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">))</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s1">&#39;export&#39;</span><span class="p">))</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;ognon/config.ini&#39;</span><span class="p">,</span> <span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">))</span>
-        <span class="n">save</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">projects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-    <span class="c1"># Load anims (*.ogn)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.ogn&#39;</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">file</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fi</span><span class="p">:</span>
-                <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">file</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
-    <span class="c1"># Load config (config.ini)</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;ognon/config.ini&#39;</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
-
-
-<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Save to files.&quot;&quot;&quot;</span>
-    <span class="c1"># Save anims (*.ogn)</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">anim</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.ogn&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fi</span><span class="p">:</span>
-            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">anim</span><span class="p">,</span> <span class="n">fi</span><span class="p">)</span></div>
-
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Just call the projects.save function so it write datas in the default dir.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">projects</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
