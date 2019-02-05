@@ -21,6 +21,7 @@ class Line():
 
     A line has a list of coords that should look like :
     ::
+    
         [x1, y1, x2, y2, x3, y3, ...]
     """
     def __init__(self, coords):
