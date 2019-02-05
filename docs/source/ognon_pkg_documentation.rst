@@ -23,6 +23,14 @@ ognon.cursor
     :undoc-members:
     :show-inheritance:
 
+ognon.projects
+------------
+
+.. automodule:: ognon.projects
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 ognon.server
 ------------
 

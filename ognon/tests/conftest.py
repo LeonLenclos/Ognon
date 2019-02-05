@@ -1,38 +1,66 @@
 import pytest
-from ..	cursor import Cursor
+from ..    cursor import Cursor
 from .. import model
+from .. import view
 from .. import control
-import os
+import os, shutil
 
 
 
 @pytest.fixture
 def cursor():
-	"""
-	Create a cursor object pointing to a project object as
-	
-	Project : 'testing-project'
-	  Anim : 'master'
-	    Layer : 0
-		  Element : 0 -> Cell
-		  Element : 1 -> Cell
-		Layer : 1
-		  Element : 0 -> Cell
-	  Anim : 'testing-anim'
-		Layer : 0
-		  Element : 0 -> Cell
-	  Anim : 'testing-anim-with-animref'
-		Layer : 0
-		  Element : 1 -> Cell
-		  Element : 0 -> AnimRef('master')
-	"""  
-	proj = model.Project('testing')
-	proj.anims['master'].layers.append(model.Layer())
-	proj.anims['master'].layers[0].elements.append(model.Cell())
-	proj.anims['testing-anim'] = model.Anim()
-	proj.anims['testing-anim-with-animref'] = model.Anim()
-	proj.anims['testing-anim-with-animref'].layers[0].elements.append(model.AnimRef('master'))
+    """
+    Create a cursor object pointing to a project object as
+    
+    Project : 'testing-project'
+      Anim : 'master'
+        Layer : 0
+          Element : 0 -> Cell
+          Element : 1 -> Cell
+        Layer : 1
+          Element : 0 -> Cell
+      Anim : 'testing-anim'
+        Layer : 0
+          Element : 0 -> Cell
+      Anim : 'testing-anim-with-animref'
+        Layer : 0
+          Element : 0 -> Cell
+          Element : 1 -> AnimRef('long_anim')
+      Anim : 'long_anim'
+        Layer : 0
+          Element : 0 -> Cell
+          Element : 1 -> Cell
+          Element : 2 -> Cell
+          Element : 3 -> Cell
+          Element : 4 -> Cell
+          Element : 5 -> Cell
+          Element : 6 -> Cell
 
-	c = Cursor(proj)
-	c.loop = False
-	return c
+    """  
+
+    proj = model.Project(
+      name='testing',
+      anims={
+        'master':model.Anim(layers=[
+            model.Layer(elements=[model.Cell(), model.Cell()]),
+            model.Layer(elements=[model.Cell()]),
+          ]),
+        'testing-anim':model.Anim(layers=[
+            model.Layer(elements=[model.Cell()]),
+          ]),
+        'testing-anim-with-animref':model.Anim(layers=[
+            model.Layer(elements=[model.Cell(),model.AnimRef('long_anim')]),
+          ]),
+        'long_anim':model.Anim(layers=[
+            model.Layer(elements=[model.Cell() for _ in range(7)]),
+          ]),
+      }
+      )
+    c = Cursor(proj)
+    c.loop = False
+    return c
+
+def pytest_sessionfinish(session, exitstatus):
+    """ whole test run finishes. """
+    if os.path.isdir('/tmp/ogn/'):
+        shutil.rmtree('/tmp/ogn/')

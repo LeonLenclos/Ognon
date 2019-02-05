@@ -5,6 +5,7 @@ from itertools import repeat
 import PIL.Image
 import PIL.ImageDraw
 
+from .. import projects
 from .. import view
 
 
@@ -28,7 +29,7 @@ def frm_to_png(cursor, frm=None):
 
     anim = cursor.get_pos('anim')
     frm = frm if frm is not None else cursor.get_pos('frm')
-    path = view.get_path(cursor,
+    path = projects.get_path(cursor,
         'export/{anim}-frm{frm:04d}.png'.format(anim=anim, frm=frm))
 
     _frm_to_pilimage(cursor, frm=frm).save(path)
@@ -41,7 +42,7 @@ def anim_to_pngs(cursor):
 def anim_to_gif(cursor):
 
     anim = cursor.get_pos('anim')
-    path = view.get_path(cursor,
+    path = projects.get_path(cursor,
         'export/{anim}.gif'.format(anim=anim))
 
     _frm_to_pilimage(cursor, 0).save(

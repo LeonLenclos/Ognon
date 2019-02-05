@@ -158,12 +158,12 @@ class Cursor():
         :rtype: tuple : (int, model.Element, int)
         """
         layer = self.get_layer(anim, layer)
-        frm = frm if frm is not None else self.get_pos('frm')
-        frm_ = 0
+        frm = frm if frm is not None else self.get_pos('frm') #2
+        frm_ = 0#0 #1 #3
         for i, e in enumerate(layer.elements):
             frm_ += self.element_len(e)
             if frm_ > frm:
-                return i, e, frm_ - frm - 1
+                return i, e, frm-frm_+self.element_len(e)
 
 
     def get_element(self, anim=None, layer=None, frm=None):

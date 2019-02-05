@@ -229,6 +229,7 @@ class Timeline extends Module {
             let td = document.createElement("td");
             td.addEventListener('click', onElementClick);
             td.dataset.frm = frm;
+            td.setAttribute("colspan", element.len);
             return td;
         }
 

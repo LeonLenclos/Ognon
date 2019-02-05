@@ -4,8 +4,8 @@ This module defines dictionaries, functions and classes to run the ognon server.
 
 import http.server
 import json
+import os
 import importlib
-
 from . import cursor
 
 functions = {}
@@ -21,9 +21,10 @@ def get_function(path):
     try:
         return functions[path]
     except KeyError:
-        splited = path.strip('/').split('/')
-        module_path, fun_name = '.'.join(splited[:-1]), splited[-1]
-        module = importlib.import_module('.' + module_path, package='ognon')
+        module_path, fun_name = os.path.split(path.rstrip(os.sep))
+        module = importlib.import_module(
+            name=module_path.replace(os.sep,'.'),
+            package='ognon')
         functions[path] = getattr(module, fun_name)
         return functions[path]
 
