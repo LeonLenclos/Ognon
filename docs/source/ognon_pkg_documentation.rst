@@ -87,10 +87,18 @@ ognon.control.navigator
     :undoc-members:
     :show-inheritance:
 
-ognon.control.organizer
-^^^^^^^^^^^^^^^^^^^^^^^
+ognon.control.layersorganizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: ognon.control.organizer
+.. automodule:: ognon.control.layersorganizer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ognon.control.elementsorganizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: ognon.control.elementsorganizer
     :members:
     :undoc-members:
     :show-inheritance:
@@ -104,7 +112,7 @@ ognon.control.projectmanager
     :show-inheritance:
 
 ognon.control.tagger
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: ognon.control.tagger
     :members:

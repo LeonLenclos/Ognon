@@ -73,6 +73,42 @@
 </div>
 </div>
 </div>
+<div class="section" id="osc-server-usage">
+<h2>OSC Server usage<a class="headerlink" href="#osc-server-usage" title="Permalink to this headline">¶</a></h2>
+<p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
+<p>See -&gt; <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
+<p>The OSC server should be able to handle requests on <strong>any control function that only take a cursor argument</strong>. The request adress should be the path to the control function and a cursor id must be passed as an argument.</p>
+<div class="section" id="id1">
+<h3>Paths<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The server will look into ognon to find a control function corresponding to the path</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/&lt;</span><span class="n">module</span><span class="o">&gt;/&lt;</span><span class="n">function</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="cursor-id">
+<h3>Cursor id<a class="headerlink" href="#cursor-id" title="Permalink to this headline">¶</a></h3>
+<p>For the cursor id you may want to use <code class="docutils literal notranslate"><span class="pre">default</span></code>.</p>
+</div>
+<div class="section" id="server-port">
+<h3>Server port<a class="headerlink" href="#server-port" title="Permalink to this headline">¶</a></h3>
+<p>The new default port to the Ognon OSC server is <code class="docutils literal notranslate"><span class="pre">504600</span></code> (<code class="docutils literal notranslate"><span class="pre">5005</span></code> in Ognon v0)</p>
+</div>
+<div class="section" id="id2">
+<h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">run</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">go_to_first_frm</span> <span class="n">default</span>
+</pre></div>
+</div>
+<p>To play/pause the animation</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">play</span> <span class="n">default</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -96,6 +132,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#server-api-usage">Server API usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#osc-server-usage">OSC Server usage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ognon_pkg_documentation.html">ognon package</a></li>

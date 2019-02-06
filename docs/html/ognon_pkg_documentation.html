@@ -48,7 +48,7 @@ classes. With no method description.</p>
 
 <dl class="class">
 <dt id="ognon.model.AnimRef">
-<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">AnimRef</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#AnimRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.AnimRef" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">AnimRef</code><span class="sig-paren">(</span><em>name</em>, <em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#AnimRef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.AnimRef" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.model.Element</span></code></a></p>
 <p>This class describe AnimRefs.</p>
 <p>An animref is a reference to another animation in the same project. It allow
@@ -58,7 +58,7 @@ of the animation it referes to.</p>
 
 <dl class="class">
 <dt id="ognon.model.Cell">
-<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">Cell</code><span class="sig-paren">(</span><em>lines=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#Cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.Cell" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">Cell</code><span class="sig-paren">(</span><em>lines=None</em>, <em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#Cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.Cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.model.Element</span></code></a></p>
 <p>This class describe Cells.</p>
 <p>A cell is the ellement made for draw on it. It has a list of lines.</p>
@@ -66,7 +66,7 @@ of the animation it referes to.</p>
 
 <dl class="class">
 <dt id="ognon.model.Element">
-<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">Element</code><a class="reference internal" href="_modules/ognon/model.html#Element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.Element" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">Element</code><span class="sig-paren">(</span><em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#Element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.Element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class is the super class for all elements.</p>
 <p>An element is an object that can be placed into a layer’s elements list</p>
@@ -133,18 +133,6 @@ know where it is and access to the ellements under it.</p>
 <dt id="ognon.cursor.Cursor.anim_len">
 <code class="descname">anim_len</code><span class="sig-paren">(</span><em>anim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.anim_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.anim_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the length of the current anim or specified anim</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The animation length.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -152,54 +140,18 @@ know where it is and access to the ellements under it.</p>
 <code class="descname">constrain_frm</code><span class="sig-paren">(</span><em>frm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.constrain_frm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.constrain_frm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a frm position constrained in the current anim length.</p>
 <p>Result will be different depending on whether the loop mode is on or off.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frm</strong> (<em>int</em>) – The frm position to constrain</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The constrained frm position.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ognon.cursor.Cursor.element_len">
-<code class="descname">element_len</code><span class="sig-paren">(</span><em>elmt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.element_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.element_len" title="Permalink to this definition">¶</a></dt>
+<code class="descname">element_len</code><span class="sig-paren">(</span><em>elmt</em>, <em>ignonre_tags=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.element_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.element_len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the length of the given element</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elmt</strong> (<a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element"><em>model.Element</em></a>) – The element</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The element length.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ognon.cursor.Cursor.get_anim">
 <code class="descname">get_anim</code><span class="sig-paren">(</span><em>anim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.get_anim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.get_anim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current anim or the specified anim</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The animation.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#ognon.model.Anim" title="ognon.model.Anim">model.Anim</a></td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -207,25 +159,6 @@ know where it is and access to the ellements under it.</p>
 <code class="descname">get_element</code><span class="sig-paren">(</span><em>anim=None</em>, <em>layer=None</em>, <em>frm=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.get_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.get_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current element or the element on the specified frm in the
 specified layer in the specified anim</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</li>
-<li><strong>layert</strong> (<em>int</em>) – The index of the layer (optional)</li>
-<li><strong>frm</strong> (<em>int</em>) – The current frm position in the animation (optional)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the element.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element">model.Element</a></p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -234,68 +167,22 @@ specified layer in the specified anim</p>
 <dd><p>Return a tuple with the index of the element in the layer, the
 element object and the position of the cursor inside the element
 Return None if no element.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</li>
-<li><strong>layert</strong> (<em>int</em>) – The index of the layer (optional)</li>
-<li><strong>frm</strong> (<em>int</em>) – The current frm position in the animation (optional)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(element_index_in_layer, element, relative_frm_position).</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple : (int, <a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element">model.Element</a>, int)</p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ognon.cursor.Cursor.get_layer">
 <code class="descname">get_layer</code><span class="sig-paren">(</span><em>anim=None</em>, <em>layer=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.get_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.get_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current layer or the specified layer in the specified anim</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</li>
-<li><strong>layert</strong> (<em>int</em>) – The index of the layer (optional)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The layer.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ognon.model.Layer" title="ognon.model.Layer">model.Layer</a></p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="ognon.cursor.Cursor.get_pos">
 <code class="descname">get_pos</code><span class="sig-paren">(</span><em>key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.get_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.get_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the cursor position.</p>
-<p>If a key is passed, return the specified position.
+<p>If a key is passed, return the specified position (‘anim’, ‘layer’ or
+‘frm’). 
 This method first call set_pos without arguments to ensure that the
 position is valid (e.g. not pointing an inexisting layer)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str</em>) – A position key (‘anim’, ‘layer’ or ‘frm’)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the position dict or the specified position value</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -308,19 +195,6 @@ to an unexisting animation and layer is set to 0 if the current value is
 an out of range index.</p>
 <p>If the anim argument is passed but layer or frm are not, set them to 0.</p>
 <p>If no arguments are passed, just constain the three values.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>anim</strong> (<em>str</em>) – The name of the animation (optional)</li>
-<li><strong>layert</strong> (<em>int</em>) – The index of the layer (optional)</li>
-<li><strong>frm</strong> (<em>int</em>) – The current frm position in the animation (optional)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>
@@ -394,10 +268,10 @@ and return it.</p>
 </div>
 <div class="section" id="module-ognon.server">
 <span id="ognon-server"></span><h2>ognon.server<a class="headerlink" href="#module-ognon.server" title="Permalink to this headline">¶</a></h2>
-<p>This module defines dictionaries, functions and classes to run the ognon server.</p>
+<p>This module defines dictionaries, functions and classes to run the ognon servers.</p>
 <dl class="class">
-<dt id="ognon.server.OgnRequestHandler">
-<em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnRequestHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>directory=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.server.OgnonHTTPHandler">
+<em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnonHTTPHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>directory=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">http.server.SimpleHTTPRequestHandler</span></code></p>
 <p>This class is used to handle the HTTP requests that arrive at the server.</p>
 <p>We wait two kinds of requests :</p>
@@ -406,16 +280,16 @@ and return it.</p>
 <li>POST requests to call functions from view or control.</li>
 </ul>
 <dl class="method">
-<dt id="ognon.server.OgnRequestHandler.do_GET">
-<code class="descname">do_GET</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler.do_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler.do_GET" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.server.OgnonHTTPHandler.do_GET">
+<code class="descname">do_GET</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler.do_GET"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler.do_GET" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler for GET request.</p>
 <p>append the path to the base url of client files and call the parrent
 do_GET method.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ognon.server.OgnRequestHandler.do_POST">
-<code class="descname">do_POST</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler.do_POST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler.do_POST" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.server.OgnonHTTPHandler.do_POST">
+<code class="descname">do_POST</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler.do_POST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler.do_POST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler for POST request.</p>
 <p>The path tell which function to call. Args are given in the post body.
 Convert the function to json and send it as a response.
@@ -423,9 +297,22 @@ If calling the function raise an exception, send an error message</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ognon.server.OgnRequestHandler.end_headers">
-<code class="descname">end_headers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnRequestHandler.end_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnRequestHandler.end_headers" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.server.OgnonHTTPHandler.end_headers">
+<code class="descname">end_headers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler.end_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler.end_headers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the blank line ending the MIME headers.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ognon.server.OgnonOSCDispatcher">
+<em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnonOSCDispatcher</code><a class="reference internal" href="_modules/ognon/server.html#OgnonOSCDispatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonOSCDispatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pythonosc.dispatcher.Dispatcher</span></code></p>
+<p>This is the class of the OSC dispatcher.</p>
+<dl class="method">
+<dt id="ognon.server.OgnonOSCDispatcher.handlers_for_address">
+<code class="descname">handlers_for_address</code><span class="sig-paren">(</span><em>address_pattern</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonOSCDispatcher.handlers_for_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonOSCDispatcher.handlers_for_address" title="Permalink to this definition">¶</a></dt>
+<dd><p>yields Handler namedtuples matching the given OSC pattern.</p>
 </dd></dl>
 
 </dd></dl>
@@ -448,8 +335,10 @@ the dict and return it.</p>
 
 <dl class="function">
 <dt id="ognon.server.serve">
-<code class="descclassname">ognon.server.</code><code class="descname">serve</code><span class="sig-paren">(</span><em>adress</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#serve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.serve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serve forever on the given adress.</p>
+<code class="descclassname">ognon.server.</code><code class="descname">serve</code><span class="sig-paren">(</span><em>http_adress</em>, <em>osc_adress</em>, <em>enable_osc=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#serve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.serve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serve forever on the given adresses.</p>
+<p>Start to threading servers, an http server and an osc server.
+Set enable_osc to False to disable starting osc server thread.</p>
 </dd></dl>
 
 </div>
@@ -468,6 +357,13 @@ the dict and return it.</p>
 <code class="descclassname">ognon.view.</code><code class="descname">get_cursor_infos</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/view.html#get_cursor_infos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.view.get_cursor_infos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict containing informations about the cursor state</p>
 <p>keys are : ‘project_name’, ‘playing’, ‘loop’, ‘anim’, ‘frm’, ‘layer’</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.view.get_element_infos">
+<code class="descclassname">ognon.view.</code><code class="descname">get_element_infos</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/view.html#get_element_infos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.view.get_element_infos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict containing informations about the current element</p>
+<p>keys are : ‘type’, ‘len’, ‘tags’, ‘name’</p>
 </dd></dl>
 
 <dl class="function">
@@ -681,110 +577,151 @@ while <cite>cursor.playing</cite> is true.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ognon.control.organizer">
-<span id="ognon-control-organizer"></span><h3>ognon.control.organizer<a class="headerlink" href="#module-ognon.control.organizer" title="Permalink to this headline">¶</a></h3>
-<p>This module provide control functions to create, delete and move elements
-into layers and layers into animation</p>
+<div class="section" id="module-ognon.control.layersorganizer">
+<span id="ognon-control-layersorganizer"></span><h3>ognon.control.layersorganizer<a class="headerlink" href="#module-ognon.control.layersorganizer" title="Permalink to this headline">¶</a></h3>
+<p>This module provide control functions to create, delete layers into animation.</p>
 <dl class="function">
-<dt id="ognon.control.organizer.add_animref_after">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_animref_after</code><span class="sig-paren">(</span><em>cursor</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_animref_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_animref_after" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an AnimRef after the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_animref_before">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_animref_before</code><span class="sig-paren">(</span><em>cursor</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_animref_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_animref_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an AnimRef before the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_cell_after">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_cell_after</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_cell_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_cell_after" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a Cell after the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_cell_before">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_cell_before</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_cell_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_cell_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a Cell before the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_element_after">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_element_after</code><span class="sig-paren">(</span><em>cursor</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_element_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_element_after" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the passed element after the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_element_before">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_element_before</code><span class="sig-paren">(</span><em>cursor</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_element_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_element_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the passed element before the current frm.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.add_layer">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">add_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#add_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.add_layer" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.layersorganizer.add_layer">
+<code class="descclassname">ognon.control.layersorganizer.</code><code class="descname">add_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/layersorganizer.html#add_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.layersorganizer.add_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new Layer to the anim.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.organizer.clone_element">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">clone_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#clone_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.clone_element" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.layersorganizer.del_layer">
+<code class="descclassname">ognon.control.layersorganizer.</code><code class="descname">del_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/layersorganizer.html#del_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.layersorganizer.del_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the the current layer from the anim.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.layersorganizer.move_layer_down">
+<code class="descclassname">ognon.control.layersorganizer.</code><code class="descname">move_layer_down</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/layersorganizer.html#move_layer_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.layersorganizer.move_layer_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move down the current layer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.layersorganizer.move_layer_up">
+<code class="descclassname">ognon.control.layersorganizer.</code><code class="descname">move_layer_up</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/layersorganizer.html#move_layer_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.layersorganizer.move_layer_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move up the current layer.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ognon.control.elementsorganizer">
+<span id="ognon-control-elementsorganizer"></span><h3>ognon.control.elementsorganizer<a class="headerlink" href="#module-ognon.control.elementsorganizer" title="Permalink to this headline">¶</a></h3>
+<p>This module provide control functions to create, delete and move elements
+into layers and layers into animation</p>
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_animref_after">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_animref_after</code><span class="sig-paren">(</span><em>cursor</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_animref_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_animref_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an AnimRef after the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_animref_before">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_animref_before</code><span class="sig-paren">(</span><em>cursor</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_animref_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_animref_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an AnimRef before the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_cell_after">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_cell_after</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_cell_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_cell_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a Cell after the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_cell_before">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_cell_before</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_cell_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_cell_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a Cell before the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_element_after">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_element_after</code><span class="sig-paren">(</span><em>cursor</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_element_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_element_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the passed element after the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.add_element_before">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">add_element_before</code><span class="sig-paren">(</span><em>cursor</em>, <em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#add_element_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.add_element_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the passed element before the current frm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.clone_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">clone_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#clone_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.clone_element" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.organizer.copy_element">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">copy_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#copy_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.copy_element" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.elementsorganizer.copy_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">copy_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#copy_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.copy_element" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.organizer.del_element">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">del_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#del_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.del_element" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.elementsorganizer.del_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">del_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#del_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.del_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the current element.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.organizer.del_layer">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">del_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#del_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.del_layer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.move_element_backward">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">move_element_backward</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#move_element_backward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.move_element_backward" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.elementsorganizer.move_element_backward">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">move_element_backward</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#move_element_backward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.move_element_backward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the current backward.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.organizer.move_element_forward">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">move_element_forward</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#move_element_forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.move_element_forward" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.elementsorganizer.move_element_forward">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">move_element_forward</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#move_element_forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.move_element_forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the current forward.</p>
 </dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.move_layer_down">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">move_layer_down</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#move_layer_down"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.move_layer_down" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="ognon.control.organizer.move_layer_up">
-<code class="descclassname">ognon.control.organizer.</code><code class="descname">move_layer_up</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/organizer.html#move_layer_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.organizer.move_layer_up" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-ognon.control.projectmanager">
 <span id="ognon-control-projectmanager"></span><h3>ognon.control.projectmanager<a class="headerlink" href="#module-ognon.control.projectmanager" title="Permalink to this headline">¶</a></h3>
 <p>This module provide control functions to manage projects</p>
 <dl class="function">
-<dt id="ognon.control.projectmanager.load">
-<code class="descclassname">ognon.control.projectmanager.</code><code class="descname">load</code><span class="sig-paren">(</span><em>cursor</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/projectmanager.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.projectmanager.load" title="Permalink to this definition">¶</a></dt>
+<dt id="ognon.control.projectmanager.get">
+<code class="descclassname">ognon.control.projectmanager.</code><code class="descname">get</code><span class="sig-paren">(</span><em>cursor</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/projectmanager.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.projectmanager.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just call the projects.get function so it first try to get an already loaded
 project, then to load project from default directory, then to create it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.projectmanager.load">
+<code class="descclassname">ognon.control.projectmanager.</code><code class="descname">load</code><span class="sig-paren">(</span><em>cursor</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/projectmanager.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.projectmanager.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just call the projects.load function so it load project from default directory.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="ognon.control.projectmanager.save">
 <code class="descclassname">ognon.control.projectmanager.</code><code class="descname">save</code><span class="sig-paren">(</span><em>cursor</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/projectmanager.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.projectmanager.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Just call the projects.save function so it write datas in the default dir.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ognon.control.tagger">
+<span id="ognon-control-tagger"></span><h3>ognon.control.tagger<a class="headerlink" href="#module-ognon.control.tagger" title="Permalink to this headline">¶</a></h3>
+<p>This module provide control functions to tags elements</p>
+<dl class="function">
+<dt id="ognon.control.tagger.add_tag">
+<code class="descclassname">ognon.control.tagger.</code><code class="descname">add_tag</code><span class="sig-paren">(</span><em>cursor</em>, <em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/tagger.html#add_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.tagger.add_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a tag to the element</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.tagger.replace_tag">
+<code class="descclassname">ognon.control.tagger.</code><code class="descname">replace_tag</code><span class="sig-paren">(</span><em>cursor</em>, <em>tag</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/tagger.html#replace_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.tagger.replace_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a tag to the element</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.tagger.rm_tag">
+<code class="descclassname">ognon.control.tagger.</code><code class="descname">rm_tag</code><span class="sig-paren">(</span><em>cursor</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/tagger.html#rm_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.tagger.rm_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a tag to the element</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.tagger.rm_tags">
+<code class="descclassname">ognon.control.tagger.</code><code class="descname">rm_tags</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/tagger.html#rm_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.tagger.rm_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a tag to the element</p>
 </dd></dl>
 
 </div>
@@ -797,6 +734,24 @@ project, then to load project from default directory, then to create it.</p>
 <code class="descclassname">ognon.utils.</code><code class="descname">parse_config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/utils.html#parse_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.utils.parse_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a the given config file as a dict of dicts.</p>
 <p>Values are converted into int, float, bool or string.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ognon.tags">
+<span id="ognon-tags"></span><h2>ognon.tags<a class="headerlink" href="#module-ognon.tags" title="Permalink to this headline">¶</a></h2>
+<p>This module define tags function.</p>
+<dl class="function">
+<dt id="ognon.tags.calculate_inside_pos">
+<code class="descclassname">ognon.tags.</code><code class="descname">calculate_inside_pos</code><span class="sig-paren">(</span><em>pos</em>, <em>length</em>, <em>tag_description</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/tags.html#calculate_inside_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.tags.calculate_inside_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the inside position modified by the tag.</p>
+<p>Call the calculate_inside_pos function of the tag.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.tags.calculate_len">
+<code class="descclassname">ognon.tags.</code><code class="descname">calculate_len</code><span class="sig-paren">(</span><em>length</em>, <em>tag_description</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/tags.html#calculate_len"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.tags.calculate_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the length modified by the tag.</p>
+<p>Call the calculate_len function of the tag.</p>
 </dd></dl>
 
 </div>
@@ -829,6 +784,7 @@ project, then to load project from default directory, then to create it.</p>
 <li class="toctree-l2"><a class="reference internal" href="#module-ognon.view">ognon.view</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ognon.control">ognon.control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-ognon.utils">ognon.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ognon.tags">ognon.tags</a></li>
 </ul>
 </li>
 </ul>

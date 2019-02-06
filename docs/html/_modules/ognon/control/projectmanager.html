@@ -35,6 +35,13 @@
 
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Just call the projects.load function so it load project from default directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">projects</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Just call the projects.get function so it first try to get an already loaded</span>
 <span class="sd">    project, then to load project from default directory, then to create it.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -15,6 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, '/home/leon/miniconda3/lib/python3.6/site-packages')
 
 
 # -- Project information -----------------------------------------------------

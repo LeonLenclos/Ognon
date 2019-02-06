@@ -30,13 +30,18 @@
             
   <h1>Source code for ognon.server</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">This module defines dictionaries, functions and classes to run the ognon server.</span>
+<span class="sd">This module defines dictionaries, functions and classes to run the ognon servers.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">http.server</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="kn">import</span> <span class="nn">pythonosc.osc_server</span>
+<span class="kn">import</span> <span class="nn">pythonosc.dispatcher</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cursor</span>
 
 <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
@@ -72,7 +77,7 @@
         <span class="n">cursors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">Cursor</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">cursors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="OgnRequestHandler"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler">[docs]</a><span class="k">class</span> <span class="nc">OgnRequestHandler</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
+<div class="viewcode-block" id="OgnonHTTPHandler"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler">[docs]</a><span class="k">class</span> <span class="nc">OgnonHTTPHandler</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class is used to handle the HTTP requests that arrive at the server.</span>
 
@@ -82,7 +87,7 @@
 <span class="sd">    - POST requests to call functions from view or control.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="OgnRequestHandler.do_GET"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.do_GET">[docs]</a>    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OgnonHTTPHandler.do_GET"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_GET">[docs]</a>    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handler for GET request.</span>
 
@@ -93,7 +98,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">baseurl</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;/index.html&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="OgnRequestHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OgnonHTTPHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handler for POST request.</span>
 
@@ -120,18 +125,48 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">reply</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="OgnRequestHandler.end_headers"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnRequestHandler.end_headers">[docs]</a>    <span class="k">def</span> <span class="nf">end_headers</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OgnonHTTPHandler.end_headers"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.end_headers">[docs]</a>    <span class="k">def</span> <span class="nf">end_headers</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1">#TODO: check if this is really useful ! </span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="p">,</span> <span class="s1">&#39;POST, GET&#39;</span><span class="p">)</span>
         <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">end_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">adress</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OgnonOSCDispatcher"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonOSCDispatcher">[docs]</a><span class="k">class</span> <span class="nc">OgnonOSCDispatcher</span><span class="p">(</span><span class="n">pythonosc</span><span class="o">.</span><span class="n">dispatcher</span><span class="o">.</span><span class="n">Dispatcher</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the class of the OSC dispatcher.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OgnonOSCDispatcher.handlers_for_address"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonOSCDispatcher.handlers_for_address">[docs]</a>    <span class="k">def</span> <span class="nf">handlers_for_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address_pattern</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;yields Handler namedtuples matching the given OSC pattern.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;OSC: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">address_pattern</span><span class="p">))</span>
+        <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cursor_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">get_cursor</span><span class="p">(</span><span class="n">cursor_id</span><span class="p">)</span>
+            <span class="n">fun</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">fun</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="n">pythonosc</span><span class="o">.</span><span class="n">dispatcher</span><span class="o">.</span><span class="n">Handler</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="p">[])</span></div></div>
+
+<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">http_adress</span><span class="p">,</span> <span class="n">osc_adress</span><span class="p">,</span> <span class="n">enable_osc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Serve forever on the given adress.</span>
+<span class="sd">    Serve forever on the given adresses.</span>
+
+<span class="sd">    Start to threading servers, an http server and an osc server.</span>
+<span class="sd">    Set enable_osc to False to disable starting osc server thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">adress</span><span class="p">,</span> <span class="n">OgnRequestHandler</span><span class="p">)</span>
-    <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span></div>
+    <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">OgnonOSCDispatcher</span><span class="p">()</span>
+    <span class="n">osc_server</span> <span class="o">=</span> <span class="n">pythonosc</span><span class="o">.</span><span class="n">osc_server</span><span class="o">.</span><span class="n">OSCUDPServer</span><span class="p">(</span><span class="n">osc_adress</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">)</span>
+    <span class="n">osc_server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">osc_server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
+
+    <span class="n">http_server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">http_adress</span><span class="p">,</span> <span class="n">OgnonHTTPHandler</span><span class="p">)</span>
+    <span class="n">http_server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">http_server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
+
+    <span class="k">try</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">enable_osc</span><span class="p">:</span> <span class="n">osc_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">http_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">- shutdown -&#39;</span><span class="p">)</span>
+        <span class="n">http_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="n">osc_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">e</span></div>
 </pre></div>
 
           </div>
