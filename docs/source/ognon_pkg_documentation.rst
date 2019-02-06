@@ -102,3 +102,11 @@ ognon.control.projectmanager
     :members:
     :undoc-members:
     :show-inheritance:
+
+ognon.utils
+-----------
+
+.. automodule:: ognon.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
