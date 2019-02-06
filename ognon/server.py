@@ -1,11 +1,16 @@
 """
-This module defines dictionaries, functions and classes to run the ognon server.
+This module defines dictionaries, functions and classes to run the ognon servers.
 """
 
 import http.server
 import json
 import os
 import importlib
+import threading
+
+import pythonosc.osc_server
+import pythonosc.dispatcher
+
 from . import cursor
 
 functions = {}
@@ -41,7 +46,7 @@ def get_cursor(name='default'):
         cursors[name] = cursor.Cursor()
         return cursors[name]
 
-class OgnRequestHandler(http.server.SimpleHTTPRequestHandler):
+class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
     """
     This class is used to handle the HTTP requests that arrive at the server.
 
@@ -95,9 +100,39 @@ class OgnRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Methods', 'POST, GET')
         http.server.SimpleHTTPRequestHandler.end_headers(self)
 
-def serve(adress):
+
+class OgnonOSCDispatcher(pythonosc.dispatcher.Dispatcher):
+    """This is the class of the OSC dispatcher."""
+
+    def handlers_for_address(self, address_pattern):
+        """yields Handler namedtuples matching the given OSC pattern."""
+        print('OSC: {}'.format(address_pattern))
+        def callback(path, cursor_id, *args):
+            cur = get_cursor(cursor_id)
+            fun = get_function(path)
+            fun(cur, *args)
+
+        yield pythonosc.dispatcher.Handler(callback, [])
+
+def serve(http_adress, osc_adress, enable_osc=True):
     """
-    Serve forever on the given adress.
+    Serve forever on the given adresses.
+
+    Start to threading servers, an http server and an osc server.
+    Set enable_osc to False to disable starting osc server thread.
     """
-    server = http.server.HTTPServer(adress, OgnRequestHandler)
-    server.serve_forever()
+    dispatcher = OgnonOSCDispatcher()
+    osc_server = pythonosc.osc_server.OSCUDPServer(osc_adress, dispatcher)
+    osc_server_thread = threading.Thread(target=osc_server.serve_forever)
+
+    http_server = http.server.HTTPServer(http_adress, OgnonHTTPHandler)
+    http_server_thread = threading.Thread(target=http_server.serve_forever)
+
+    try :
+        if enable_osc: osc_server_thread.start()
+        http_server_thread.start()
+    except KeyboardInterrupt as e:
+        print('\n- shutdown -')
+        http_server.shutdown()
+        osc_server.shutdown()
+        raise e

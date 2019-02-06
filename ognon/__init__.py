@@ -6,6 +6,7 @@ import os
 
 __version__ = '1.α'
 DEFAULT_ADRESS = ('localhost', 40460)
+DEFAULT_OSC_ADRESS = ('localhost', 50460)
 PROJECTS_DIR = os.path.expanduser('~/ognons/')
 
 from . import model
