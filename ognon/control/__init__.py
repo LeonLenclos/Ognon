@@ -7,6 +7,7 @@ any value.
 from . import animsmanager
 from . import drawer
 from . import navigator
-from . import organizer
+from . import elementsorganizer
+from . import layersorganizer
 from . import projectmanager
 from . import tagger

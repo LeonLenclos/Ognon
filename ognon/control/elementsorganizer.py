@@ -60,20 +60,6 @@ def clone_element(cursor):
     # if cursor.get_frm() is not None:
     #     self.add_element_after(cursor, cursor.get_frm())
 
-def add_layer(cursor):
-    """Add a new Layer to the anim."""
-    idx = cursor.get_pos('layer')
-    cursor.get_anim().layers.insert(idx, model.Layer())
-
-def del_layer(cursor):
-    pass
-
-def move_layer_up(cursor):
-    pass
-
-def move_layer_down(cursor):
-    pass
-
 def _pop_element_at(cursor, i):
     """Remove and return the element with the index i in the current layer."""
     return cursor.get_layer().elements.pop(i)
