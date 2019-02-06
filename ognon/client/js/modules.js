@@ -1,7 +1,7 @@
 /****************
 **** MODULES ****
 ****************/
-
+let modules = [];
 function callModulesMethod(modulesMethod) {
     modules.forEach(mo => {
         if(mo[modulesMethod]){
@@ -60,8 +60,8 @@ const drawLines = (lines, style, ctx) => {
     ctx.stroke();
 
 }
-const clearCanvas = (ctx) => {
-    ctx.fillStyle = "#222222" ;
+const clearCanvas = (ctx, bgColor) => {
+    ctx.fillStyle = bgColor;
     ctx.fillRect(
         0,
         0,
@@ -78,13 +78,27 @@ class Canvas extends Module {
         this.onAnimChange = this.onDraw = this.onCursorMove = noOnionSkin ? this.draw : this.update
     }
 
+    loadConfig(config) {
+        this.elmt.width  = config.width;
+        this.elmt.height = config.height;
+        this.backgroundColor = config.background_color;
+        this.lineColor = config.line_color;
+        this.lineWidth = config.line_width;
+        this.onionFwColor = config.onion_skin_forward_color;
+        this.onionBwColor = config.onion_skin_backward_color;
+        this.onionFwColor = config.onion_skin_line_width;
+    }
+
     setup() {
         this.ctx = this.elmt.getContext('2d');
-        this.elmt.width  = 800;
-        this.elmt.height = 600;
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
         this.elmt.addEventListener('mouseup',   onCanvasMouseUp);
+
+        // load config
+        fetch('/view/get_view_config/', initOptions())
+        .then(response => response.json())
+        .then(json => this.loadConfig(json))
     }
 
     update() {
@@ -109,8 +123,8 @@ class Canvas extends Module {
         fetch('/view/get_lines/', initOptions())
         .then(response => response.json())
         .then(lines => {
-            clearCanvas(this.ctx);
-            drawLines(lines, {lineWidth:2, lineColor:"#ffffff"}, this.ctx);
+            clearCanvas(this.ctx, this.backgroundColor);
+            drawLines(lines, {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
         });
     }
 
@@ -121,10 +135,10 @@ class Canvas extends Module {
         fetch('/view/get_onion_skin/', initOptions({onion_range:[-1,0,1]}))
         .then(response => response.json())
         .then(onionSkin => {
-            clearCanvas(this.ctx);
-            drawLines(onionSkin[-1], {lineWidth:1, lineColor:"#ff0000"}, this.ctx);
-            drawLines(onionSkin[1], {lineWidth:1, lineColor:"#00ff00"}, this.ctx);
-            drawLines(onionSkin[0], {lineWidth:2, lineColor:"#ffffff"}, this.ctx);
+            clearCanvas(this.ctx, this.backgroundColor);
+            drawLines(onionSkin[-1], {lineWidth:this.onionFwColor, lineColor:this.onionBwColor}, this.ctx);
+            drawLines(onionSkin[1], {lineWidth:this.onionFwColor, lineColor:this.onionFwColor}, this.ctx);
+            drawLines(onionSkin[0], {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
         });
     }
 }
@@ -149,9 +163,12 @@ const onControlClick = (e) => {
             args[r] = e.currentTarget.parentNode.querySelector('input[name='+r+']').value;
         });
     }
+    
+
     fetch(url, initOptions(args))
     .then(()=>callModulesMethod('onAnimChange'))
     .then(()=>callModulesMethod('onCursorMove'));
+
 }
 
 //// CLASS ////
@@ -164,6 +181,10 @@ class Toolbar extends Module {
     setup() {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
+        this.elmt.querySelectorAll('#projectmanager button')
+        .forEach(e=>e.addEventListener('click', ()=>callModulesMethod('setup')));
+        
+
     }
 }
 

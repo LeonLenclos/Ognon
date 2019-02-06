@@ -3,7 +3,7 @@ let playing = false;
 const toolbar   = new Toolbar("toolbar");
 const statusbar = new Statusbar("statusbar");
 
-const modules = [toolbar, statusbar];
+modules = [toolbar, statusbar];
 
 
 ///////////// SETUP

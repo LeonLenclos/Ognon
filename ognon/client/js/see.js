@@ -1,5 +1,5 @@
 const canvas = new Canvas("canvas", true);
-const modules = [canvas];
+modules = [canvas];
 
 
 ///////////// SETUP

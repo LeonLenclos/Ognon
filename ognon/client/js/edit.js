@@ -5,11 +5,11 @@ const timeline  = new Timeline("timeline");
 const toolbar   = new Toolbar("toolbar");
 const statusbar = new Statusbar("statusbar");
 
-const modules = [canvas, timeline, toolbar, statusbar];
+modules = [canvas, timeline, toolbar, statusbar];
 
 
 ///////////// SETUP
-callModulesMethod('setup')
+toolbar.setup();
    
     
 ///////////// AUTOUPDATE

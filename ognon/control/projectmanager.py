@@ -4,6 +4,13 @@ from .. import projects
 
 def load(cursor, name=None):
     """
+    Just call the projects.load function so it load project from default directory.
+    """
+    name = name or cursor.proj.name
+    cursor.proj = projects.load(name)
+
+def get(cursor, name=None):
+    """
     Just call the projects.get function so it first try to get an already loaded
     project, then to load project from default directory, then to create it.
     """
