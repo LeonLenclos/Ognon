@@ -3,9 +3,10 @@ let playing = false;
 const canvas    = new Canvas("canvas");
 const timeline  = new Timeline("timeline");
 const toolbar   = new Toolbar("toolbar");
-const statusbar = new Statusbar("statusbar");
+const elementStatusbar = new Statusbar("element-statusbar", '/view/get_element_infos/');
+const cursorStatusbar = new Statusbar("cursor-statusbar", '/view/get_cursor_infos/');
 
-modules = [canvas, timeline, toolbar, statusbar];
+modules = [canvas, timeline, toolbar, cursorStatusbar, elementStatusbar];
 
 
 ///////////// SETUP

@@ -9,3 +9,4 @@ from . import drawer
 from . import navigator
 from . import organizer
 from . import projectmanager
+from . import tagger

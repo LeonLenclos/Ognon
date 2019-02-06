@@ -50,6 +50,13 @@ def test_get_cursor_infos(cursor):
 	# test jsonability
 	json.dumps(view.get_cursor_infos(cursor))
 
+def test_get_element_infos(cursor):
+	
+	for key in ('type', 'len', 'tags', 'name'):
+		assert key in view.get_element_infos(cursor)	
+	# test jsonability
+	json.dumps(view.get_element_infos(cursor))
+
 def test_get_lines(cursor):
 	from ..control import drawer
 	line = [0,0,10,10,0,10]

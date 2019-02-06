@@ -7,13 +7,14 @@
 	<link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 <body>
+<h1><a href="/">Ognon</a> edit</a></h1>
 
-<div id="statusbar">
-	<h1><a href="/">Ognon</a> edit</a></h1>
+<div id="cursor-statusbar">
+	<label>Cursor</label>
 	<label>project</label><span id="project_name"></span>
-	<label>frm</label><span id="frm_idx"></span>
-	<label>layer</label><span id="layer_idx"></span>
-	<label>anim</label><span id="anim_name"></span>
+	<label>frm</label><span id="frm"></span>
+	<label>layer</label><span id="layer"></span>
+	<label>anim</label><span id="anim"></span>
 	<label>loop</label><span id="loop"></span>
 	<label>playing</label><span id="playing"></span>
 </div>
@@ -65,6 +66,12 @@
 		<button id="move_layer_up">move up (nyi)</button>
 		<button id="move_layer_down">move down (nyi)</button>
 	</div>
+	<div class="section" id="tagger">
+		<label>tags</label>
+		<input id="tag_descriptoin" name="tag"/>
+		<button id="add_tag" data-required="tag">add</button>
+		<button id="rm_tags">clear</button>
+	</div>
 	<div class="section" id="drawer">
 		<label>drawing</label>
 		<button id="clear">clear</button>
@@ -74,6 +81,14 @@
 			<option value="erease">erease</option>
 		</select>
 	</div>
+</div>
+
+<div id="element-statusbar">
+	<label>Element</label>
+	<label>type</label><span id="type"></span>
+	<label>len</label><span id="len"></span>
+	<label>tags</label><span id="tags"></span>
+	<label>name</label><span id="name"></span>
 </div>
 
 <table id="timeline"></table>

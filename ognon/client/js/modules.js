@@ -313,23 +313,21 @@ class Timeline extends Module {
 //// CLASS ////
 
 class Statusbar extends Module {
-    constructor(id) {
+    constructor(id, requestPath) {
         super(id);
+        this.requestPath = requestPath
+        this.setup = this.onCursorMove
     }
 
     onCursorMove() {
-
-        const updateCursorInfos = (infos, statusbar) =>{
+        console.log(this.id)
+        const updateInfos = (infos, statusbar) =>{
             const null_to_str = (a) => a === null ? "" : a
-            statusbar.querySelector('#playing').innerHTML = null_to_str(infos.playing);
-            statusbar.querySelector('#loop').innerHTML = null_to_str(infos.loop);
-            statusbar.querySelector('#project_name').innerHTML = null_to_str(infos.project_name);
-            statusbar.querySelector('#frm_idx').innerHTML = null_to_str(infos.frm);
-            statusbar.querySelector('#layer_idx').innerHTML = null_to_str(infos.layer);
-            statusbar.querySelector('#anim_name').innerHTML = null_to_str(infos.anim);
+            statusbar.querySelectorAll('span')
+            .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
         }
-        fetch('/view/get_cursor_infos/', initOptions())
+        fetch(this.requestPath, initOptions())
         .then(response => response.json())
-        .then(json => updateCursorInfos(json, this.elmt));
+        .then(json => updateInfos(json, this.elmt));
     }
 }

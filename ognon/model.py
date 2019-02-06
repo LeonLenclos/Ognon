@@ -14,7 +14,9 @@ class Element():
 
     An element is an object that can be placed into a layer's elements list
     """
-    pass
+    def __init__(self, tags=None):
+        """Init an Element"""
+        self.tags = tags or []
 
 
 class Line():
@@ -37,8 +39,9 @@ class Cell(Element):
 
     A cell is the ellement made for draw on it. It has a list of lines.
     """
-    def __init__(self, lines=None):
+    def __init__(self, lines=None, tags=None):
         """Init a Cell"""
+        super().__init__(tags)
         self.lines = lines or []
 
 
@@ -50,8 +53,9 @@ class AnimRef(Element):
     to include animations in other animations. It has a name attribute, the name
     of the animation it referes to.
     """
-    def __init__(self, name):
+    def __init__(self, name, tags=None):
         """Init an AnimRef with its name"""
+        super().__init__(tags)
         self.name = name
 
 

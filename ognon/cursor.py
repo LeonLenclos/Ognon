@@ -5,6 +5,7 @@ It is a required argument for every control and view functions.
 """
 
 from . import model
+from . import tags
 
 
 class Cursor():
@@ -28,10 +29,7 @@ class Cursor():
 
     def __init__(self, proj=None):
         """
-        Init a cursor
-
-        :param proj: An ognon project (optional)
-        :type proj: model.Project
+        Init a cursor with an optional ognon project.
         """
         self.proj = proj
         self._pos = {
@@ -45,13 +43,10 @@ class Cursor():
         """
         Get the cursor position.
 
-        If a key is passed, return the specified position.
+        If a key is passed, return the specified position ('anim', 'layer' or
+        'frm'). 
         This method first call set_pos without arguments to ensure that the
         position is valid (e.g. not pointing an inexisting layer)
-
-        :param key: A position key ('anim', 'layer' or 'frm') 
-        :type key: str
-        :return: the position dict or the specified position value
         """
         self.set_pos()
         if key:
@@ -70,13 +65,6 @@ class Cursor():
         If the anim argument is passed but layer or frm are not, set them to 0.
 
         If no arguments are passed, just constain the three values.
-
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :param layert: The index of the layer (optional)
-        :type layert: int
-        :param frm: The current frm position in the animation (optional)
-        :type frm: int
         """
         # Set position.
         if anim is not None:
@@ -102,11 +90,6 @@ class Cursor():
         Return a frm position constrained in the current anim length.
 
         Result will be different depending on whether the loop mode is on or off.
-
-        :param frm: The frm position to constrain
-        :type frm: int
-        :return: The constrained frm position.
-        :rtype: int
         """
         if self.proj.config['play']['loop']:
             return frm % self.anim_len()
@@ -119,11 +102,6 @@ class Cursor():
     def get_anim(self, anim=None):
         """
         Return the current anim or the specified anim
-        
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :return: The animation.
-        :rtype: model.Anim
         """
         anim = anim or self.get_pos('anim')
         return self.proj.anims[anim]
@@ -131,13 +109,6 @@ class Cursor():
     def get_layer(self, anim=None, layer=None):
         """
         Return the current layer or the specified layer in the specified anim
-        
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :param layert: The index of the layer (optional)
-        :type layert: int
-        :return: The layer.
-        :rtype: model.Layer
         """
         layer = layer if layer is not None else self.get_pos('layer')
         return self.get_anim(anim).layers[layer]
@@ -147,66 +118,48 @@ class Cursor():
         Return a tuple with the index of the element in the layer, the
         element object and the position of the cursor inside the element
         Return None if no element.
-        
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :param layert: The index of the layer (optional)
-        :type layert: int
-        :param frm: The current frm position in the animation (optional)
-        :type frm: int
-        :return: (element_index_in_layer, element, relative_frm_position).
-        :rtype: tuple : (int, model.Element, int)
         """
         layer = self.get_layer(anim, layer)
         frm = frm if frm is not None else self.get_pos('frm') #2
         frm_ = 0#0 #1 #3
         for i, e in enumerate(layer.elements):
-            frm_ += self.element_len(e)
+            length = self.element_len(e)
+            frm_ += length
             if frm_ > frm:
-                return i, e, frm-frm_+self.element_len(e)
+                at = frm-frm_+length
+                for tag in e.tags:
+                    at = tags.calculate_inside_pos(
+                        at, self.element_len(e, True), tag)
+                return i, e, at
 
 
     def get_element(self, anim=None, layer=None, frm=None):
         """
         Return the current element or the element on the specified frm in the
         specified layer in the specified anim
-        
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :param layert: The index of the layer (optional)
-        :type layert: int
-        :param frm: The current frm position in the animation (optional)
-        :type frm: int
-        :return: the element.
-        :rtype: model.Element
         """
         return self.get_element_pos(anim, layer, frm)[1]
 
     def anim_len(self, anim=None):
         """
         Return the length of the current anim or specified anim
-        
-        :param anim: The name of the animation (optional)
-        :type anim: str
-        :return: The animation length.
-        :rtype: int
         """
         anim = anim if anim else self._pos['anim']
         layer_len = lambda layer : sum(map(self.element_len, layer.elements))
         return layer_len(max(self.proj.anims[anim].layers, key=layer_len))
 
-    def element_len(self, elmt):
+    def element_len(self, elmt, ignonre_tags=False):
         """
         Return the length of the given element
-        
-        :param elmt: The element
-        :type elmt: model.Element
-        :return: The element length.
-        :rtype: int
         """
         if isinstance(elmt, model.Cell):
-            return 1
+            length =  1
         elif isinstance(elmt, model.AnimRef):
-            return self.anim_len(elmt.name)
+            length = self.anim_len(elmt.name)
         else:
             raise TypeError('Unknow element type')
+        if ignonre_tags:
+            return length
+        for tag in elmt.tags:
+            length = tags.calculate_len(length, tag)
+        return length

@@ -98,6 +98,21 @@ def get_cursor_infos(cursor):
     infos.update(cursor.get_pos())
     return infos
 
+def get_element_infos(cursor):
+    """
+    Return a dict containing informations about the current element
+
+    keys are : 'type', 'len', 'tags', 'name'
+    """
+    e = cursor.get_element()
+    infos = {
+        'type':type(e).__name__,
+        'len':cursor.element_len(e),
+        'tags':e.tags,
+        'name':e.name if hasattr(e ,'name') else None,
+    }
+    return infos
+
 def get_lines(cursor, frm=None, anim=None):
     """
     Return a list of all current lines.

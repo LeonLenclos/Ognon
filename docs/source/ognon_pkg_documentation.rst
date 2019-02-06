@@ -103,10 +103,26 @@ ognon.control.projectmanager
     :undoc-members:
     :show-inheritance:
 
+ognon.control.tagger
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: ognon.control.tagger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 ognon.utils
 -----------
 
 .. automodule:: ognon.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ognon.tags
+-----------
+
+.. automodule:: ognon.tags
     :members:
     :undoc-members:
     :show-inheritance:

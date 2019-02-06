@@ -13,3 +13,6 @@ from . import control
 from . import server
 from . import view
 from . import cursor
+from . import projects
+from . import tags
+from . import utils
