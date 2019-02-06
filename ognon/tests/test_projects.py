@@ -6,6 +6,17 @@ proj_dir = projects.PROJECTS_DIR = '/tmp/ogn/ognons/'
 if not os.path.isdir(proj_dir):
 	os.makedirs(proj_dir)
 
+def test_get_saved_projects_list():
+	os.mkdir(proj_dir + "dir1")
+	os.mkdir(proj_dir + "dir2")
+	os.mkdir(proj_dir + "_dir3")
+	os.mkdir(proj_dir + ".dir4")
+
+	assert 'dir1' in projects.get_saved_projects_list()
+	assert 'dir2' in projects.get_saved_projects_list()
+	assert '_dir3' not in projects.get_saved_projects_list()
+	assert '.dir4' not in projects.get_saved_projects_list()
+
 def test_save_project_at():
 	os.mkdir('/tmp/ogn/some_dir/')
 
@@ -62,7 +73,7 @@ def test_get():
 
 	assert proj.name == 'proj'
 	assert isinstance(proj, model.Project) 
-	assert projects.projects[proj.name]
+	assert proj.name in projects.projects
 	
 	# alredy stored
 	new_proj = projects.new('new_proj')
@@ -77,3 +88,14 @@ def test_get():
 	assert 'an_anim' in proj.anims
 	assert projects.projects[proj.name]
 
+def test_close():
+	projects.get('a_project')
+	projects.close('a_project')
+	assert 'a_project' not in projects.projects
+
+def test_delete():
+	projects.save(projects.get('a_project'))
+	projects.close('a_project')
+	assert os.path.isdir(proj_dir+'a_project')
+	projects.delete('a_project')
+	assert not os.path.isdir(proj_dir+'a_project')

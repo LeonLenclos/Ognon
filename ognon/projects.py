@@ -10,6 +10,16 @@ from . import PROJECTS_DIR
 
 projects = {}
 
+def get_saved_projects_list():
+    """
+    Return a list of all of saved projects name.
+
+    Return a list of dirs in the projects directory. ignore dirs starting with a
+    dot or an underscore.
+    """
+    ignore_files = lambda d: d[0] not in ('.', '_')
+    return list(filter(ignore_files, os.listdir(PROJECTS_DIR)))
+
 def load_from_path(path):
     """
     Load the ognon project at the specified path. store it in the projects dict
@@ -84,3 +94,15 @@ def save(project):
     Save the project in the projects directory
     """
     save_project_at(project, PROJECTS_DIR + project.name)
+
+def close(name):
+    """
+    Remove project from projects dict.
+    """
+    del projects[name]
+
+def delete(name):
+    """
+    Delete project from disk.
+    """
+    shutil.rmtree(PROJECTS_DIR + name)
