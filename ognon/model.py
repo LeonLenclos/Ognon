@@ -5,7 +5,8 @@ It describes every data that can be write on the disk. they are nested python
 classes. With no method description.
 """
 
-        
+from . import utils
+
 
 class Element():
     """
@@ -14,6 +15,7 @@ class Element():
     An element is an object that can be placed into a layer's elements list
     """
     pass
+
 
 class Line():
     """
@@ -28,6 +30,7 @@ class Line():
         """Init a Line with the coords list"""
         self.coords = coords
     
+
 class Cell(Element):
     """
     This class describe Cells.
@@ -37,6 +40,7 @@ class Cell(Element):
     def __init__(self, lines=None):
         """Init a Cell"""
         self.lines = lines or []
+
 
 class AnimRef(Element):
     """
@@ -50,6 +54,7 @@ class AnimRef(Element):
         """Init an AnimRef with its name"""
         self.name = name
 
+
 class Layer():
     """
     This class describe Layers.
@@ -59,6 +64,7 @@ class Layer():
     def __init__(self, elements=None):
         """Init a Layer with a first Cell"""
         self.elements = elements or [Cell()]
+
 
 class Anim():
     """
@@ -70,12 +76,6 @@ class Anim():
         """Init an Anim with a first Layer"""
         self.layers = layers or [Layer()]
 
-
-# get default config
-import configparser
-parser = configparser.ConfigParser()
-parser.read('ognon/default.ini')
-default_config = {k:dict(v) for k, v in dict(parser).items()}
 
 class Project():
     """
@@ -97,4 +97,4 @@ class Project():
         self.anims = anims or {'master':Anim()}
          
 
-        self.config = config or default_config
+        self.config = config or utils.parse_config('ognon/default.ini')

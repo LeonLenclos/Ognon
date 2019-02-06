@@ -1,6 +1,6 @@
 """This module provide control functions to export frms and anims"""
 
-from itertools import repeat
+import itertools
 
 import PIL.Image
 import PIL.ImageDraw
@@ -8,13 +8,13 @@ import PIL.ImageDraw
 from .. import projects
 from .. import view
 
-
 def _frm_to_pilimage(cursor, frm=None):
-    width, height = 800, 600
-    scale = 1
-    stroke = 2
-    bg_color = '#FFFFFF'
-    line_color = '#212229'
+    width = cursor.proj.config['view']['width']
+    height = cursor.proj.config['view']['height']
+    scale = cursor.proj.config['export']['scale']
+    stroke = cursor.proj.config['view']['line_width']
+    bg_color = cursor.proj.config['view']['background_color']
+    line_color = cursor.proj.config['view']['line_color']
 
     img = PIL.Image.new("RGB", (width*scale, height*scale), bg_color)
     draw = PIL.ImageDraw.Draw(img)
@@ -26,11 +26,10 @@ def _frm_to_pilimage(cursor, frm=None):
     return img
 
 def frm_to_png(cursor, frm=None):
-
+    name_format = cursor.proj.config['export']['png_name']
     anim = cursor.get_pos('anim')
     frm = frm if frm is not None else cursor.get_pos('frm')
-    path = projects.get_path(cursor,
-        'export/{anim}-frm{frm:04d}.png'.format(anim=anim, frm=frm))
+    path = projects.get_path(cursor, name_format.format(anim=anim, frm=frm))
 
     _frm_to_pilimage(cursor, frm=frm).save(path)
 
@@ -40,19 +39,19 @@ def anim_to_pngs(cursor):
         frm_to_png(cursor, frm)
 
 def anim_to_gif(cursor):
-
+    name_format = cursor.proj.config['export']['gif_name']
+    duration = 1000/cursor.proj.config['play']['fps']
     anim = cursor.get_pos('anim')
-    path = projects.get_path(cursor,
-        'export/{anim}.gif'.format(anim=anim))
+    path = projects.get_path(cursor, name_format.format(anim=anim))
 
     _frm_to_pilimage(cursor, 0).save(
         path,
         save_all=True,
         append_images=map(
             _frm_to_pilimage,
-            repeat(cursor),
+            itertools.repeat(cursor),
             range(1, cursor.anim_len())),
-        duration=100,
+        duration=duration,
         loop=0
     )
 

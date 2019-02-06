@@ -1,6 +1,6 @@
 """This module provide control functions to navigate into Animation"""
 
-from threading import Timer
+import threading
 
 def run(cursor):
     if cursor.playing:
@@ -9,8 +9,8 @@ def run(cursor):
 def auto_run(cursor):
     if cursor.playing:
         run(cursor)
-        fps = int(cursor.proj.config['play']['fps'])
-        Timer(1/fps, auto_run, [cursor]).start()
+        fps = cursor.proj.config['play']['fps']
+        threading.Timer(1/fps, auto_run, [cursor]).start()
 
 def play(cursor):
     """Permet de lire ou de stopper l'anim"""

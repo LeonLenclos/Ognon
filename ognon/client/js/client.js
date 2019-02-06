@@ -32,3 +32,12 @@ const startAutoUpdate = (method) => {
 const stopAutoUpdate = (method) => {
     autoUpdating = false;
 }
+
+// load config
+let config
+
+const loadConfig = () => {
+    fetch('/view/get_view_config/', initOptions())
+    .then(response => response.json())
+    .then(json => config = json)
+}

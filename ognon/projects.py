@@ -3,10 +3,16 @@ This module is the project loader. His role is to load projects from files and
 also to keep in memory all loaded projects by names to provide preloaded
 projects.
 """
-import os, pickle, shutil, configparser, pathlib
+
+import os
+import pickle
+import shutil
+import configparser
+import pathlib
 
 from . import model
 from . import PROJECTS_DIR
+from . import utils
 
 projects = {}
 
@@ -34,9 +40,7 @@ def load_from_path(path):
             with open(os.path.join(path, file), 'rb') as fi:
                 anims[file[:-4]] = pickle.load(fi)
     # Load config
-    parser = configparser.ConfigParser()
-    parser.read(os.path.join(path, 'config.ini'))
-    config = {k:dict(v) for k, v in dict(parser).items()}
+    config = utils.parse_config(os.path.join(path, 'config.ini'))
     # Create, store and return project
     project = model.Project(name, anims=anims, config=config)
     projects[name] = project
@@ -79,15 +83,16 @@ def save_project_at(project, path):
     if not os.path.isdir(path):
         os.mkdir(path)
         os.mkdir(os.path.join(path, 'export'))
+        shutil.copyfile('ognon/default.ini', os.path.join(path, 'config.ini'))
     # save anims
     for name, anim in project.anims.items():
         with open(os.path.join(path, name+'.ogn'), 'wb') as fi:
             pickle.dump(anim, fi)
-    # save config
-    parser = configparser.ConfigParser()
-    parser.read_dict(project.config)
-    with open(os.path.join(path, 'config.ini'), 'w') as fi:
-        parser.write(fi)
+    # # dont save config
+    # parser = configparser.ConfigParser()
+    # parser.read_dict(project.config)
+    # with open(os.path.join(path, 'config.ini'), 'w') as fi:
+    #     parser.write(fi)
 
 def save(project):
     """
