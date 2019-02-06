@@ -3,41 +3,47 @@
 import threading
 
 def run(cursor):
+    """Call next_frm if cursor.playing is true."""
     if cursor.playing:
         next_frm(cursor)
 
 def auto_run(cursor):
+    """If `cursor.playing` is true, start a timer that call `run` repetively
+    while `cursor.playing` is true."""
     if cursor.playing:
         run(cursor)
         fps = cursor.proj.config['play']['fps']
         threading.Timer(1/fps, auto_run, [cursor]).start()
 
 def play(cursor):
-    """Permet de lire ou de stopper l'anim"""
+    """Toogle cursor playing attribute."""
     cursor.playing = not cursor.playing
-    # OLD => 
-    # if cursor.playing and cursor.proj.config['play']['auto_run'] == 'true':
-    #     auto_run(cursor)
+
+def auto_play(cursor):
+    """Call play and then auto_run."""
+    play()
+    auto_run()
 
 def prev_frm(cursor):
-    """Permet d'acceder à la frm précédente"""
+    """Set cursor position to the previous frm."""
     cursor.set_pos(frm=cursor.get_pos('frm')-1)
 
 def next_frm(cursor):
-    """Permet d'acceder à la frm suivante"""
+    """Set cursor position to the next frm."""
     cursor.set_pos(frm=cursor.get_pos('frm')+1)
 
 def first_frm(cursor):
-    """Permet d'acceder à la frm suivante"""
+    """Set cursor position to the first animation frm."""
     cursor.set_pos(frm=0)
 
 def last_frm(cursor):
-    """Permet d'acceder à la frm précédente"""
+    """Set cursor position to the last animation frm."""
     cursor.set_pos(frm=cursor.anim_len()-1)
 
 def go_to_frm(cursor, i):
-    """Permet d'acceder à une frm i"""
+    """Set cursor position to frm i."""
     cursor.set_pos(frm=i)
 
 def go_to_layer(cursor, i):
+    """Set cursor position to layer i."""
     cursor.set_pos(layer=i)

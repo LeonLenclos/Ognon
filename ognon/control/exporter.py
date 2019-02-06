@@ -9,6 +9,9 @@ from .. import projects
 from .. import view
 
 def _frm_to_pilimage(cursor, frm=None):
+    """
+    Create a PIL.Image object from the current animation frm or passed frm.
+    """
     width = cursor.proj.config['view']['width']
     height = cursor.proj.config['view']['height']
     scale = cursor.proj.config['export']['scale']
@@ -26,6 +29,11 @@ def _frm_to_pilimage(cursor, frm=None):
     return img
 
 def frm_to_png(cursor, frm=None):
+    """
+    Save the current frm on the disk as a png image.
+
+    Location is given by export>png_name in the config file.
+    """
     name_format = cursor.proj.config['export']['png_name']
     anim = cursor.get_pos('anim')
     frm = frm if frm is not None else cursor.get_pos('frm')
@@ -35,10 +43,20 @@ def frm_to_png(cursor, frm=None):
 
 
 def anim_to_pngs(cursor):
+    """
+    Save all animation frms on the disk as a png images.
+
+    Location is given by export>png_name in the config file.
+    """
     for frm in range(cursor.anim_len()):
         frm_to_png(cursor, frm)
 
 def anim_to_gif(cursor):
+    """
+    Save the animation on the disk as a animated gif.
+
+    Location is given by export>gif_name in the config file.
+    """
     name_format = cursor.proj.config['export']['gif_name']
     duration = 1000/cursor.proj.config['play']['fps']
     anim = cursor.get_pos('anim')

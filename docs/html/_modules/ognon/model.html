@@ -36,7 +36,8 @@
 <span class="sd">classes. With no method description.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-        
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
+
 
 <div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Element">[docs]</a><span class="k">class</span> <span class="nc">Element</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -45,6 +46,7 @@
 <span class="sd">    An element is an object that can be placed into a layer&#39;s elements list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="Line"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Line">[docs]</a><span class="k">class</span> <span class="nc">Line</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -59,6 +61,7 @@
         <span class="sd">&quot;&quot;&quot;Init a Line with the coords list&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span></div>
     
+
 <div class="viewcode-block" id="Cell"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Cell">[docs]</a><span class="k">class</span> <span class="nc">Cell</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class describe Cells.</span>
@@ -68,6 +71,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init a Cell&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span> <span class="ow">or</span> <span class="p">[]</span></div>
+
 
 <div class="viewcode-block" id="AnimRef"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.AnimRef">[docs]</a><span class="k">class</span> <span class="nc">AnimRef</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -81,6 +85,7 @@
         <span class="sd">&quot;&quot;&quot;Init an AnimRef with its name&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
 
+
 <div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class describe Layers.</span>
@@ -90,6 +95,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init a Layer with a first Cell&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="ow">or</span> <span class="p">[</span><span class="n">Cell</span><span class="p">()]</span></div>
+
 
 <div class="viewcode-block" id="Anim"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Anim">[docs]</a><span class="k">class</span> <span class="nc">Anim</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -101,6 +107,7 @@
         <span class="sd">&quot;&quot;&quot;Init an Anim with a first Layer&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="ow">or</span> <span class="p">[</span><span class="n">Layer</span><span class="p">()]</span></div>
 
+
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class describe Projects.</span>
@@ -109,17 +116,19 @@
 <span class="sd">    A Project also has a name and a config dict. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">anims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">anims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Init an Project with its name.</span>
 <span class="sd">        </span>
 <span class="sd">        a dict of anims and a dict of config can also be passed.</span>
 <span class="sd">        default for anims is a dict containing a single Anim named &#39;master&#39;.</span>
-<span class="sd">        default for config is an empty dict</span>
+<span class="sd">        default for config is default.ini content</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anims</span> <span class="o">=</span> <span class="n">anims</span> <span class="ow">or</span> <span class="p">{</span><span class="s1">&#39;master&#39;</span><span class="p">:</span><span class="n">Anim</span><span class="p">()}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+         
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">parse_config</span><span class="p">(</span><span class="s1">&#39;ognon/default.ini&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

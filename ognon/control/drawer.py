@@ -5,13 +5,11 @@ import math
 from .. import model
 
 def clear(cursor):
+    """Clear all the current element content."""
     cursor.get_element().lines = []
 
-# OLD =>
-# def use_tool(cursor, tool, *args):
-#     globals()[tool](cursor, *args)
-
 def draw(cursor, coords):
+    """Draw a line in the current element."""
     e = cursor.get_element()
     try:
         assert e.lines[-1].coords[-2:] == coords[:2]
@@ -23,7 +21,7 @@ def draw(cursor, coords):
 def erease(cursor, coords, radius=5):
     """
     erease the first line in the current Cell that has a point in a distance
-    from `coords` lower than `radius`
+    from `coords` lower than `radius`.
     """
     for i, l in enumerate(cursor.get_element().lines):
         for point in _pairwise(l.coords):

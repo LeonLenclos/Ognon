@@ -32,46 +32,55 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provide control functions to create, delete and move elements</span>
 <span class="sd">into layers and layers into animation&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">..model</span> <span class="k">import</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Layer</span><span class="p">,</span> <span class="n">AnimRef</span>
-<span class="kn">from</span> <span class="nn">.navigator</span> <span class="k">import</span> <span class="n">next_frm</span><span class="p">,</span> <span class="n">prev_frm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">navigator</span>
 
 <div class="viewcode-block" id="add_element_after"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_element_after">[docs]</a><span class="k">def</span> <span class="nf">add_element_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the passed element after the current frm.&quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">()</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-    <span class="n">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
+    <span class="n">navigator</span><span class="o">.</span><span class="n">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="add_element_before"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_element_before">[docs]</a><span class="k">def</span> <span class="nf">add_element_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the passed element before the current frm.&quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">()</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="add_cell_after"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_cell_after">[docs]</a><span class="k">def</span> <span class="nf">add_cell_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="n">add_element_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Cell</span><span class="p">())</span></div>
+    <span class="sd">&quot;&quot;&quot;Add a Cell after the current frm.&quot;&quot;&quot;</span>
+    <span class="n">add_element_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Cell</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="add_cell_before"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_cell_before">[docs]</a><span class="k">def</span> <span class="nf">add_cell_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="n">add_element_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">Cell</span><span class="p">())</span></div>
+    <span class="sd">&quot;&quot;&quot;Add a Cell before the current frm.&quot;&quot;&quot;</span>
+    <span class="n">add_element_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Cell</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="add_animref_after"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_animref_after">[docs]</a><span class="k">def</span> <span class="nf">add_animref_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="n">add_element_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">AnimRef</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+    <span class="sd">&quot;&quot;&quot;Add an AnimRef after the current frm.&quot;&quot;&quot;</span>
+    <span class="n">add_element_after</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">AnimRef</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="add_animref_before"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_animref_before">[docs]</a><span class="k">def</span> <span class="nf">add_animref_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="n">add_element_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">AnimRef</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+    <span class="sd">&quot;&quot;&quot;Add an AnimRef before the current frm.&quot;&quot;&quot;</span>
+    <span class="n">add_element_before</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">AnimRef</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
 
         
 <div class="viewcode-block" id="del_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.del_element">[docs]</a><span class="k">def</span> <span class="nf">del_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Delete the current element.&quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">()</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="move_element_forward"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.move_element_forward">[docs]</a><span class="k">def</span> <span class="nf">move_element_forward</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move the current forward.&quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">_pop_element_at</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
-        <span class="n">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
+        <span class="n">navigator</span><span class="o">.</span><span class="n">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="move_element_backward"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.move_element_backward">[docs]</a><span class="k">def</span> <span class="nf">move_element_backward</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Move the current backward.&quot;&quot;&quot;</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_element_pos</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
         <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">_pop_element_at</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
-        <span class="n">prev_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
+        <span class="n">navigator</span><span class="o">.</span><span class="n">prev_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="copy_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.copy_element">[docs]</a><span class="k">def</span> <span class="nf">copy_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -83,8 +92,9 @@
     <span class="c1">#     self.add_element_after(cursor, cursor.get_frm())</span>
 
 <div class="viewcode-block" id="add_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.add_layer">[docs]</a><span class="k">def</span> <span class="nf">add_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add a new Layer to the anim.&quot;&quot;&quot;</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">get_anim</span><span class="p">()</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">Layer</span><span class="p">())</span></div>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">get_anim</span><span class="p">()</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Layer</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="del_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.organizer.del_layer">[docs]</a><span class="k">def</span> <span class="nf">del_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="k">pass</span></div>
@@ -96,6 +106,7 @@
     <span class="k">pass</span></div>
 
 <span class="k">def</span> <span class="nf">_pop_element_at</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove and return the element with the index i in the current layer.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 </pre></div>
 

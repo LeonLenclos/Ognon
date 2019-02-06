@@ -31,46 +31,52 @@
   <h1>Source code for ognon.control.navigator</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;This module provide control functions to navigate into Animation&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Timer</span>
+<span class="kn">import</span> <span class="nn">threading</span>
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call next_frm if cursor.playing is true.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">playing</span><span class="p">:</span>
         <span class="n">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="auto_run"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.auto_run">[docs]</a><span class="k">def</span> <span class="nf">auto_run</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If `cursor.playing` is true, start a timer that call `run` repetively</span>
+<span class="sd">    while `cursor.playing` is true.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">playing</span><span class="p">:</span>
         <span class="n">run</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
-        <span class="n">fps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;play&#39;</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">])</span>
-        <span class="n">Timer</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">fps</span><span class="p">,</span> <span class="n">auto_run</span><span class="p">,</span> <span class="p">[</span><span class="n">cursor</span><span class="p">])</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+        <span class="n">fps</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;play&#39;</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">]</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">fps</span><span class="p">,</span> <span class="n">auto_run</span><span class="p">,</span> <span class="p">[</span><span class="n">cursor</span><span class="p">])</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="play"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.play">[docs]</a><span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet de lire ou de stopper l&#39;anim&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Toogle cursor playing attribute.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">playing</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">cursor</span><span class="o">.</span><span class="n">playing</span></div>
-    <span class="c1"># OLD =&gt; </span>
-    <span class="c1"># if cursor.playing and cursor.proj.config[&#39;play&#39;][&#39;auto_run&#39;] == &#39;true&#39;:</span>
-    <span class="c1">#     auto_run(cursor)</span>
+
+<div class="viewcode-block" id="auto_play"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.auto_play">[docs]</a><span class="k">def</span> <span class="nf">auto_play</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Call play and then auto_run.&quot;&quot;&quot;</span>
+    <span class="n">play</span><span class="p">()</span>
+    <span class="n">auto_run</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="prev_frm"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.prev_frm">[docs]</a><span class="k">def</span> <span class="nf">prev_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet d&#39;acceder à la frm précédente&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to the previous frm.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">frm</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="next_frm"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.next_frm">[docs]</a><span class="k">def</span> <span class="nf">next_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet d&#39;acceder à la frm suivante&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to the next frm.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">frm</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="first_frm"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.first_frm">[docs]</a><span class="k">def</span> <span class="nf">first_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet d&#39;acceder à la frm suivante&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to the first animation frm.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">frm</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="last_frm"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.last_frm">[docs]</a><span class="k">def</span> <span class="nf">last_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet d&#39;acceder à la frm précédente&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to the last animation frm.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">frm</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="go_to_frm"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.go_to_frm">[docs]</a><span class="k">def</span> <span class="nf">go_to_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Permet d&#39;acceder à une frm i&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to frm i.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">frm</span><span class="o">=</span><span class="n">i</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="go_to_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.go_to_layer">[docs]</a><span class="k">def</span> <span class="nf">go_to_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor position to layer i.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">)</span></div>
 </pre></div>
 

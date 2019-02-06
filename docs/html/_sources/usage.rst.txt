@@ -50,4 +50,3 @@ To draw a line on the cell curently pointed by the cursor 'default'.
 			y2:54
 		},
 	}
-

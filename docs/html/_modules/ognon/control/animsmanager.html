@@ -35,17 +35,17 @@
 
 <div class="viewcode-block" id="new_anim"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.animsmanager.new_anim">[docs]</a><span class="k">def</span> <span class="nf">new_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Add a new Anim to anims dict.&quot;&quot;&quot;</span>
-    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Anim</span><span class="p">()</span>
-    <span class="n">select_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Anim</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="select_anim"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.animsmanager.select_anim">[docs]</a><span class="k">def</span> <span class="nf">select_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Set cursor anim name.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Set cursor anim name. If anim does not exists, create it.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">:</span>
+	    <span class="n">new_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="del_anim"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.animsmanager.del_anim">[docs]</a><span class="k">def</span> <span class="nf">del_anim</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Delete an Anim from anims dict.&quot;&quot;&quot;</span>
     <span class="k">del</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">anims</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
-
 </pre></div>
 
           </div>
