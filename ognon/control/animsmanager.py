@@ -14,4 +14,3 @@ def select_anim(cursor, name):
 def del_anim(cursor, name):
     """Delete an Anim from anims dict."""
     del cursor.proj.anims[name]
-

@@ -93,7 +93,7 @@ def get_cursor_infos(cursor):
     infos = {
         'project_name':cursor.proj.name,
         'playing':cursor.playing,
-        'loop':cursor.loop,
+        'loop':cursor.proj.config['play']['loop'],
     }
     infos.update(cursor.get_pos())
     return infos

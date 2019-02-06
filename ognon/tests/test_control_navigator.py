@@ -20,29 +20,27 @@ def test_run_and_play(cursor):
 	assert cursor.playing is False
 	assert cursor.get_pos('frm') == 1
 
-
 # TODO: WARNING ! auto_run NOT TESTED
-
 
 def test_prev_frm(cursor):
 	assert cursor.get_pos('anim') == 'master'
 	assert cursor.anim_len() == 2
-	cursor.loop = False
+	cursor.proj.config['play']['loop'] = False
 	assert navigator.prev_frm(cursor) is None
 	assert cursor.get_pos('frm') == 0
 	assert navigator.prev_frm(cursor) is None
 	assert cursor.get_pos('frm') == 0
-	cursor.loop = True
+	cursor.proj.config['play']['loop'] = True
 	assert navigator.prev_frm(cursor) is None
 	assert cursor.get_pos('frm') == 1
 
 def test_next_frm(cursor):
-	cursor.loop = False
+	cursor.proj.config['play']['loop'] = False
 	assert navigator.next_frm(cursor) is None
 	assert cursor.get_pos('frm') == 1
 	assert navigator.next_frm(cursor) is None
 	assert cursor.get_pos('frm') == 1
-	cursor.loop = True
+	cursor.proj.config['play']['loop'] = True
 	assert navigator.next_frm(cursor) is None
 	assert cursor.get_pos('frm') == 0
 

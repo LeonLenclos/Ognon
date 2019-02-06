@@ -1,9 +1,5 @@
 """This module provide control functions to manage projects"""
 
-import os, pickle, shutil, configparser
-
-from .. import model
-from .. import view
 from .. import projects
 
 def load(cursor, name=None):

@@ -1,11 +1,9 @@
 import pytest
-from ..    cursor import Cursor
+from ..cursor import Cursor
 from .. import model
 from .. import view
 from .. import control
 import os, shutil
-
-
 
 @pytest.fixture
 def cursor():
@@ -57,7 +55,7 @@ def cursor():
       }
       )
     c = Cursor(proj)
-    c.loop = False
+    c.proj.config['play']['loop'] = False
     return c
 
 def pytest_sessionfinish(session, exitstatus):

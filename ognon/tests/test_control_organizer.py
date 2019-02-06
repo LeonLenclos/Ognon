@@ -1,5 +1,4 @@
 from .. import control
-
 from .. import model
 
 class DebugCell(model.Cell):
@@ -85,4 +84,3 @@ def test_move_element_backward(cursor):
 def test_add_layer(cursor):
 	assert control.organizer.add_layer(cursor) is None
 	assert len(cursor.get_anim().layers) == 3
-

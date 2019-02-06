@@ -12,7 +12,6 @@ def test_get_pos(cursor):
     assert cursor.get_pos('layer') < len(cursor.proj.anims[cursor.get_pos('anim')].layers)
     assert cursor.get_pos('frm') < cursor.anim_len()
 
-
 def test_set_pos(cursor):
 
     # test set_pos on anim
@@ -35,24 +34,24 @@ def test_set_pos(cursor):
     assert cursor.get_pos('frm') == 0
     cursor.set_pos(anim='master', layer=0, frm=1)
     assert cursor.get_pos('frm') == 1
-    cursor.loop = True
+    cursor.proj.config['play']['loop'] = True
     cursor.set_pos(anim='master', layer=0, frm=2)
     assert cursor.get_pos('frm') == 0
     cursor.set_pos(anim='master', layer=0, frm=-1)
     assert cursor.get_pos('frm') == 1
-    cursor.loop = False
+    cursor.proj.config['play']['loop'] = False
     cursor.set_pos(anim='master', layer=0, frm=10)
     assert cursor.get_pos('frm') == 1
     cursor.set_pos(anim='master', layer=0, frm=-10)
     assert cursor.get_pos('frm') == 0
 
 def test_constrain_frm(cursor):
-    cursor.loop = False
+    cursor.proj.config['play']['loop'] = False
     assert cursor.constrain_frm(10) == 1
     assert cursor.constrain_frm(1) == 1
     assert cursor.constrain_frm(-10) == 0
     assert cursor.constrain_frm(0) == 0
-    cursor.loop = True
+    cursor.proj.config['play']['loop'] = True
     assert cursor.constrain_frm(-2) == 0 
     assert cursor.constrain_frm(-1) == 1 
     assert cursor.constrain_frm(0) == 0 

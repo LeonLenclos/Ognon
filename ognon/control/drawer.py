@@ -1,4 +1,5 @@
 """This module provide control functions to draw on cells"""
+
 import math
 
 from .. import model

@@ -6,6 +6,7 @@ It is a required argument for every control and view functions.
 
 from . import model
 
+
 class Cursor():
     """
     A Cursor is a point of view on an ognon project, a *tape head*.
@@ -39,7 +40,6 @@ class Cursor():
             'frm':0,
         }
         self.playing = False
-        self.loop = True #TODO: remove loop from cursor. Make it a config option
 
     def get_pos(self, key=None):
         """
@@ -108,7 +108,7 @@ class Cursor():
         :return: The constrained frm position.
         :rtype: int
         """
-        if self.loop:
+        if self.proj.config['play']['loop']:
             return frm % self.anim_len()
         if frm <= 0:
             return 0
