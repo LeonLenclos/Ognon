@@ -64,7 +64,10 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         do_GET method.
         """
         baseurl = 'ognon/client'
-        self.path = baseurl + ('/index.html' if self.path == '/' else self.path)
+        # self.path = baseurl + ('/index.html' if self.path == '/' else self.path)
+        if self.path.startswith('/docs/'):
+            baseurl = ''
+        self.path = baseurl + self.path
         http.server.SimpleHTTPRequestHandler.do_GET(self)
         
     def do_POST(self):

@@ -30,12 +30,12 @@ def main(args):
 	title = ' Ognon v{} '.format(__version__)
 	print('+{line}+\n|{title}|\n+{line}+'.format(line='-'*len(title), title=title))
 	print("Working on file://{}".format(PROJECTS_DIR))
-	print("Serving on http://{}:{}".format(*DEFAULT_ADRESS))
-	print("Serving on osc://{}:{}".format(*DEFAULT_OSC_ADRESS))
 
 	if args.browse:
 		webbrowser.open_new("http://{}:{}".format(*DEFAULT_ADRESS))
 
 	server.serve(DEFAULT_ADRESS, DEFAULT_OSC_ADRESS, not args.no_osc)
+	print("Serving on http://{}:{}".format(*DEFAULT_ADRESS))
+	print("Serving on osc://{}:{}".format(*DEFAULT_OSC_ADRESS))
 
 main(parser.parse_args())
