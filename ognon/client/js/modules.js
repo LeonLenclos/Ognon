@@ -323,7 +323,6 @@ class Statusbar extends Module {
     }
 
     onCursorMove() {
-        console.log(this.id)
         const updateInfos = (infos, statusbar) =>{
             const null_to_str = (a) => a === null ? "" : a
             statusbar.querySelectorAll('span')

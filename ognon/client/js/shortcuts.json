@@ -1,0 +1,45 @@
+{
+  "Space": {
+    "control": "/navigator/play",
+    "modulesMethod": "onCursorMove"
+  },
+  "Shift+Space": {
+    "control": "/navigator/auto_play",
+    "modulesMethod": "onCursorMove"
+  },
+  "Enter": {
+    "control": "/navigator/run",
+    "modulesMethod": "onCursorMove"
+  },
+  "Shift+Enter": {
+    "control": "/navigator/auto_run",
+    "modulesMethod": "onCursorMove"
+  },
+  "ArrowRight": {
+    "control": "/navigator/next_frm",
+    "modulesMethod": "onCursorMove"
+  },
+  "ArrowLeft": {
+    "control": "/navigator/prev_frm",
+    "modulesMethod": "onCursorMove"
+  },
+  "Shift+ArrowRight": {
+    "control": "/navigator/last_frm",
+    "modulesMethod": "onCursorMove"
+  },
+  "Shift+ArrowLeft": {
+    "control": "/navigator/first_frm",
+    "modulesMethod": "onCursorMove"
+  },
+  "ArrowUp": {
+    "control": "/navigator/upper_layer",
+    "modulesMethod": "onCursorMove"
+  },
+  "ArrowDown": {
+    "control": "/navigator/lower_layer",
+    "modulesMethod": "onCursorMove"
+  },
+  "F1": {
+    "specials": "toggleSleekView"
+  }
+}
