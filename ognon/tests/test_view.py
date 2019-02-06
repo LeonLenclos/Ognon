@@ -16,6 +16,13 @@ def test_get_projects_tree(cursor):
 	# test jsonability
 	json.dumps(view.get_projects_tree(cursor))
 
+def test_get_view_config(cursor):
+
+	assert view.get_view_config(cursor) == cursor.proj.config['view']	
+	# test jsonability
+	json.dumps(view.get_view_config(cursor))
+
+
 def test_get_anims(cursor):	
 	for a in view.get_anims(cursor):
 		assert a in cursor.proj.anims

@@ -70,6 +70,13 @@ class Anim():
         """Init an Anim with a first Layer"""
         self.layers = layers or [Layer()]
 
+
+# get default config
+import configparser
+parser = configparser.ConfigParser()
+parser.read('ognon/default.ini')
+default_config = {k:dict(v) for k, v in dict(parser).items()}
+
 class Project():
     """
     This class describe Projects.
@@ -78,14 +85,16 @@ class Project():
     A Project also has a name and a config dict. 
     """
 
-    def __init__(self, name, anims=None, config={}):
+    def __init__(self, name, anims=None, config=None):
         """
         Init an Project with its name.
         
         a dict of anims and a dict of config can also be passed.
         default for anims is a dict containing a single Anim named 'master'.
-        default for config is an empty dict
+        default for config is default.ini content
         """
         self.name = name
         self.anims = anims or {'master':Anim()}
-        self.config = config
+         
+
+        self.config = config or default_config

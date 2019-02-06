@@ -6,6 +6,7 @@ This module contain bunch of stateless functions. They all takes a
 import os
 
 from . import model
+from . import projects
 from . import PROJECTS_DIR
 
 def get_path(cursor, file=""):
@@ -27,8 +28,19 @@ def get_projects_tree(cursor):
     
     return {
         project_name:list_anims(project_name)
-        for project_name in os.listdir(PROJECTS_DIR)
+        for project_name in projects.get_saved_projects_list()
     }
+
+def get_view_config(cursor, option=None):
+    """
+    Return the projects view configuration.
+
+    If an option arg is passed, return the specified option.
+    """
+    if option:
+        return cursor.proj.config['view'][option]
+    else:
+        return cursor.proj.config['view']
 
 def get_anims(cursor):
     """
