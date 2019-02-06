@@ -15,7 +15,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ognon package" href="ognon_pkg_documentation.html" />
+    <link rel="next" title="Ognon web interface" href="ognon_web_interface.html" />
     <link rel="prev" title="Ognon’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -34,12 +34,45 @@
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Run ognon with <cite>$ python -m ognon</cite></p>
-<p>Then go to <a class="reference external" href="http://localhost:40460/">http://localhost:40460/</a></p>
+<p>Run ognon with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m ognon
+</pre></div>
+</div>
+<p>Then go to <a class="reference external" href="http://localhost:40460/">http://localhost:40460/</a> with a modern browser (I use Firefox 61)</p>
+</div>
+<div class="section" id="what-is-it-happening">
+<h2>What is it happening ?<a class="headerlink" href="#what-is-it-happening" title="Permalink to this headline">¶</a></h2>
+<p>Ognon prints out some information :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+------------+</span>
+<span class="o">|</span> <span class="n">Ognon</span> <span class="n">v1</span><span class="o">.</span><span class="n">α</span> <span class="o">|</span>
+<span class="o">+------------+</span>
+<span class="n">Working</span> <span class="n">on</span> <span class="n">file</span><span class="p">:</span><span class="o">///</span><span class="n">home</span><span class="o">/</span><span class="n">leon</span><span class="o">/</span><span class="n">ognons</span><span class="o">/</span>
+<span class="n">Serving</span> <span class="n">on</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">40460</span>
+<span class="n">Serving</span> <span class="n">on</span> <span class="n">osc</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">50460</span>
+</pre></div>
+</div>
+<p>We got :</p>
+<ul class="simple">
+<li>The Ognon version</li>
+<li>The location on your computer where ognon saves and exports files</li>
+<li>The adress where the http server is serving</li>
+<li>The adress where the osc server is serving</li>
+</ul>
+<p>If you browse the http adress (e.g. with firefox), you will find the <em>web interface</em>. This is where you can edit and manage your projects.</p>
+<p>You can now see the guide to the web interface -&gt; <a class="reference internal" href="ognon_web_interface.html#ognonwebinterface"><span class="std std-ref">Ognon web interface</span></a>.</p>
+</div>
+<div class="section" id="advanced-command-line-options">
+<h2>Advanced command line options<a class="headerlink" href="#advanced-command-line-options" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--help</span></code> : get the help</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--test</span></code> : run the tests (pytest)</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--browse</span></code> : open a web browser at the server adress</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--no-osc</span></code> : do not start the osc server</li>
+</ul>
 </div>
 <div class="section" id="server-api-usage">
 <h2>Server API usage<a class="headerlink" href="#server-api-usage" title="Permalink to this headline">¶</a></h2>
-<p>POST requests can be send to the ognon server. data are sent and received in json.</p>
+<p>POST requests can be sent to the ognon server. data are sent and received in JSON.</p>
 <div class="section" id="paths">
 <h3>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h3>
 <p>The server will look into ognon to find a function corresponding to the path</p>
@@ -75,15 +108,16 @@
 </div>
 <div class="section" id="osc-server-usage">
 <h2>OSC Server usage<a class="headerlink" href="#osc-server-usage" title="Permalink to this headline">¶</a></h2>
-<p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
+<p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
 <p>See -&gt; <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
-<p>The OSC server should be able to handle requests on <strong>any control function that only take a cursor argument</strong>. The request adress should be the path to the control function and a cursor id must be passed as an argument.</p>
+<p>The Ognon OSC server should be able to handle requests on any <em>control function</em>. The request adress should be the path to the <em>control function</em> and a cursor id must be passed as a first argument.</p>
 <div class="section" id="id1">
 <h3>Paths<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The server will look into ognon to find a control function corresponding to the path</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/&lt;</span><span class="n">module</span><span class="o">&gt;/&lt;</span><span class="n">function</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>For a complete list of <em>control functions</em> see this link : <a class="reference internal" href="ognon_pkg_documentation.html#module-ognon.control" title="ognon.control"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.control</span></code></a></p>
 </div>
 <div class="section" id="cursor-id">
 <h3>Cursor id<a class="headerlink" href="#cursor-id" title="Permalink to this headline">¶</a></h3>
@@ -91,22 +125,30 @@
 </div>
 <div class="section" id="server-port">
 <h3>Server port<a class="headerlink" href="#server-port" title="Permalink to this headline">¶</a></h3>
-<p>The new default port to the Ognon OSC server is <code class="docutils literal notranslate"><span class="pre">504600</span></code> (<code class="docutils literal notranslate"><span class="pre">5005</span></code> in Ognon v0)</p>
+<p>The new default port to the Ognon OSC server is <code class="docutils literal notranslate"><span class="pre">50460</span></code> (<code class="docutils literal notranslate"><span class="pre">5005</span></code> in Ognon v0)</p>
 </div>
 <div class="section" id="id2">
 <h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">run</span> <span class="n">default</span>
-</pre></div>
-</div>
+<dl class="docutils">
+<dt>::</dt>
+<dd>/control/navigator/run default</dd>
+</dl>
 <p>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">go_to_first_frm</span> <span class="n">default</span>
-</pre></div>
-</div>
+<dl class="docutils">
+<dt>::</dt>
+<dd>/control/navigator/go_to_first_frm default</dd>
+</dl>
 <p>To play/pause the animation</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/</span><span class="n">navigator</span><span class="o">/</span><span class="n">play</span> <span class="n">default</span>
-</pre></div>
-</div>
+<dl class="docutils">
+<dt>::</dt>
+<dd>/control/navigator/play default</dd>
+</dl>
+<p>To select the ‘dance-of-robots’ animation</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>control/animsmanager/select_anim default dance-of-robots</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -131,10 +173,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-it-happening">What is it happening ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-command-line-options">Advanced command line options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#server-api-usage">Server API usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#osc-server-usage">OSC Server usage</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="ognon_web_interface.html">Ognon web interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ognon_pkg_documentation.html">ognon package</a></li>
 </ul>
 
@@ -143,7 +188,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Ognon’s documentation!</a></li>
-      <li>Next: <a href="ognon_pkg_documentation.html" title="next chapter">ognon package</a></li>
+      <li>Next: <a href="ognon_web_interface.html" title="next chapter">Ognon web interface</a></li>
   </ul></li>
 </ul>
 </div>

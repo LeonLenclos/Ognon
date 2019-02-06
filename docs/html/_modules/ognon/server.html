@@ -95,7 +95,10 @@
 <span class="sd">        do_GET method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;ognon/client&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">baseurl</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;/index.html&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="c1"># self.path = baseurl + (&#39;/index.html&#39; if self.path == &#39;/&#39; else self.path)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/docs/&#39;</span><span class="p">):</span>
+            <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">baseurl</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
         <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="OgnonHTTPHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -187,6 +190,7 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ognon_web_interface.html">Ognon web interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ognon_pkg_documentation.html">ognon package</a></li>
 </ul>
 

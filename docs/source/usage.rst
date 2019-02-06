@@ -4,15 +4,51 @@ Usage
 Basic usage
 -----------
 
-Run ognon with `$ python -m ognon`
+Run ognon with 
 
-Then go to http://localhost:40460/
+::
 
+ $ python -m ognon
+
+Then go to http://localhost:40460/ with a modern browser (I use Firefox 61)
+
+What's going on ?
+-----------------
+
+Ognon prints out some information :
+
+::
+
+ +------------+
+ | Ognon v1.α |
+ +------------+
+ Working on file:///home/leon/ognons/
+ Serving on http://localhost:40460
+ Serving on osc://localhost:50460
+
+We got :
+
+- The Ognon version
+- The location on your computer where ognon saves and exports files
+- The adress where the http server is serving
+- The adress where the osc server is serving
+
+If you browse the http adress (e.g. with firefox), you will find the *web interface*. This is where you can edit and manage your projects.
+
+You can now see the guide to the web interface -> :ref:`ognonWebInterface`.
+
+Advanced command line options
+------------------------------
+
+- ``$ python -m ognon --help`` : get the help
+- ``$ python -m ognon --test`` : run the tests (pytest)
+- ``$ python -m ognon --browse`` : open a web browser at the server adress
+- ``$ python -m ognon --no-osc`` : do not start the osc server
 
 Server API usage
 ----------------
 
-POST requests can be send to the ognon server. data are sent and received in json.
+POST requests can be sent to the ognon server. data are sent and received in JSON.
 
 Paths
 ^^^^^
@@ -55,11 +91,12 @@ To draw a line on the cell curently pointed by the cursor 'default'.
 OSC Server usage
 ----------------
 
-Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.
+Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.
 
 See -> http://opensoundcontrol.org/spec-1_0
 
-The OSC server should be able to handle requests on **any control function that only take a cursor argument**. The request adress should be the path to the control function and a cursor id must be passed as an argument.
+The Ognon OSC server should be able to handle requests on any *control function*. The request adress should be the path to the *control function* and a cursor id must be passed as a first argument.
+
 
 Paths
 ^^^^^
@@ -69,6 +106,8 @@ The server will look into ognon to find a control function corresponding to the 
 
     /control/<module>/<function>
 
+For a complete list of *control functions* see this link : :class:`ognon.control`
+
 Cursor id
 ^^^^^^^^^
 
@@ -77,7 +116,7 @@ For the cursor id you may want to use ``default``.
 Server port
 ^^^^^^^^^^^
 
-The new default port to the Ognon OSC server is ``504600`` (``5005`` in Ognon v0)
+The new default port to the Ognon OSC server is ``50460`` (``5005`` in Ognon v0)
 
 Example
 ^^^^^^^
@@ -85,18 +124,19 @@ Example
 To run the animation (``/step`` in Ognon v0)
 
 :: 
-
-	/control/navigator/run default
+ /control/navigator/run default
 
 To go to the first frame of the animation (``/reset`` in Ognon v0)
 
 :: 
-
-	/control/navigator/go_to_first_frm default
+ /control/navigator/go_to_first_frm default
 
 To play/pause the animation
 
 :: 
+ /control/navigator/play default
 
-	/control/navigator/play default
+To select the 'dance-of-robots' animation 
 
+:: 
+ control/animsmanager/select_anim default dance-of-robots

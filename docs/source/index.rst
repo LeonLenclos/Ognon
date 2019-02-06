@@ -13,6 +13,7 @@ Ognon is a a local-only web application for the creation of 2D animation.
    :caption: Contents:
 
    usage
+   ognon_web_interface
    ognon_pkg_documentation
 
 Indices and tables
