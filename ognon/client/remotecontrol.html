@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>OGN Remote Control</title>
+	<link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+
+<div id="statusbar">
+	<h1><a href="/">Ognon</a> remote control</a></h1>
+	<label>project</label><span id="project_name"></span>
+	<label>frm</label><span id="frm_idx"></span>
+	<label>layer</label><span id="layer_idx"></span>
+	<label>anim</label><span id="anim_name"></span>
+	<label>loop</label><span id="loop"></span>
+	<label>playing</label><span id="playing"></span>
+</div>
+
+<div id="toolbar">
+	<div class="section" id="projectmanager">
+		<label>project</label>
+		<input id="project_name" name="name"/>
+		<button id="load" data-required="name">load</button>
+		<button id="save">save</button>
+	</div>
+	<div class="section" id="animsmanager">
+		<label>anims</label>
+		<input id="anim_name" name="name"/>
+		<button id="select_anim" data-required="name">select</button>
+		<button id="del_anim" data-required="name">del</button>
+	</div>
+	<div class="section" id="navigator">
+		<label>navigation</label>
+		<button id="run">run</button>
+		<button id="auto_run">autorun</button>
+		<button id="play">play</button>
+		<button id="prev_frm">prev</button>
+		<button id="next_frm">next</button>
+		<button id="first_frm">first</button>
+		<button id="last_frm">last</button>
+	</div>
+</div>
+
+</body>
+	<script src="/js/client.js"></script>
+	<script src="/js/modules.js"></script>
+	<script src="/js/remotecontrol.js"></script>
+
+</html>
