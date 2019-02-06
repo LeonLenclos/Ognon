@@ -31,9 +31,12 @@ const onCanvasMouseDown = (e) => {
 const onCanvasMouseMove = (e) => {
     if(canvas.pMouseX){
         let tool = document.getElementById('tool-selector').value
-        fetch('/control/drawer/'+tool+'/', initOptions({
-            coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]
-        }))
+        if (tool == 'draw'){
+            args = {coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]};
+        } else if (tool == 'erease'){
+            args = {coords:[e.offsetX, e.offsetY]};
+        }
+        fetch('/control/drawer/'+tool+'/', initOptions(args))
         .then(()=>callModulesMethod('onDraw'))
         canvas.pMouseX = e.offsetX;
         canvas.pMouseY = e.offsetY;

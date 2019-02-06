@@ -25,7 +25,7 @@ def erease(cursor, coords, radius=5):
     """
     for i, l in enumerate(cursor.get_element().lines):
         for point in _pairwise(l.coords):
-            if _distance(coords, point):
+            if _distance(coords, point) < radius:
                 del cursor.get_element().lines[i]
                 return
 
