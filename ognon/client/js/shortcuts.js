@@ -36,9 +36,9 @@ window.addEventListener("keydown", e =>{
 }); 
 
 window.addEventListener("keyup", e =>{
-    keysPressed = keysPressed.filter(item => item != e.key)
+    keysPressed = keysPressed.filter(item => item != e.key);
 });
 
 specials.toggleSleekView = () => {
-    document.body.classList.toggle('sleek')
+    document.body.classList.toggle('sleek');
 }
