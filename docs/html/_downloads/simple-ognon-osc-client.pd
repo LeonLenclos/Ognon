@@ -1,0 +1,16 @@
+#N canvas 649 173 599 252 12;
+#X msg 216 134 disconnect;
+#X msg 35 134 connect localhost 50460;
+#X msg 306 134 send /control/navigator/run default;
+#X obj 306 188 udpsend;
+#X obj 306 161 packOSC;
+#X text 57 28 Simple patch to send an OSC message to Ognon via UDP.
+;
+#X text 57 51 It sends a request to the path '/control/navigator/run'
+with the cursor id 'default';
+#X text 58 89 Change 'localhost' to the ip adress of the Ognon OSC
+server;
+#X connect 0 0 3 0;
+#X connect 1 0 3 0;
+#X connect 2 0 4 0;
+#X connect 4 0 3 0;

@@ -4,7 +4,4 @@
 Ognon web interface
 ===================
 
-The pages
----------
-
-blah blah
+documentation in progress...

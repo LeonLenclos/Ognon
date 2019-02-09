@@ -93,50 +93,53 @@ OSC Server usage
 
 Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.
 
-See -> http://opensoundcontrol.org/spec-1_0
-
 The Ognon OSC server should be able to handle requests on any *control function*. The request adress should be the path to the *control function* and a cursor id must be passed as a first argument.
 
+.. warning:: Untested : Some requests may not be supported by the osc server. Because of the types of parameters.
+
+.. seealso:: OSC specification on the official website : http://opensoundcontrol.org/spec-1_0
 
 Paths
 ^^^^^
-The server will look into ognon to find a control function corresponding to the path
 
-::
+The server will look into ognon to find a control function corresponding to the path : :samp:`/control/{module}/{function}`.
 
-    /control/<module>/<function>
+For a complete list of *control functions* see :class:`ognon.control`.
 
-For a complete list of *control functions* see this link : :class:`ognon.control`
+For your OSC client you would probably want to use the *navigator* functions. They allow to navigate in the animation : :samp:`/control/navigator/{function}` (see :class:`ognon.control.navigator`)
 
 Cursor id
 ^^^^^^^^^
 
-For the cursor id you may want to use ``default``.
+The cursor id can be any string. But you may want to use ``default``. 
 
 Server port
 ^^^^^^^^^^^
 
-The new default port to the Ognon OSC server is ``50460`` (``5005`` in Ognon v0)
+The port to the Ognon OSC server is ``50460``
 
 Example
 ^^^^^^^
 
-To run the animation (``/step`` in Ognon v0)
+- To run the animation (``/step`` in Ognon v0) :
+    :samp:`/control/navigator/run {cursor-id}`
+- To play/pause the animation :
+    :samp:`/control/navigator/play {cursor-id}`
+- To go to the first frame of the animation (``/reset`` in Ognon v0) :
+    :samp:`/control/navigator/go_to_first_frm {cursor-id}`
+- To go to the nth frame of the animation :
+    :samp:`/control/navigator/go_to_frm {cursor-id} {n}`
+- To select an animation  :
+    :samp:`control/animsmanager/select_anim {cursor-id} {name-of-the-animation}`
 
-:: 
- /control/navigator/run default
+Control Ognon with OSC and Puredata
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To go to the first frame of the animation (``/reset`` in Ognon v0)
+.. figure:: static/pd/simple-ognon-osc-client.png
+   :align: center
+   
+   *simple-ognon-osc-client.pd* 
 
-:: 
- /control/navigator/go_to_first_frm default
+:download:`download simple-ognon-osc-client.pd <static/pd/simple-ognon-osc-client.pd>`
 
-To play/pause the animation
-
-:: 
- /control/navigator/play default
-
-To select the 'dance-of-robots' animation 
-
-:: 
- control/animsmanager/select_anim default dance-of-robots
+.. seealso:: The good tutorial to use OSC with puredata :  http://write.flossmanuals.net/pure-data/osc/

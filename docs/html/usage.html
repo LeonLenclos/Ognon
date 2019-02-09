@@ -40,8 +40,8 @@
 </div>
 <p>Then go to <a class="reference external" href="http://localhost:40460/">http://localhost:40460/</a> with a modern browser (I use Firefox 61)</p>
 </div>
-<div class="section" id="what-is-it-happening">
-<h2>What is it happening ?<a class="headerlink" href="#what-is-it-happening" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="what-s-going-on">
+<h2>What’s going on ?<a class="headerlink" href="#what-s-going-on" title="Permalink to this headline">¶</a></h2>
 <p>Ognon prints out some information :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+------------+</span>
 <span class="o">|</span> <span class="n">Ognon</span> <span class="n">v1</span><span class="o">.</span><span class="n">α</span> <span class="o">|</span>
@@ -109,46 +109,70 @@
 <div class="section" id="osc-server-usage">
 <h2>OSC Server usage<a class="headerlink" href="#osc-server-usage" title="Permalink to this headline">¶</a></h2>
 <p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
-<p>See -&gt; <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
 <p>The Ognon OSC server should be able to handle requests on any <em>control function</em>. The request adress should be the path to the <em>control function</em> and a cursor id must be passed as a first argument.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Untested : Some requests may not be supported by the osc server. Because of the types of parameters.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">OSC specification on the official website : <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
+</div>
 <div class="section" id="id1">
 <h3>Paths<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>The server will look into ognon to find a control function corresponding to the path</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">control</span><span class="o">/&lt;</span><span class="n">module</span><span class="o">&gt;/&lt;</span><span class="n">function</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>For a complete list of <em>control functions</em> see this link : <a class="reference internal" href="ognon_pkg_documentation.html#module-ognon.control" title="ognon.control"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.control</span></code></a></p>
+<p>The server will look into ognon to find a control function corresponding to the path : <code class="samp docutils literal notranslate"><span class="pre">/control/</span><em><span class="pre">module</span></em><span class="pre">/</span><em><span class="pre">function</span></em></code>.</p>
+<p>For a complete list of <em>control functions</em> see <a class="reference internal" href="ognon_pkg_documentation.html#module-ognon.control" title="ognon.control"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.control</span></code></a>.</p>
+<p>For your OSC client you would probably want to use the <em>navigator</em> functions. They allow to navigate in the animation : <code class="samp docutils literal notranslate"><span class="pre">/control/navigator/</span><em><span class="pre">function</span></em></code> (see <a class="reference internal" href="ognon_pkg_documentation.html#module-ognon.control.navigator" title="ognon.control.navigator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.control.navigator</span></code></a>)</p>
 </div>
 <div class="section" id="cursor-id">
 <h3>Cursor id<a class="headerlink" href="#cursor-id" title="Permalink to this headline">¶</a></h3>
-<p>For the cursor id you may want to use <code class="docutils literal notranslate"><span class="pre">default</span></code>.</p>
+<p>The cursor id can be any string. But you may want to use <code class="docutils literal notranslate"><span class="pre">default</span></code>.</p>
 </div>
 <div class="section" id="server-port">
 <h3>Server port<a class="headerlink" href="#server-port" title="Permalink to this headline">¶</a></h3>
-<p>The new default port to the Ognon OSC server is <code class="docutils literal notranslate"><span class="pre">50460</span></code> (<code class="docutils literal notranslate"><span class="pre">5005</span></code> in Ognon v0)</p>
+<p>The port to the Ognon OSC server is <code class="docutils literal notranslate"><span class="pre">50460</span></code></p>
 </div>
 <div class="section" id="id2">
 <h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0)</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>/control/navigator/run default</dd>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0) :</dt>
+<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/run</span> <em><span class="pre">cursor-id</span></em></code></dd>
 </dl>
-<p>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0)</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>/control/navigator/go_to_first_frm default</dd>
+</li>
+<li><dl class="first docutils">
+<dt>To play/pause the animation :</dt>
+<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/play</span> <em><span class="pre">cursor-id</span></em></code></dd>
 </dl>
-<p>To play/pause the animation</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>/control/navigator/play default</dd>
+</li>
+<li><dl class="first docutils">
+<dt>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0) :</dt>
+<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_first_frm</span> <em><span class="pre">cursor-id</span></em></code></dd>
 </dl>
-<p>To select the ‘dance-of-robots’ animation</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>control/animsmanager/select_anim default dance-of-robots</dd>
+</li>
+<li><dl class="first docutils">
+<dt>To go to the nth frame of the animation :</dt>
+<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_frm</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">n</span></em></code></dd>
 </dl>
+</li>
+<li><dl class="first docutils">
+<dt>To select an animation  :</dt>
+<dd><code class="samp docutils literal notranslate"><span class="pre">control/animsmanager/select_anim</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">name-of-the-animation</span></em></code></dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="control-ognon-with-osc-and-puredata">
+<h3>Control Ognon with OSC and Puredata<a class="headerlink" href="#control-ognon-with-osc-and-puredata" title="Permalink to this headline">¶</a></h3>
+<div class="figure align-center" id="id3">
+<img alt="_images/simple-ognon-osc-client.png" src="_images/simple-ognon-osc-client.png" />
+<p class="caption"><span class="caption-text"><em>simple-ognon-osc-client.pd</em></span></p>
+</div>
+<p><a class="reference download internal" href="_downloads/simple-ognon-osc-client.pd" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">simple-ognon-osc-client.pd</span></code></a></p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The good tutorial to use OSC with puredata :  <a class="reference external" href="http://write.flossmanuals.net/pure-data/osc/">http://write.flossmanuals.net/pure-data/osc/</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -173,7 +197,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-is-it-happening">What is it happening ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-s-going-on">What’s going on ?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-command-line-options">Advanced command line options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#server-api-usage">Server API usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#osc-server-usage">OSC Server usage</a></li>
