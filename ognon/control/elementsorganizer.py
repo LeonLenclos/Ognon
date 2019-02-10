@@ -52,14 +52,21 @@ def move_element_backward(cursor):
         navigator.prev_frm(cursor)
 
 def copy_element(cursor):
-    pass
-    # self.add_element_after(cursor, cursor.get_frm().copy())
+    """Store a copy of the current element in the special _clipboard anim."""
+    raise NotImplementedError
 
-def clone_element(cursor):
-    pass
-    # if cursor.get_frm() is not None:
-    #     self.add_element_after(cursor, cursor.get_frm())
+def cut_element(cursor):
+    """Pop the current element to the special _clipboard anim."""
+    raise NotImplementedError
 
+def paste_element(cursor):
+    """Copy the content of the special _clipboard anim at the current frm."""
+    raise NotImplementedError
+
+def duplicate_element(cursor):
+    """Duplicate the current element."""
+    raise NotImplementedError
+    
 def _pop_element_at(cursor, i):
     """Remove and return the element with the index i in the current layer."""
     return cursor.get_layer().elements.pop(i)

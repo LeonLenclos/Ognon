@@ -74,4 +74,9 @@ def anim_to_gif(cursor):
     )
 
 def anim_to_avi(cursor):
-    pass
+    """
+    Save the animation on the disk as an avi video.
+
+    Location is given by export>avi_name in the config file.
+    """
+    raise NotImplementedError
