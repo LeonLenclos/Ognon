@@ -83,14 +83,21 @@
         <span class="n">navigator</span><span class="o">.</span><span class="n">prev_frm</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="copy_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.elementsorganizer.copy_element">[docs]</a><span class="k">def</span> <span class="nf">copy_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-    <span class="c1"># self.add_element_after(cursor, cursor.get_frm().copy())</span>
+    <span class="sd">&quot;&quot;&quot;Store a copy of the current element in the special _clipboard anim.&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="clone_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.elementsorganizer.clone_element">[docs]</a><span class="k">def</span> <span class="nf">clone_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-    <span class="c1"># if cursor.get_frm() is not None:</span>
-    <span class="c1">#     self.add_element_after(cursor, cursor.get_frm())</span>
+<div class="viewcode-block" id="cut_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.elementsorganizer.cut_element">[docs]</a><span class="k">def</span> <span class="nf">cut_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pop the current element to the special _clipboard anim.&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
+<div class="viewcode-block" id="paste_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.elementsorganizer.paste_element">[docs]</a><span class="k">def</span> <span class="nf">paste_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Copy the content of the special _clipboard anim at the current frm.&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="duplicate_element"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.elementsorganizer.duplicate_element">[docs]</a><span class="k">def</span> <span class="nf">duplicate_element</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Duplicate the current element.&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+    
 <span class="k">def</span> <span class="nf">_pop_element_at</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Remove and return the element with the index i in the current layer.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_layer</span><span class="p">()</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>

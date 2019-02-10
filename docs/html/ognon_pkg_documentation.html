@@ -185,6 +185,11 @@ This method first call set_pos without arguments to ensure that the
 position is valid (e.g. not pointing an inexisting layer)</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="ognon.cursor.Cursor.proj">
+<code class="descname">proj</code><a class="headerlink" href="#ognon.cursor.Cursor.proj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="ognon.cursor.Cursor.set_pos">
 <code class="descname">set_pos</code><span class="sig-paren">(</span><em>anim=None</em>, <em>layer=None</em>, <em>frm=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.set_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.set_pos" title="Permalink to this definition">¶</a></dt>
@@ -195,8 +200,17 @@ to an unexisting animation and layer is set to 0 if the current value is
 an out of range index.</p>
 <p>If the anim argument is passed but layer or frm are not, set them to 0.</p>
 <p>If no arguments are passed, just constain the three values.</p>
+<p>If no project, raise a NoProjectError</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="exception">
+<dt id="ognon.cursor.NoProjectError">
+<em class="property">exception </em><code class="descclassname">ognon.cursor.</code><code class="descname">NoProjectError</code><a class="reference internal" href="_modules/ognon/cursor.html#NoProjectError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.NoProjectError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AttributeError</span></code></p>
+<p>This exception will be raised if a cursor action require a poject. And no
+one is selected.</p>
 </dd></dl>
 
 </div>
@@ -302,6 +316,21 @@ If calling the function raise an exception, send an error message</p>
 <dd><p>Send the blank line ending the MIME headers.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="ognon.server.OgnonHTTPHandler.log_message">
+<code class="descname">log_message</code><span class="sig-paren">(</span><em>format</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler.log_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler.log_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log an arbitrary message.</p>
+<p>This is used by all other logging functions.  Override
+it if you have specific logging wishes.</p>
+<p>The first argument, FORMAT, is a format string for the
+message to be logged.  If the format string contains
+any % escapes requiring parameters, they should be
+specified as subsequent arguments (it’s just like
+printf!).</p>
+<p>The client ip and current date/time are prefixed to
+every message.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -315,6 +344,13 @@ If calling the function raise an exception, send an error message</p>
 <dd><p>yields Handler namedtuples matching the given OSC pattern.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.server.call_function">
+<code class="descclassname">ognon.server.</code><code class="descname">call_function</code><span class="sig-paren">(</span><em>path</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#call_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.call_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a function with get_function, call it with passed args/kwargs and
+return the result.</p>
 </dd></dl>
 
 <dl class="function">
@@ -488,7 +524,9 @@ from <cite>coords</cite> lower than <cite>radius</cite>.</p>
 <dl class="function">
 <dt id="ognon.control.exporter.anim_to_avi">
 <code class="descclassname">ognon.control.exporter.</code><code class="descname">anim_to_avi</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/exporter.html#anim_to_avi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.exporter.anim_to_avi" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Save the animation on the disk as an avi video.</p>
+<p>Location is given by export&gt;avi_name in the config file.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="ognon.control.exporter.anim_to_gif">
@@ -646,19 +684,27 @@ into layers and layers into animation</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ognon.control.elementsorganizer.clone_element">
-<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">clone_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#clone_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.clone_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="ognon.control.elementsorganizer.copy_element">
 <code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">copy_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#copy_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.copy_element" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Store a copy of the current element in the special _clipboard anim.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.cut_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">cut_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#cut_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.cut_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the current element to the special _clipboard anim.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="ognon.control.elementsorganizer.del_element">
 <code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">del_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#del_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.del_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the current element.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.duplicate_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">duplicate_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#duplicate_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.duplicate_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Duplicate the current element.</p>
 </dd></dl>
 
 <dl class="function">
@@ -671,6 +717,12 @@ into layers and layers into animation</p>
 <dt id="ognon.control.elementsorganizer.move_element_forward">
 <code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">move_element_forward</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#move_element_forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.move_element_forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the current forward.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.elementsorganizer.paste_element">
+<code class="descclassname">ognon.control.elementsorganizer.</code><code class="descname">paste_element</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/elementsorganizer.html#paste_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.elementsorganizer.paste_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the content of the special _clipboard anim at the current frm.</p>
 </dd></dl>
 
 </div>
