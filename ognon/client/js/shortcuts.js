@@ -24,12 +24,8 @@ doShortcut = action => {
 window.addEventListener("keydown", e =>{
     if(!keysPressed.includes(e.key))
         keysPressed.push(e.key);
-    console.log(shortcutRepresentation(keysPressed));
-    console.log(shortcuts);
 
     if(shortcuts[shortcutRepresentation(keysPressed)]){
-        console.log(shortcuts[shortcutRepresentation(keysPressed)]);
-
         doShortcut(shortcuts[shortcutRepresentation(keysPressed)]);
         e.preventDefault();
     }

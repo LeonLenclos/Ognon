@@ -100,7 +100,7 @@ class Canvas extends Module {
 
         // load config
         fetch('/view/get_view_config/', initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(json => this.loadConfig(json))
     }
 
@@ -109,7 +109,7 @@ class Canvas extends Module {
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
         fetch('/view/get_cursor_infos/', initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(json =>{
             if (json.playing) {
                 this.draw()
@@ -124,7 +124,7 @@ class Canvas extends Module {
         Draw lines given by /view/get_lines/ 
         */
         fetch('/view/get_lines/', initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(lines => {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(lines, {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
@@ -136,7 +136,7 @@ class Canvas extends Module {
         Draw lines given by /view/get_lines/ and /view/get_onion_skin/""
         */
         fetch('/view/get_onion_skin/', initOptions({onion_range:[-1,0,1]}))
-        .then(response => response.json())
+        .then(handleResponse)
         .then(onionSkin => {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(onionSkin[-1], {lineWidth:this.onionFwColor, lineColor:this.onionBwColor}, this.ctx);
@@ -169,8 +169,10 @@ const onControlClick = (e) => {
     
 
     fetch(url, initOptions(args))
+    .then(handleResponse)
+    .then(e=>console.log(e))
     .then(()=>callModulesMethod('onAnimChange'))
-    .then(()=>callModulesMethod('onCursorMove'));
+    .then(()=>callModulesMethod('onCursorMove'))
 
 }
 
@@ -243,7 +245,7 @@ class Timeline extends Module {
             .forEach((e)=>setActiveElement('layer', cursor.layer, e));
         }
         fetch('/view/get_cursor_infos/',initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(json =>setActiveAll(json));
     }
 
@@ -304,7 +306,7 @@ class Timeline extends Module {
         }
 
         fetch('/view/get_timeline/', initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(json => createTimeline(json, this.elmt));
     }
 }
@@ -329,7 +331,7 @@ class Statusbar extends Module {
             .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
         }
         fetch(this.requestPath, initOptions())
-        .then(response => response.json())
+        .then(handleResponse)
         .then(json => updateInfos(json, this.elmt));
     }
 }

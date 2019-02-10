@@ -36,7 +36,7 @@ class Cursor():
         """
         Init a cursor with an optional ognon project.
         """
-        self.proj = proj
+        self._proj = proj
         self._pos = {
             'anim':'master',
             'layer':0,
@@ -44,6 +44,16 @@ class Cursor():
         }
         self.playing = False
 
+    @property
+    def proj(self):
+        if not self._proj:
+            raise NoProjectError
+        return self._proj
+    
+    @proj.setter
+    def proj(self, value):
+        self._proj = value
+    
     def get_pos(self, key=None):
         """
         Get the cursor position.
@@ -87,11 +97,11 @@ class Cursor():
             self._pos['layer'] = layer
         if frm is not None:
             self._pos['frm'] = frm
-        try:
-            if self._pos['anim'] not in self.proj.anims:
-                self._pos['anim'] = 'master'
-        except AttributeError:
-            raise NoProjectError()
+        # try:
+        if self._pos['anim'] not in self.proj.anims:
+            self._pos['anim'] = 'master'
+        # except AttributeError:
+            # raise NoProjectError()
         # Constrain layer.
         if self._pos['layer'] >= len(self.proj.anims[self._pos['anim']].layers) \
         or self._pos['layer']  < 0:

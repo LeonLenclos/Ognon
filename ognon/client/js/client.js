@@ -13,6 +13,14 @@ const initOptions = (args) => {return{
     })
 };}
 
+const handleResponse = (res) => {
+        if (res.status === 400) {
+            res.text().then(errMsg => alert(errMsg))
+            throw 400
+            return null
+        }
+        return res.json();
+}
 
 // Auto update
 

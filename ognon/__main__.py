@@ -5,11 +5,12 @@ This module start the server.
 import pytest
 import argparse
 import webbrowser
+import logging
 
 from . import server
-from . import __version__, PROJECTS_DIR, DEFAULT_ADRESS, DEFAULT_OSC_ADRESS
+from . import __version__, PROJECTS_DIR, DEFAULT_HTTP_ADRESS, DEFAULT_OSC_ADRESS
 
-
+# Parsing command line args
 parser = argparse.ArgumentParser(
 	prog='python -m ognon',
 	description='Start the Ognon server.')
@@ -23,6 +24,13 @@ parser.add_argument('--no-osc',
 	action='store_true',
 	help='also serve osc on another port.')
 
+# Logging
+logging.basicConfig(
+	format='%(asctime)s:%(msecs)03d %(levelname)s: %(message)s',
+	datefmt='%H:%M:%S',
+	level=logging.INFO
+)
+
 def main(args):
 	if args.test:
 		return pytest.main(['-x', 'ognon/tests'])
@@ -32,10 +40,11 @@ def main(args):
 	print("Working on file://{}".format(PROJECTS_DIR))
 
 	if args.browse:
-		webbrowser.open_new("http://{}:{}".format(*DEFAULT_ADRESS))
+		webbrowser.open_new("http://{}:{}".format(*DEFAULT_HTTP_ADRESS))
 
-	server.serve(DEFAULT_ADRESS, DEFAULT_OSC_ADRESS, not args.no_osc)
-	print("Serving on http://{}:{}".format(*DEFAULT_ADRESS))
-	print("Serving on osc://{}:{}".format(*DEFAULT_OSC_ADRESS))
+	server.serve(DEFAULT_HTTP_ADRESS, DEFAULT_OSC_ADRESS, not args.no_osc)
+	print("Serving on http://{}:{}".format(*DEFAULT_HTTP_ADRESS))
+	if not args.no_osc:
+		print("Serving on osc://{}:{}".format(*DEFAULT_OSC_ADRESS))
 
 main(parser.parse_args())
