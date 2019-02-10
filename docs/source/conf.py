@@ -19,15 +19,17 @@ sys.path.insert(0, '/home/leon/miniconda3/lib/python3.6/site-packages')
 
 
 # -- Project information -----------------------------------------------------
+import ognon
 
 project = 'Ognon'
 copyright = '2019, Léon Lenclos'
 author = 'Léon Lenclos'
 
 # The short X.Y version
-version = ''
+_vlist = ognon.__version__.split('.')
+version = '.'.join(_vlist[:-1])
 # The full version, including alpha/beta/rc tags
-release = 'v1'
+release = ognon.__version__
 
 
 # -- General configuration ---------------------------------------------------
