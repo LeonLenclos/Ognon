@@ -7,6 +7,11 @@ It is a required argument for every control and view functions.
 from . import model
 from . import tags
 
+class NoProjectError(AttributeError):
+    """
+    This exception will be raised if a cursor action require a poject. And no
+    one is selected."""
+    pass
 
 class Cursor():
     """
@@ -65,7 +70,14 @@ class Cursor():
         If the anim argument is passed but layer or frm are not, set them to 0.
 
         If no arguments are passed, just constain the three values.
+
+        If no project, raise a NoProjectError
         """
+
+        # Ok, I think all the  exception for inapropriate requests can be raised
+        # From this method. (not sure)
+
+
         # Set position.
         if anim is not None:
             self._pos['anim'] = anim
@@ -75,9 +87,11 @@ class Cursor():
             self._pos['layer'] = layer
         if frm is not None:
             self._pos['frm'] = frm
-        # Constain anim.
-        if self._pos['anim'] not in self.proj.anims:
-            self._pos['anim'] = 'master'
+        try:
+            if self._pos['anim'] not in self.proj.anims:
+                self._pos['anim'] = 'master'
+        except AttributeError:
+            raise NoProjectError()
         # Constrain layer.
         if self._pos['layer'] >= len(self.proj.anims[self._pos['anim']].layers) \
         or self._pos['layer']  < 0:

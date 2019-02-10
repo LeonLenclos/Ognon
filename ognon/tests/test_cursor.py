@@ -1,5 +1,6 @@
 import pytest
 from .. import model
+from .. import cursor as cursor_module
 
 def test_get_pos(cursor):
     # test that it always return _pos values
@@ -13,6 +14,9 @@ def test_get_pos(cursor):
     assert cursor.get_pos('frm') < cursor.anim_len()
 
 def test_set_pos(cursor):
+
+    # test set_pos without args
+    cursor.set_pos()
 
     # test set_pos on anim
     assert cursor.get_pos('anim') == 'master'
@@ -44,6 +48,12 @@ def test_set_pos(cursor):
     assert cursor.get_pos('frm') == 1
     cursor.set_pos(anim='master', layer=0, frm=-10)
     assert cursor.get_pos('frm') == 0
+
+    # test set_pos without project
+    cursor.proj = None
+    with pytest.raises(cursor_module.NoProjectError):
+        cursor.set_pos()
+
 
 def test_constrain_frm(cursor):
     cursor.proj.config['play']['loop'] = False
