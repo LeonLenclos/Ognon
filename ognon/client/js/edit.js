@@ -18,7 +18,6 @@ const autoUpdateOnPlay = () => {
     fetch('/view/get_cursor_infos/', initOptions())
     .then(response=>response.json())
     .then(json=>{
-        console.log(json);
         if (json.playing){
             startAutoUpdate('onCursorMove');
         } else {
@@ -28,3 +27,4 @@ const autoUpdateOnPlay = () => {
 }
 
 document.getElementById('play').addEventListener('click', autoUpdateOnPlay)
+document.getElementById('auto_play').addEventListener('click', autoUpdateOnPlay)

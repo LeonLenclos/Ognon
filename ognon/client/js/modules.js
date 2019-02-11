@@ -170,7 +170,6 @@ const onControlClick = (e) => {
 
     fetch(url, initOptions(args))
     .then(handleResponse)
-    .then(e=>console.log(e))
     .then(()=>callModulesMethod('onAnimChange'))
     .then(()=>callModulesMethod('onCursorMove'))
 

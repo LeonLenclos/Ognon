@@ -1,11 +1,13 @@
 {
   "Space": {
     "control": "/navigator/play",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "onCursorMove",
+    "specials": "autoUpdateOnPlay"
   },
   "Shift+Space": {
     "control": "/navigator/auto_play",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "onCursorMove",
+    "specials": "autoUpdateOnPlay"
   },
   "Enter": {
     "control": "/navigator/run",

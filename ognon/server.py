@@ -13,6 +13,7 @@ import pythonosc.osc_server
 import pythonosc.dispatcher
 
 from . import cursor
+from . import control
 
 functions = {}
 cursors = {}
@@ -39,9 +40,9 @@ def call_function(path, *args, **kwargs):
     Get a function with get_function, call it with passed args/kwargs and
     return the result.
     """
-    def handleError(err_msg):
-        logging.warning(err_msg)
-        return Exception(err_msg)
+    def handleError(*err_msg):
+        logging.warning(err_msg[0])
+        return Exception(*err_msg)
 
     try:
         f = get_function(path)
@@ -53,7 +54,11 @@ def call_function(path, *args, **kwargs):
     except NotImplementedError:
         return handleError(f'Not implemented - {path}')
     except cursor.NoProjectError:
-        return handleError('Undefine project')
+        return handleError('Undefine project',
+            'You must first get a project.')
+    except control.exporter.ExportDestNotFoundError:
+        return handleError('Destination not found',
+            'You must save the project before exporting it.')
 
 def get_cursor(name='default'):
     """
@@ -121,7 +126,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(400)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
-            self.wfile.write(bytes(reply.args[0], 'utf-8'))
+            self.wfile.write(bytes('\n'.join(reply.args), 'utf-8'))
         else:
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')

@@ -11,14 +11,19 @@ shortcutRepresentation = (keysArray) =>
 
 doShortcut = action => {
     args = {};
-    if(action.args)
+    if(action.args){
         args = action.args;
-    if(action.control)
-        fetch('/control'+action.control, initOptions(args));
-    if(action.special)
-        specials[action.special](args);
-    if(action.modulesMethod)
+    }
+    if(action.control){
+        fetch('/control'+action.control, initOptions(args))
+        .then(handleResponse);
+    }
+    if(action.specials){
+        specials[action.specials](args);
+    }
+    if(action.modulesMethod){
         callModulesMethod(action.modulesMethod)
+    }
 };
 
 window.addEventListener("keydown", e =>{
@@ -39,4 +44,10 @@ window.addEventListener("keyup", e =>{
 
 specials.toggleSleekView = () => {
     document.body.classList.toggle('sleek');
+}
+
+specials.autoUpdateOnPlay = () => {
+    if(autoUpdateOnPlay){
+        autoUpdateOnPlay();
+    }
 }

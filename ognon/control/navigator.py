@@ -21,8 +21,8 @@ def play(cursor):
 
 def auto_play(cursor):
     """Call play and then auto_run."""
-    play()
-    auto_run()
+    play(cursor)
+    auto_run(cursor)
 
 def prev_frm(cursor):
     """Set cursor position to the previous frm."""

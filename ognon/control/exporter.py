@@ -8,6 +8,11 @@ import PIL.ImageDraw
 from .. import projects
 from .. import view
 
+class ExportDestNotFoundError(FileNotFoundError):
+    """This error is raised when the destination directory for exporting is
+    not found."""
+    pass
+        
 def _frm_to_pilimage(cursor, frm=None):
     """
     Create a PIL.Image object from the current animation frm or passed frm.
@@ -37,10 +42,12 @@ def frm_to_png(cursor, frm=None):
     name_format = cursor.proj.config['export']['png_name']
     anim = cursor.get_pos('anim')
     frm = frm if frm is not None else cursor.get_pos('frm')
-    path = projects.get_path(cursor, name_format.format(anim=anim, frm=frm))
+    path = view.get_path(cursor, name_format.format(anim=anim, frm=frm))
 
-    _frm_to_pilimage(cursor, frm=frm).save(path)
-
+    try:
+        _frm_to_pilimage(cursor, frm=frm).save(path)
+    except FileNotFoundError:
+        raise ExportDestNotFoundError()    
 
 def anim_to_pngs(cursor):
     """
@@ -60,18 +67,20 @@ def anim_to_gif(cursor):
     name_format = cursor.proj.config['export']['gif_name']
     duration = 1000/cursor.proj.config['play']['fps']
     anim = cursor.get_pos('anim')
-    path = projects.get_path(cursor, name_format.format(anim=anim))
-
-    _frm_to_pilimage(cursor, 0).save(
-        path,
-        save_all=True,
-        append_images=map(
-            _frm_to_pilimage,
-            itertools.repeat(cursor),
-            range(1, cursor.anim_len())),
-        duration=duration,
-        loop=0
-    )
+    path = view.get_path(cursor, name_format.format(anim=anim))
+    try:
+        _frm_to_pilimage(cursor, 0).save(
+            path,
+            save_all=True,
+            append_images=map(
+                _frm_to_pilimage,
+                itertools.repeat(cursor),
+                range(1, cursor.anim_len())),
+            duration=duration,
+            loop=0
+        )
+    except FileNotFoundError:
+        raise ExportDestNotFoundError()
 
 def anim_to_avi(cursor):
     """
