@@ -26,8 +26,10 @@ window.addEventListener("keydown", e =>{
         keysPressed.push(e.key);
 
     if(shortcuts[shortcutRepresentation(keysPressed)]){
-        doShortcut(shortcuts[shortcutRepresentation(keysPressed)]);
-        e.preventDefault();
+        if(e.target.localName != 'input'){
+            doShortcut(shortcuts[shortcutRepresentation(keysPressed)]);
+            e.preventDefault();
+        }
     }
 }); 
 
