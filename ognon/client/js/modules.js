@@ -43,7 +43,7 @@ const onCanvasMouseMove = (e) => {
     }
 }
 
-const onCanvasMouseUp = (e) => {
+const onMouseUp = (e) => {
     canvas.pMouseX = null;
     canvas.pMouseY = null;
 }
@@ -89,14 +89,14 @@ class Canvas extends Module {
         this.lineWidth = config.line_width;
         this.onionFwColor = config.onion_skin_forward_color;
         this.onionBwColor = config.onion_skin_backward_color;
-        this.onionFwColor = config.onion_skin_line_width;
+        this.onionWidth = config.onion_skin_line_width;
     }
 
     setup() {
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
-        this.elmt.addEventListener('mouseup',   onCanvasMouseUp);
+        addEventListener('mouseup',   onMouseUp);
 
         // load config
         fetch('/view/get_view_config/', initOptions())
@@ -139,8 +139,8 @@ class Canvas extends Module {
         .then(handleResponse)
         .then(onionSkin => {
             clearCanvas(this.ctx, this.backgroundColor);
-            drawLines(onionSkin[-1], {lineWidth:this.onionFwColor, lineColor:this.onionBwColor}, this.ctx);
-            drawLines(onionSkin[1], {lineWidth:this.onionFwColor, lineColor:this.onionFwColor}, this.ctx);
+            drawLines(onionSkin[-1], {lineWidth:this.onionWidth, lineColor:this.onionBwColor}, this.ctx);
+            drawLines(onionSkin[1], {lineWidth:this.onionWidth, lineColor:this.onionFwColor}, this.ctx);
             drawLines(onionSkin[0], {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
         });
     }
