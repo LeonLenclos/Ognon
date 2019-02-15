@@ -31,10 +31,14 @@ def test_add_element_before(cursor):
 	assert cursor.get_pos('frm') == 0
 
 def test_add_cell_after_and_add_cell_before(cursor):
+	length = cursor.anim_len()
+	length = cursor.anim_len()
 	assert control.elementsorganizer.add_cell_before(cursor) is None
 	assert isinstance(cursor.get_element(), model.Cell)
+	assert length == cursor.anim_len() -1
 	assert control.elementsorganizer.add_cell_after(cursor) is None
 	assert isinstance(cursor.get_element(), model.Cell)
+	assert length == cursor.anim_len() -2
 
 def test_add_animref_after_and_add_animref_before(cursor):
 	assert control.elementsorganizer.add_animref_before(cursor, 'testing-anim') is None
