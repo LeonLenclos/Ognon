@@ -129,9 +129,7 @@ def get_lines(cursor, frm=None, anim=None):
             if type(element) is model.Cell:
                 lines += [line.coords for line in element.lines]
             if type(element) is model.AnimRef:
-                index, element, at = cursor.get_element_pos(layer=i, anim=anim)
                 lines += get_lines(cursor, anim=element.name, frm=at)
-
     return lines
 
 def get_onion_skin(cursor, onion_range=(0,)):

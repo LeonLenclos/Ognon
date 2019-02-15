@@ -23,8 +23,8 @@ def cursor():
       Anim : 'testing-anim-with-animref'
         Layer : 0
           Element : 0 -> Cell
-          Element : 1 -> AnimRef('long_anim')
-      Anim : 'long_anim'
+          Element : 1 -> AnimRef('long-anim')
+      Anim : 'long-anim'
         Layer : 0
           Element : 0 -> Cell
           Element : 1 -> Cell
@@ -47,9 +47,9 @@ def cursor():
             model.Layer(elements=[model.Cell()]),
           ]),
         'testing-anim-with-animref':model.Anim(layers=[
-            model.Layer(elements=[model.Cell(),model.AnimRef('long_anim')]),
+            model.Layer(elements=[model.Cell(),model.AnimRef('long-anim')]),
           ]),
-        'long_anim':model.Anim(layers=[
+        'long-anim':model.Anim(layers=[
             model.Layer(elements=[model.Cell() for _ in range(7)]),
           ]),
       }

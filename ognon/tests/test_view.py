@@ -63,6 +63,7 @@ def test_get_lines(cursor):
 	drawer.draw(cursor, line)
 	assert line in view.get_lines(cursor)
 
+	# weak test on animref
 	cursor.set_pos(anim='testing-anim-with-animref',frm=5)
 	view.get_lines(cursor)
 	
@@ -75,5 +76,16 @@ def test_get_onion_skin(cursor):
 	assert 1 in view.get_onion_skin(cursor, onion_range=(-1,0,1))
 	assert -2 in view.get_onion_skin(cursor, onion_range=(-2,-1,0,1,2))
 	assert view.get_onion_skin(cursor, onion_range=(0,))[0] == view.get_lines(cursor)
+	# test on animref
+	cursor.set_pos(frm=0, anim='testing-anim-with-animref')
+	drawer.draw(cursor, [0,0,0,10])
+	cursor.set_pos(frm=0, anim='long-anim')
+	drawer.draw(cursor, [0,0,10,10])
+	cursor.set_pos(frm=1, anim='long-anim')
+	drawer.draw(cursor, [0,0,10,0])
+	cursor.set_pos(frm=1, anim='testing-anim-with-animref')
+	assert view.get_lines(cursor, frm=1, anim='long-anim') == [[0,0,10,0]];
+	onion = view.get_onion_skin(cursor, onion_range=(-1,0,1))
+	assert onion == {-1:[[0,0,0,10]], 0:[[0,0,10,10]], 1:[[0,0,10,0]]}
 	# test jsonability
 	json.dumps(view.get_onion_skin(cursor))
