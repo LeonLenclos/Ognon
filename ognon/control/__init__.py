@@ -8,6 +8,7 @@ from . import animsmanager
 from . import drawer
 from . import navigator
 from . import elementsorganizer
+from . import exporter
 from . import layersorganizer
 from . import projectmanager
 from . import tagger
