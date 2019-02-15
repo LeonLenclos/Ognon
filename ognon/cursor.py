@@ -170,7 +170,7 @@ class Cursor():
         """
         anim = anim if anim else self._pos['anim']
         layer_len = lambda layer : sum(map(self.element_len, layer.elements))
-        return layer_len(max(self.proj.anims[anim].layers, key=layer_len))
+        return layer_len(max(self.get_anim(anim).layers, key=layer_len))
 
     def element_len(self, elmt, ignonre_tags=False):
         """
