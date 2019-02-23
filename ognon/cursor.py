@@ -3,7 +3,6 @@ This module defines the Cursor class.
 The cursor is the most importants object of the ognon's structure.
 It is a required argument for every control and view functions.
 """
-
 from . import model
 from . import tags
 

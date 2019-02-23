@@ -7,6 +7,7 @@ import argparse
 import webbrowser
 import logging
 
+from . import utils
 from . import server
 from . import __version__, PROJECTS_DIR, HTTP_ADRESS, OSC_ADRESS
 
@@ -44,10 +45,10 @@ logging.basicConfig(
 
 def main(args):
 	global HTTP_ADRESS, OSC_ADRESS, PROJECTS_DIR
-	
+
 	# Test
 	if args.test:
-		return pytest.main(['-x', 'ognon/tests'])
+		return pytest.main(['-x', utils.pkgabspath('tests')])
 
 	# Print version
 	title = ' Ognon v{} '.format(__version__)

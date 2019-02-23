@@ -14,6 +14,7 @@ import pythonosc.dispatcher
 
 from . import cursor
 from . import control
+from . import utils
 
 functions = {}
 cursors = {}
@@ -98,12 +99,23 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         """
         logging.info('http - GET {path}'.format(path=self.path))
 
-        baseurl = 'ognon/client'
-        # self.path = baseurl + ('/index.html' if self.path == '/' else self.path)
-        if self.path.startswith('/docs/'):
-            baseurl = ''
-        self.path = baseurl + self.path
-        http.server.SimpleHTTPRequestHandler.do_GET(self)
+        if self.path == '/':
+            self.path = '/index.html'
+        path = utils.pkgabspath('client') + self.path.split('?')[0]
+
+        try:
+            with open(path, 'rb') as f:
+                self.send_response(200, 'OK')
+                self.send_header('Content-type', 'html')
+                self.end_headers()
+                self.wfile.write(f.read())
+        except FileNotFoundError:
+            with open(utils.pkgabspath('client/404.html'), 'rb') as f:
+                self.send_response(404, 'Not found')
+                self.send_header('Content-type', 'html')
+                self.end_headers()
+                self.wfile.write(f.read())
+
         
     def do_POST(self):
         """

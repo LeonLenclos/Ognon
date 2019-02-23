@@ -40,7 +40,10 @@ def load_from_path(path):
             with open(os.path.join(path, file), 'rb') as fi:
                 anims[file[:-4]] = pickle.load(fi)
     # Load config
-    config = utils.parse_config(os.path.join(path, 'config.ini'))
+    try:
+        config = utils.parse_config(os.path.join(path, 'config.ini'))
+    except FileNotFoundError:
+        config = utils.parse_config(utils.pkgabspath('default.ini'))
     # Create, store and return project
     project = model.Project(name, anims=anims, config=config)
     projects[name] = project
@@ -83,7 +86,7 @@ def save_project_at(project, path):
     if not os.path.isdir(path):
         os.mkdir(path)
         os.mkdir(os.path.join(path, 'export'))
-        shutil.copyfile('ognon/default.ini', os.path.join(path, 'config.ini'))
+        shutil.copyfile(utils.pkgabspath('default.ini'), os.path.join(path, 'config.ini'))
     # save anims
     for name, anim in project.anims.items():
         with open(os.path.join(path, name+'.ogn'), 'wb') as fi:

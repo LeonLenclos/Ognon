@@ -9,11 +9,13 @@ HTTP_ADRESS = ('localhost', 40460)
 OSC_ADRESS = ('localhost', 50460)
 PROJECTS_DIR = os.path.expanduser('~/ognons/')
 
+print(os.path.join(os.path.dirname(__file__), 'tests'))
+
 from . import model
-from . import control
 from . import server
 from . import view
 from . import cursor
 from . import projects
 from . import tags
 from . import utils
+from . import control

@@ -101,4 +101,10 @@ class Project():
         self.anims = anims or {'master':Anim()}
          
 
-        self.config = config or utils.parse_config('ognon/default.ini')
+        self.config = config or utils.parse_config(
+            utils.pkgabspath('default.ini')
+        )
+        print(utils.pkgabspath('default.ini'))
+        print(utils.parse_config(
+            utils.pkgabspath('default.ini')
+        ))

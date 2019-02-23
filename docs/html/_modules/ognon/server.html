@@ -49,6 +49,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cursor</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">control</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
 
 <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">cursors</span> <span class="o">=</span> <span class="p">{}</span>
@@ -133,12 +134,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;http - GET </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
-        <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;ognon/client&#39;</span>
-        <span class="c1"># self.path = baseurl + (&#39;/index.html&#39; if self.path == &#39;/&#39; else self.path)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/docs/&#39;</span><span class="p">):</span>
-            <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">baseurl</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
-        <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="o">.</span><span class="n">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/index.html&#39;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;OK&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;client/404.html&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="s1">&#39;Not found&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+
         
 <div class="viewcode-block" id="OgnonHTTPHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

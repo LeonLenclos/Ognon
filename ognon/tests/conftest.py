@@ -58,6 +58,7 @@ def cursor():
     c.proj.config['play']['loop'] = False
     return c
 
+
 def pytest_sessionfinish(session, exitstatus):
     """ whole test run finishes. """
     if os.path.isdir('/tmp/ogn/'):
