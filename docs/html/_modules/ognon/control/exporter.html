@@ -13,10 +13,12 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
    
   <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -26,6 +28,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for ognon.control.exporter</h1><div class="highlight"><pre>
@@ -39,6 +43,11 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">projects</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">view</span>
 
+<div class="viewcode-block" id="ExportDestNotFoundError"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.ExportDestNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">ExportDestNotFoundError</span><span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This error is raised when the destination directory for exporting is</span>
+<span class="sd">    not found.&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+        
 <span class="k">def</span> <span class="nf">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a PIL.Image object from the current animation frm or passed frm.</span>
@@ -68,10 +77,12 @@
     <span class="n">name_format</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;export&#39;</span><span class="p">][</span><span class="s1">&#39;png_name&#39;</span><span class="p">]</span>
     <span class="n">anim</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;anim&#39;</span><span class="p">)</span>
     <span class="n">frm</span> <span class="o">=</span> <span class="n">frm</span> <span class="k">if</span> <span class="n">frm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">projects</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">))</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">))</span>
 
-    <span class="n">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
-
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ExportDestNotFoundError</span><span class="p">()</span>    </div>
 
 <div class="viewcode-block" id="anim_to_pngs"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.anim_to_pngs">[docs]</a><span class="k">def</span> <span class="nf">anim_to_pngs</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -91,18 +102,20 @@
     <span class="n">name_format</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;export&#39;</span><span class="p">][</span><span class="s1">&#39;gif_name&#39;</span><span class="p">]</span>
     <span class="n">duration</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">/</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;play&#39;</span><span class="p">][</span><span class="s1">&#39;fps&#39;</span><span class="p">]</span>
     <span class="n">anim</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;anim&#39;</span><span class="p">)</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">projects</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">))</span>
-
-    <span class="n">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-        <span class="n">path</span><span class="p">,</span>
-        <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">append_images</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
-            <span class="n">_frm_to_pilimage</span><span class="p">,</span>
-            <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span>
-            <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">())),</span>
-        <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
-        <span class="n">loop</span><span class="o">=</span><span class="mi">0</span>
-    <span class="p">)</span></div>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">append_images</span><span class="o">=</span><span class="nb">map</span><span class="p">(</span>
+                <span class="n">_frm_to_pilimage</span><span class="p">,</span>
+                <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span>
+                <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">())),</span>
+            <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+            <span class="n">loop</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ExportDestNotFoundError</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="anim_to_avi"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.anim_to_avi">[docs]</a><span class="k">def</span> <span class="nf">anim_to_avi</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -114,6 +127,7 @@
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -130,6 +144,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../ognon_web_interface.html">Ognon web interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../ognon_pkg_documentation.html">ognon package</a></li>
@@ -156,6 +171,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -164,8 +187,8 @@
       &copy;2019, Léon Lenclos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

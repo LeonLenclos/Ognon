@@ -13,10 +13,12 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -26,6 +28,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for ognon.server</h1><div class="highlight"><pre>
@@ -44,6 +48,7 @@
 <span class="kn">import</span> <span class="nn">pythonosc.dispatcher</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cursor</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">control</span>
 
 <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">cursors</span> <span class="o">=</span> <span class="p">{}</span>
@@ -70,21 +75,25 @@
 <span class="sd">    Get a function with get_function, call it with passed args/kwargs and</span>
 <span class="sd">    return the result.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">handleError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">handleError</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">err_msg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="ne">Exception</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Function not found - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Function not found - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Not implemented - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Not implemented - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">cursor</span><span class="o">.</span><span class="n">NoProjectError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Undefine project&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Undefine project&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;You must first get a project.&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">control</span><span class="o">.</span><span class="n">exporter</span><span class="o">.</span><span class="n">ExportDestNotFoundError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Destination not found&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;You must save the project before exporting it.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_cursor"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.get_cursor">[docs]</a><span class="k">def</span> <span class="nf">get_cursor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -122,7 +131,7 @@
 <span class="sd">        append the path to the base url of client files and call the parrent</span>
 <span class="sd">        do_GET method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;http - GET </span><span class="si">{self.path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;http - GET </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
         <span class="n">baseurl</span> <span class="o">=</span> <span class="s1">&#39;ognon/client&#39;</span>
         <span class="c1"># self.path = baseurl + (&#39;/index.html&#39; if self.path == &#39;/&#39; else self.path)</span>
@@ -139,7 +148,7 @@
 <span class="sd">        Convert the function to json and send it as a response.</span>
 <span class="sd">        If calling the function raise an exception, send an error message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;http - POST </span><span class="si">{self.path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;http - POST </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
         <span class="n">content_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">post_body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">content_len</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
@@ -152,7 +161,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">args</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
@@ -171,7 +180,7 @@
 
 <div class="viewcode-block" id="OgnonOSCDispatcher.handlers_for_address"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonOSCDispatcher.handlers_for_address">[docs]</a>    <span class="k">def</span> <span class="nf">handlers_for_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address_pattern</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;yields Handler namedtuples matching the given OSC pattern.&quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;osc - </span><span class="si">{self.path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;osc - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cursor_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
             <span class="n">call_function</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">get_cursor</span><span class="p">(</span><span class="n">cursor_id</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -205,6 +214,7 @@
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -221,6 +231,7 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ognon_web_interface.html">Ognon web interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ognon_pkg_documentation.html">ognon package</a></li>
@@ -247,6 +258,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -255,8 +274,8 @@
       &copy;2019, Léon Lenclos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

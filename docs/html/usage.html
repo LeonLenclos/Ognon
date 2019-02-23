@@ -13,12 +13,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Ognon web interface" href="ognon_web_interface.html" />
-    <link rel="prev" title="Ognon’s documentation!" href="index.html" />
+    <link rel="prev" title="Install" href="install.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -28,6 +30,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="usage">
@@ -38,13 +42,13 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m ognon
 </pre></div>
 </div>
-<p>Then go to <a class="reference external" href="http://localhost:40460/">http://localhost:40460/</a> with a modern browser (I use Firefox 61)</p>
+<p>Then go to <a class="reference external" href="http://localhost:40460/">http://localhost:40460/</a> with a modern browser.</p>
 </div>
 <div class="section" id="what-s-going-on">
 <h2>What’s going on ?<a class="headerlink" href="#what-s-going-on" title="Permalink to this headline">¶</a></h2>
-<p>Ognon prints out some information :</p>
+<p>Ognon prints out some informations :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+------------+</span>
-<span class="o">|</span> <span class="n">Ognon</span> <span class="n">v1</span><span class="o">.</span><span class="n">α</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">Ognon</span> <span class="n">v1</span><span class="o">.</span><span class="n">x</span> <span class="o">|</span>
 <span class="o">+------------+</span>
 <span class="n">Working</span> <span class="n">on</span> <span class="n">file</span><span class="p">:</span><span class="o">///</span><span class="n">home</span><span class="o">/</span><span class="n">leon</span><span class="o">/</span><span class="n">ognons</span><span class="o">/</span>
 <span class="n">Serving</span> <span class="n">on</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">40460</span>
@@ -58,20 +62,22 @@
 <li>The adress where the http server is serving</li>
 <li>The adress where the osc server is serving</li>
 </ul>
-<p>If you browse the http adress (e.g. with firefox), you will find the <em>web interface</em>. This is where you can edit and manage your projects.</p>
-<p>You can now see the guide to the web interface -&gt; <a class="reference internal" href="ognon_web_interface.html#ognonwebinterface"><span class="std std-ref">Ognon web interface</span></a>.</p>
+<p>If you visit the http adress (e.g. with firefox), you will find the <em>web interface</em>. This is where you can edit and manage your projects.</p>
+<p><strong>You can now read the web interface guide</strong> -&gt; <a class="reference internal" href="ognon_web_interface.html#ognonwebinterface"><span class="std std-ref">Ognon web interface</span></a>.</p>
 </div>
 <div class="section" id="advanced-command-line-options">
 <h2>Advanced command line options<a class="headerlink" href="#advanced-command-line-options" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--help</span></code> : get the help</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--test</span></code> : run the tests (pytest)</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--browse</span></code> : open a web browser at the server adress</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">-h</span></code> : get the help</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--test</span></code> or <code class="docutils literal notranslate"><span class="pre">-t</span></code>  : run the tests (pytest)</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--browse</span></code> or <code class="docutils literal notranslate"><span class="pre">-b</span></code>  : open a web browser at the server adress</li>
 <li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--no-osc</span></code> : do not start the osc server</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--ip-adress</span> <span class="pre">1.2.3.4</span></code> : set the server ip adress (default is localhost)</li>
+<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--projects-dir</span> <span class="pre">/path/to/projects/directory/</span></code> : set a different projects directory.</li>
 </ul>
 </div>
-<div class="section" id="server-api-usage">
-<h2>Server API usage<a class="headerlink" href="#server-api-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="http-server-api">
+<h2>HTTP Server API<a class="headerlink" href="#http-server-api" title="Permalink to this headline">¶</a></h2>
 <p>POST requests can be sent to the ognon server. data are sent and received in JSON.</p>
 <div class="section" id="paths">
 <h3>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h3>
@@ -106,8 +112,8 @@
 </div>
 </div>
 </div>
-<div class="section" id="osc-server-usage">
-<h2>OSC Server usage<a class="headerlink" href="#osc-server-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="osc-server-api">
+<h2>OSC Server API<a class="headerlink" href="#osc-server-api" title="Permalink to this headline">¶</a></h2>
 <p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
 <p>The Ognon OSC server should be able to handle requests on any <em>control function</em>. The request adress should be the path to the <em>control function</em> and a cursor id must be passed as a first argument.</p>
 <div class="admonition warning">
@@ -168,7 +174,7 @@
 <img alt="_images/simple-ognon-osc-client.png" src="_images/simple-ognon-osc-client.png" />
 <p class="caption"><span class="caption-text"><em>simple-ognon-osc-client.pd</em></span></p>
 </div>
-<p><a class="reference download internal" href="_downloads/simple-ognon-osc-client.pd" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">simple-ognon-osc-client.pd</span></code></a></p>
+<p><a class="reference download internal" download="" href="_downloads/22ce9620a8e0c3e47ff9b70f01145f25/simple-ognon-osc-client.pd"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">simple-ognon-osc-client.pd</span></code></a></p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">The good tutorial to use OSC with puredata :  <a class="reference external" href="http://write.flossmanuals.net/pure-data/osc/">http://write.flossmanuals.net/pure-data/osc/</a></p>
@@ -179,6 +185,7 @@
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -195,12 +202,13 @@
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-going-on">What’s going on ?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-command-line-options">Advanced command line options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#server-api-usage">Server API usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#osc-server-usage">OSC Server usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#http-server-api">HTTP Server API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#osc-server-api">OSC Server API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ognon_web_interface.html">Ognon web interface</a></li>
@@ -211,7 +219,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Ognon’s documentation!</a></li>
+      <li>Previous: <a href="install.html" title="previous chapter">Install</a></li>
       <li>Next: <a href="ognon_web_interface.html" title="next chapter">Ognon web interface</a></li>
   </ul></li>
 </ul>
@@ -228,6 +236,14 @@
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -236,8 +252,8 @@
       &copy;2019, Léon Lenclos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/usage.rst.txt"

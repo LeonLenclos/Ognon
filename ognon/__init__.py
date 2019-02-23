@@ -5,10 +5,9 @@ Run `python -m ognon` to start the server. Then browse http://lacalhost:40460
 import os
 
 __version__ = '1.α'
-DEFAULT_HTTP_ADRESS = ('localhost', 40460)
-DEFAULT_OSC_ADRESS = ('localhost', 50460)
+HTTP_ADRESS = ('localhost', 40460)
+OSC_ADRESS = ('localhost', 50460)
 PROJECTS_DIR = os.path.expanduser('~/ognons/')
-
 
 from . import model
 from . import control

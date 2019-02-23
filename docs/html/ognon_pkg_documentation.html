@@ -13,11 +13,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Ognon web interface" href="ognon_web_interface.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -27,6 +29,8 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="module-ognon">
@@ -285,7 +289,7 @@ and return it.</p>
 <p>This module defines dictionaries, functions and classes to run the ognon servers.</p>
 <dl class="class">
 <dt id="ognon.server.OgnonHTTPHandler">
-<em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnonHTTPHandler</code><span class="sig-paren">(</span><em>*args</em>, <em>directory=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ognon.server.</code><code class="descname">OgnonHTTPHandler</code><span class="sig-paren">(</span><em>request</em>, <em>client_address</em>, <em>server</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/server.html#OgnonHTTPHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.server.OgnonHTTPHandler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">http.server.SimpleHTTPRequestHandler</span></code></p>
 <p>This class is used to handle the HTTP requests that arrive at the server.</p>
 <p>We wait two kinds of requests :</p>
@@ -521,6 +525,14 @@ from <cite>coords</cite> lower than <cite>radius</cite>.</p>
 <div class="section" id="module-ognon.control.exporter">
 <span id="ognon-control-exporter"></span><h3>ognon.control.exporter<a class="headerlink" href="#module-ognon.control.exporter" title="Permalink to this headline">¶</a></h3>
 <p>This module provide control functions to export frms and anims</p>
+<dl class="exception">
+<dt id="ognon.control.exporter.ExportDestNotFoundError">
+<em class="property">exception </em><code class="descclassname">ognon.control.exporter.</code><code class="descname">ExportDestNotFoundError</code><a class="reference internal" href="_modules/ognon/control/exporter.html#ExportDestNotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.exporter.ExportDestNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></p>
+<p>This error is raised when the destination directory for exporting is
+not found.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="ognon.control.exporter.anim_to_avi">
 <code class="descclassname">ognon.control.exporter.</code><code class="descname">anim_to_avi</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/exporter.html#anim_to_avi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.exporter.anim_to_avi" title="Permalink to this definition">¶</a></dt>
@@ -811,6 +823,7 @@ project, then to load project from default directory, then to create it.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -827,6 +840,7 @@ project, then to load project from default directory, then to create it.</p>
 <h3>Navigation</h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ognon_web_interface.html">Ognon web interface</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ognon package</a><ul>
@@ -862,6 +876,14 @@ project, then to load project from default directory, then to create it.</p>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -870,8 +892,8 @@ project, then to load project from default directory, then to create it.</p>
       &copy;2019, Léon Lenclos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.9</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/ognon_pkg_documentation.rst.txt"
