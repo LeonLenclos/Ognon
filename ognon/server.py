@@ -47,12 +47,12 @@ def call_function(path, *args, **kwargs):
     try:
         f = get_function(path)
     except (ImportError, AttributeError):
-        return handleError(f'Function not found - {path}')
+        return handleError('Function not found - {path}'.format(path=path))
 
     try:
         return f(*args, **kwargs)
     except NotImplementedError:
-        return handleError(f'Not implemented - {path}')
+        return handleError('Not implemented - {path}'.format(path=path))
     except cursor.NoProjectError:
         return handleError('Undefine project',
             'You must first get a project.')
@@ -96,7 +96,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         append the path to the base url of client files and call the parrent
         do_GET method.
         """
-        logging.info(f'http - GET {self.path}')
+        logging.info('http - GET {path}'.format(path=self.path))
 
         baseurl = 'ognon/client'
         # self.path = baseurl + ('/index.html' if self.path == '/' else self.path)
@@ -113,7 +113,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         Convert the function to json and send it as a response.
         If calling the function raise an exception, send an error message
         """
-        logging.info(f'http - POST {self.path}')
+        logging.info('http - POST {path}'.format(path=self.path))
 
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len).decode('utf-8'))
@@ -145,7 +145,7 @@ class OgnonOSCDispatcher(pythonosc.dispatcher.Dispatcher):
 
     def handlers_for_address(self, address_pattern):
         """yields Handler namedtuples matching the given OSC pattern."""
-        logging.info(f'osc - {self.path}')
+        logging.info('osc - {path}'.format(path=self.path))
 
         def callback(path, cursor_id, *args):
             call_function(path, get_cursor(cursor_id), *args)
