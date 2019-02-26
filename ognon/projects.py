@@ -84,7 +84,7 @@ def save_project_at(project, path):
     """
     # create dir
     if not os.path.isdir(path):
-        os.mkdir(path)
+        os.makedirs(path, exist_ok=True)
         os.mkdir(os.path.join(path, 'export'))
         shutil.copyfile(utils.pkgabspath('default.ini'), os.path.join(path, 'config.ini'))
     # save anims
