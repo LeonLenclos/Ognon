@@ -10,8 +10,10 @@ def calculate_len(length, tag_description):
 	"""
 	tag = tag_description.split()
 	tag_name = tag.pop(0)
-	return tags[tag_name]['calculate_len'](length, *tag)
-
+	try:
+		return tags[tag_name]['calculate_len'](length, *tag)
+	except KeyError:
+		return length
 
 def calculate_inside_pos(pos, length, tag_description):
 	"""
@@ -21,8 +23,10 @@ def calculate_inside_pos(pos, length, tag_description):
 	"""
 	tag = tag_description.split()
 	tag_name = tag.pop(0)
-	return tags[tag_name]['calculate_inside_pos'](pos, length, *tag)
-	
+	try:
+		return tags[tag_name]['calculate_inside_pos'](pos, length, *tag)
+	except KeyError:
+		return pos
 
 tags = {
 	'loop':{
