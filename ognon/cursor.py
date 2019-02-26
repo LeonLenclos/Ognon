@@ -129,12 +129,32 @@ class Cursor():
         anim = anim or self.get_pos('anim')
         return self.proj.anims[anim]
 
+    def iter_elements(self, anim=None):
+        """
+        Generator function for iterating over all animation's elements.
+        """
+        for layer in self.get_anim(anim).layers:
+            for element in layer.elements:
+                yield element
+
+
     def get_layer(self, anim=None, layer=None):
         """
         Return the current layer or the specified layer in the specified anim
         """
         layer = layer if layer is not None else self.get_pos('layer')
         return self.get_anim(anim).layers[layer]
+
+
+    # True if the given element is an AnimRef
+    is_animref = lambda self, element: isinstance(element, model.AnimRef)
+
+    # True if the given AnimRef refers to an anim containing ref to itself.
+    is_self_ref = lambda self, elmt: elmt.name in [
+        e.name for e in self.iter_elements(elmt.name) if self.is_animref(e)]
+
+    # True if the given AnimRef refers to an unexisting anim.
+    is_unexisting_ref = lambda self, elmt: elmt.name not in self.proj.anims
 
     def get_element_pos(self, anim=None, layer=None, frm=None):
         """
@@ -143,9 +163,15 @@ class Cursor():
         Return None if no element.
         """
         layer = self.get_layer(anim, layer)
-        frm = frm if frm is not None else self.get_pos('frm') #2
-        frm_ = 0#0 #1 #3
+        frm = frm if frm is not None else self.get_pos('frm')
+        frm_ = 0
         for i, e in enumerate(layer.elements):
+            if self.is_animref(e):
+                broken = model.BrokenElement
+                if self.is_unexisting_ref(e):
+                    e = broken('/!\\ "{}" does not exists...'.format(e.name))
+                elif self.is_self_ref(e):
+                    e = broken('/!\\ self-reference...')
             length = self.element_len(e)
             frm_ += length
             if frm_ > frm:
@@ -178,9 +204,14 @@ class Cursor():
         if isinstance(elmt, model.Cell):
             length =  1
         elif isinstance(elmt, model.AnimRef):
-            length = self.anim_len(elmt.name)
-        else:
-            raise TypeError('Unknow element type')
+            if self.is_unexisting_ref(elmt):
+                length = 1
+            elif self.is_self_ref(elmt):
+                length = 1
+            else :
+                length = self.anim_len(elmt.name)
+        if isinstance(elmt, model.BrokenElement):
+            length = 1
         if ignonre_tags:
             return length
         for tag in elmt.tags:

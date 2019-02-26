@@ -33,6 +33,14 @@ def cursor():
           Element : 4 -> Cell
           Element : 5 -> Cell
           Element : 6 -> Cell
+      Anim : 'testing-anim-with-self-ref'
+        Layer : 0
+          Element : 0 -> Cell
+          Element : 1 -> AnimRef('anim-with-self-ref')
+
+      Anim : 'testing-anim-with-unexisting-ref'
+        Layer : 0
+          Element : 0 -> AnimRef('unexisting-anim')
 
     """  
 
@@ -51,6 +59,12 @@ def cursor():
           ]),
         'long-anim':model.Anim(layers=[
             model.Layer(elements=[model.Cell() for _ in range(7)]),
+          ]),
+        'testing-anim-with-self-ref':model.Anim(layers=[
+            model.Layer(elements=[model.Cell(), model.AnimRef('testing-anim-with-self-ref')]),
+          ]),
+        'testing-anim-with-unexisting-ref':model.Anim(layers=[
+            model.Layer(elements=[model.AnimRef('unexisting-anim')]),
           ]),
       }
       )

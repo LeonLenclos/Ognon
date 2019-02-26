@@ -58,6 +58,17 @@ class AnimRef(Element):
         super().__init__(tags)
         self.name = name
 
+class BrokenElement(Element):
+    """
+    This class describe a BrokenElement.
+
+    It should not be inside an animation but it's returned by some functions
+    if the asked element is broken (e.g. unexisting animref)
+    """
+    def __init__(self, name, tags=None):
+        """Init an BrokenElement with its name"""
+        super().__init__(tags)
+        self.name = name
 
 class Layer():
     """

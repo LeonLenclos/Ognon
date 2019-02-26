@@ -82,19 +82,31 @@ def test_get_layer(cursor):
     with pytest.raises(IndexError):
         cursor.get_layer(layer=10)
 
-def test_get_element_pos(cursor):
-    assert cursor.get_element_pos() == (0, cursor.proj.anims['master'].layers[0].elements[0], 0)
-    assert cursor.get_element_pos(layer=1) == (0, cursor.proj.anims['master'].layers[1].elements[0], 0)
-    assert cursor.get_element_pos(frm=1) == (1, cursor.proj.anims['master'].layers[0].elements[1], 0)
-    assert cursor.get_element_pos(anim='testing-anim-with-animref', frm=5) == (1, cursor.proj.anims['testing-anim-with-animref'].layers[0].elements[1], 4)
-
 def test_anim_len(cursor):
     assert cursor.anim_len() == 2
     assert cursor.anim_len('testing-anim') == 1
     assert cursor.anim_len('master') == 2
     assert cursor.anim_len('testing-anim-with-animref') == 8
+    # self ref
+    assert cursor.anim_len('testing-anim-with-self-ref') == 2
 
 def test_element_len(cursor):
     assert cursor.element_len(cursor.get_element()) == 1
     assert cursor.element_len(model.Cell()) == 1
     assert cursor.element_len(model.AnimRef('master')) == 2
+    # unexisting anim
+    assert cursor.element_len(model.AnimRef('unexisting-anim')) == 1
+    # self ref
+    assert cursor.element_len(cursor.get_anim('testing-anim-with-self-ref').layers[0].elements[1]) == 1
+
+
+def test_get_element_pos(cursor):
+    assert cursor.get_element_pos() == (0, cursor.proj.anims['master'].layers[0].elements[0], 0)
+    assert cursor.get_element_pos(layer=1) == (0, cursor.proj.anims['master'].layers[1].elements[0], 0)
+    assert cursor.get_element_pos(frm=1) == (1, cursor.proj.anims['master'].layers[0].elements[1], 0)
+    assert cursor.get_element_pos(anim='testing-anim-with-animref', frm=5) == (1, cursor.proj.anims['testing-anim-with-animref'].layers[0].elements[1], 4)
+    # unexisting anim
+    assert cursor.get_element_pos(anim='testing-anim-with-unexisting-ref', frm=0)[1].name == "/!\\ \"unexisting-anim\" does not exists..."
+    # unexisting anim
+    assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=0) == (0, cursor.proj.anims['testing-anim-with-self-ref'].layers[0].elements[0], 0)
+    assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=1)[1].name == "/!\\ self-reference..."
