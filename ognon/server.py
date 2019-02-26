@@ -8,6 +8,7 @@ import os
 import importlib
 import threading
 import logging
+import traceback
 
 import pythonosc.osc_server
 import pythonosc.dispatcher
@@ -60,6 +61,11 @@ def call_function(path, *args, **kwargs):
     except control.exporter.ExportDestNotFoundError:
         return handleError('Destination not found',
             'You must save the project before exporting it.')
+    except Exception:
+        traceback.print_exc()
+        return handleError('Oups...',
+            'An error occurs in the server.')
+
 
 def get_cursor(name='default'):
     """
