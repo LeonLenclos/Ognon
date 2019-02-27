@@ -93,6 +93,17 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
 
+<div class="viewcode-block" id="BrokenElement"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.BrokenElement">[docs]</a><span class="k">class</span> <span class="nc">BrokenElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class describe a BrokenElement.</span>
+
+<span class="sd">    It should not be inside an animation but it&#39;s returned by some functions</span>
+<span class="sd">    if the asked element is broken (e.g. unexisting animref)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init an BrokenElement with its name&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
 
 <div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>

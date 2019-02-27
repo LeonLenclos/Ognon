@@ -15,7 +15,11 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, '/home/leon/miniconda3/lib/python3.6/site-packages')
+
+# I import this extension here because it magically fix an issue that I do not
+# understand...
+import sphinx.builders.texinfo
+import sphinx.builders.text
 
 
 # -- Project information -----------------------------------------------------

@@ -61,6 +61,15 @@ of the animation it referes to.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="ognon.model.BrokenElement">
+<em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">BrokenElement</code><span class="sig-paren">(</span><em>name</em>, <em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#BrokenElement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.BrokenElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.model.Element</span></code></a></p>
+<p>This class describe a BrokenElement.</p>
+<p>It should not be inside an animation but it’s returned by some functions
+if the asked element is broken (e.g. unexisting animref)</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="ognon.model.Cell">
 <em class="property">class </em><code class="descclassname">ognon.model.</code><code class="descname">Cell</code><span class="sig-paren">(</span><em>lines=None</em>, <em>tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/model.html#Cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.model.Cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ognon.model.Element" title="ognon.model.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">ognon.model.Element</span></code></a></p>
@@ -187,6 +196,27 @@ Return None if no element.</p>
 ‘frm’). 
 This method first call set_pos without arguments to ensure that the
 position is valid (e.g. not pointing an inexisting layer)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ognon.cursor.Cursor.is_animref">
+<code class="descname">is_animref</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="headerlink" href="#ognon.cursor.Cursor.is_animref" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ognon.cursor.Cursor.is_self_ref">
+<code class="descname">is_self_ref</code><span class="sig-paren">(</span><em>elmt</em><span class="sig-paren">)</span><a class="headerlink" href="#ognon.cursor.Cursor.is_self_ref" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ognon.cursor.Cursor.is_unexisting_ref">
+<code class="descname">is_unexisting_ref</code><span class="sig-paren">(</span><em>elmt</em><span class="sig-paren">)</span><a class="headerlink" href="#ognon.cursor.Cursor.is_unexisting_ref" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ognon.cursor.Cursor.iter_elements">
+<code class="descname">iter_elements</code><span class="sig-paren">(</span><em>anim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/cursor.html#Cursor.iter_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.cursor.Cursor.iter_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function for iterating over all animation’s elements.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -603,6 +633,12 @@ while <cite>cursor.playing</cite> is true.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ognon.control.navigator.lower_layer">
+<code class="descclassname">ognon.control.navigator.</code><code class="descname">lower_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/navigator.html#lower_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.navigator.lower_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cutsor position to the lower layer.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ognon.control.navigator.next_frm">
 <code class="descclassname">ognon.control.navigator.</code><code class="descname">next_frm</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/navigator.html#next_frm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.navigator.next_frm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set cursor position to the next frm.</p>
@@ -624,6 +660,12 @@ while <cite>cursor.playing</cite> is true.</p>
 <dt id="ognon.control.navigator.run">
 <code class="descclassname">ognon.control.navigator.</code><code class="descname">run</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/navigator.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.navigator.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call next_frm if cursor.playing is true.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ognon.control.navigator.upper_layer">
+<code class="descclassname">ognon.control.navigator.</code><code class="descname">upper_layer</code><span class="sig-paren">(</span><em>cursor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ognon/control/navigator.html#upper_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ognon.control.navigator.upper_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the cutsor position to the upper layer.</p>
 </dd></dl>
 
 </div>

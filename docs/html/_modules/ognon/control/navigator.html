@@ -82,6 +82,14 @@
 <div class="viewcode-block" id="go_to_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.go_to_layer">[docs]</a><span class="k">def</span> <span class="nf">go_to_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set cursor position to layer i.&quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">i</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="lower_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.lower_layer">[docs]</a><span class="k">def</span> <span class="nf">lower_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set the cutsor position to the lower layer.&quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="upper_layer"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.navigator.upper_layer">[docs]</a><span class="k">def</span> <span class="nf">upper_layer</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set the cutsor position to the upper layer.&quot;&quot;&quot;</span>
+    <span class="n">cursor</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="n">layer</span><span class="o">=</span><span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;layer&#39;</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

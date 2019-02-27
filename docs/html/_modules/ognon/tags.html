@@ -45,8 +45,10 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">tag</span> <span class="o">=</span> <span class="n">tag_description</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 	<span class="n">tag_name</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-	<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_len&#39;</span><span class="p">](</span><span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span></div>
-
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_len&#39;</span><span class="p">](</span><span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span>
+	<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">length</span></div>
 
 <div class="viewcode-block" id="calculate_inside_pos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.tags.calculate_inside_pos">[docs]</a><span class="k">def</span> <span class="nf">calculate_inside_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">tag_description</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -56,8 +58,10 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">tag</span> <span class="o">=</span> <span class="n">tag_description</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 	<span class="n">tag_name</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-	<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">](</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span></div>
-	
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">](</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span>
+	<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">pos</span></div>
 
 <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="s1">&#39;loop&#39;</span><span class="p">:{</span>
