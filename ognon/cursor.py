@@ -102,9 +102,7 @@ class Cursor():
         # except AttributeError:
             # raise NoProjectError()
         # Constrain layer.
-        if self._pos['layer'] >= len(self.proj.anims[self._pos['anim']].layers) \
-        or self._pos['layer']  < 0:
-            self._pos['layer'] = 0   
+        self._pos['layer'] %= len(self.proj.anims[self._pos['anim']].layers)
         # Constrain frm.
         self._pos['frm'] = self.constrain_frm(self._pos['frm'])
 

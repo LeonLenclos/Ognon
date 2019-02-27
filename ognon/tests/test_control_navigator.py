@@ -59,3 +59,19 @@ def test_go_to_frm(cursor):
 def test_go_to_layer(cursor):
 	assert navigator.go_to_layer(cursor, 1) is None
 	assert cursor.get_pos('layer') == 1
+
+def test_lower_layr(cursor):
+	cursor.set_pos(anim="testing-layers")
+	navigator.go_to_layer(cursor, 1)
+	assert navigator.lower_layer(cursor) is None
+	assert cursor.get_pos('layer') == 2
+	assert navigator.lower_layer(cursor) is None
+	assert cursor.get_pos('layer') == 0
+
+def test_upper_layer(cursor):
+	cursor.set_pos(anim="testing-layers")
+	navigator.go_to_layer(cursor, 1)
+	assert navigator.upper_layer(cursor) is None
+	assert cursor.get_pos('layer') == 0
+	assert navigator.upper_layer(cursor) is None
+	assert cursor.get_pos('layer') == 2

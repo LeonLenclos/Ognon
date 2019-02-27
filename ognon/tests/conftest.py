@@ -17,6 +17,8 @@ def cursor():
           Element : 1 -> Cell
         Layer : 1
           Element : 0 -> Cell
+        Layer : 2
+          Element : 0 -> Cell
       Anim : 'testing-anim'
         Layer : 0
           Element : 0 -> Cell
@@ -37,10 +39,16 @@ def cursor():
         Layer : 0
           Element : 0 -> Cell
           Element : 1 -> AnimRef('anim-with-self-ref')
-
       Anim : 'testing-anim-with-unexisting-ref'
         Layer : 0
           Element : 0 -> AnimRef('unexisting-anim')
+      Anim : 'testing-layers-'
+        Layer : 0
+          Element : 0 -> Cell
+        Layer : 1
+          Element : 0 -> Cell
+        Layer : 2
+          Element : 0 -> Cell
 
     """  
 
@@ -66,6 +74,12 @@ def cursor():
         'testing-anim-with-unexisting-ref':model.Anim(layers=[
             model.Layer(elements=[model.AnimRef('unexisting-anim')]),
           ]),
+        'testing-layers':model.Anim(layers=[
+            model.Layer(elements=[model.Cell()]),
+            model.Layer(elements=[model.Cell()]),
+            model.Layer(elements=[model.Cell()]),
+        ]),
+
       }
       )
     c = Cursor(proj)

@@ -47,3 +47,11 @@ def go_to_frm(cursor, i):
 def go_to_layer(cursor, i):
     """Set cursor position to layer i."""
     cursor.set_pos(layer=i)
+
+def lower_layer(cursor):
+    """Set the cutsor position to the lower layer."""
+    cursor.set_pos(layer=cursor.get_pos('layer')+1)
+
+def upper_layer(cursor):
+    """Set the cutsor position to the upper layer."""
+    cursor.set_pos(layer=cursor.get_pos('layer')-1)
