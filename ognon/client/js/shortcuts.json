@@ -1,47 +1,58 @@
 {
   "Space": {
+    "description":"Toogle play mode.",
     "control": "/navigator/play",
     "modulesMethod": "onCursorMove",
     "specials": "autoUpdateOnPlay"
   },
   "Shift+Space": {
+    "description":"Auto play.",
     "control": "/navigator/auto_play",
     "modulesMethod": "onCursorMove",
     "specials": "autoUpdateOnPlay"
   },
   "Enter": {
+    "description":"Run the animation",
     "control": "/navigator/run",
     "modulesMethod": "onCursorMove"
   },
   "Shift+Enter": {
+    "description":"Auto run.",
     "control": "/navigator/auto_run",
     "modulesMethod": "onCursorMove"
   },
   "ArrowRight": {
+    "description":"Go to next frame.",
     "control": "/navigator/next_frm",
     "modulesMethod": "onCursorMove"
   },
   "ArrowLeft": {
+    "description":"Go to previous frame.",
     "control": "/navigator/prev_frm",
     "modulesMethod": "onCursorMove"
   },
   "Shift+ArrowRight": {
+    "description":"Go to last frame.",
     "control": "/navigator/last_frm",
     "modulesMethod": "onCursorMove"
   },
   "Shift+ArrowLeft": {
+    "description":"Go to first frame.",
     "control": "/navigator/first_frm",
     "modulesMethod": "onCursorMove"
   },
   "ArrowUp": {
+    "description":"Go to upper layer.",
     "control": "/navigator/upper_layer",
     "modulesMethod": "onCursorMove"
   },
   "ArrowDown": {
+    "description":"Go to lower layer.",
     "control": "/navigator/lower_layer",
     "modulesMethod": "onCursorMove"
   },
   "F1": {
+    "description":"Toogle sleek view.",
     "specials": "toggleSleekView"
   }
 }
