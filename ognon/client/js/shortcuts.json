@@ -1,4 +1,8 @@
 {
+  "h": {
+    "description":"Display the shortcuts hepl.",
+    "specials": "shortcutsHelp"
+  },
   "Space": {
     "description":"Toogle play mode.",
     "control": "/navigator/play",
@@ -51,8 +55,38 @@
     "control": "/navigator/lower_layer",
     "modulesMethod": "onCursorMove"
   },
-  "F1": {
+  "F12": {
     "description":"Toogle sleek view.",
     "specials": "toggleSleekView"
+  },
+  "Control+ArrowLeft": {
+    "description":"Move the current ellement backward.",
+    "control": "/elementsorganizer/move_element_backward",
+    "modulesMethod": "onAnimChange"
+  },
+  "Control+ArrowRight": {
+    "description":"Move the current ellement forward.",
+    "control": "/elementsorganizer/move_element_forward",
+    "modulesMethod": "onAnimChange"
+  },
+  "c": {
+    "description":"Add a cell after.",
+    "control": "/elementsorganizer/add_cell_after",
+    "modulesMethod": "onAnimChange"
+  },
+  "Shift+c": {
+    "description":"Add a cell before.",
+    "control": "/elementsorganizer/add_cell_before",
+    "modulesMethod": "onAnimChange"
+  },
+  "Backspace": {
+    "description":"Clear the current cell.",
+    "control": "/drawer/clear",
+    "modulesMethod": "onAnimChange"
+  },
+  "Delete": {
+    "description":"Delete the current element.",
+    "control": "/elementsorganizer/del_element",
+    "modulesMethod": "onAnimChange"
   }
 }

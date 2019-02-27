@@ -51,3 +51,11 @@ specials.autoUpdateOnPlay = () => {
         autoUpdateOnPlay();
     }
 }
+
+specials.shortcutsHelp = () => {
+    console.log('shortcuts Help :')
+    console.log(shortcuts)
+    for(let sc in shortcuts){
+        console.log(sc + ': ' + shortcuts[sc].description)
+    }
+}
