@@ -14,4 +14,4 @@ install from github
 
 ::
 
-  $ pip install git+https://github.com/LeonLenclos/Ognon.git@master#egg=ognon
+ $ pip install git+https://github.com/LeonLenclos/Ognon.git@master#egg=ognon
