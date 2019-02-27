@@ -22,7 +22,7 @@ Ognon prints out some informations :
  +------------+
  | Ognon v1.x |
  +------------+
- Working on file:///home/leon/ognons/
+ Working on file:///home/user/ognons/
  Serving on http://localhost:40460
  Serving on osc://localhost:50460
 
@@ -83,11 +83,8 @@ To draw a line on the cell curently pointed by the cursor 'default'.
 	{
 		cursor:'default',
 		args:{
-			x1:23,
-			x2:54
-			y1:23,
-			y2:54
-		},
+			coords:[0,0,50,50]
+		}
 	}
 
 
