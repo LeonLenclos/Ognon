@@ -108,19 +108,21 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         if self.path == '/':
             self.path = '/index.html'
         path = utils.pkgabspath('client') + self.path.split('?')[0]
+        content = ''
+        mimetype = self.guess_type(path)
 
         try:
             with open(path, 'rb') as f:
-                self.send_response(200, 'OK')
-                self.send_header('Content-type', 'html')
-                self.end_headers()
-                self.wfile.write(f.read())
+                self.send_response(200)
+                content = f.read()
         except FileNotFoundError:
             with open(utils.pkgabspath('client/404.html'), 'rb') as f:
-                self.send_response(404, 'Not found')
-                self.send_header('Content-type', 'html')
-                self.end_headers()
-                self.wfile.write(f.read())
+                self.send_response(404)
+                content = f.read()
+
+        self.send_header('Content-type', mimetype)
+        self.end_headers()
+        self.wfile.write(content)
 
         
     def do_POST(self):
