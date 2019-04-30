@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>OGN Edit On Top Of Default</title>
+	<link rel="shortcut icon" type="image/png" href="/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<h1><a href="/">Ognon</a>  edit on top of default</a></h1>
+
+<div id="cursor-statusbar">
+	<label>Cursor</label>
+	<label>project</label><span id="project_name"></span>
+	<label>frm</label><span id="frm"></span>
+	<label>layer</label><span id="layer"></span>
+	<label>anim</label><span id="anim"></span>
+	<label>playing</label><span id="playing"></span>
+</div>
+
+<div id="toolbar">
+	<div class="section" id="projectmanager">
+		<label>project</label>
+		<input id="project_name" name="name"/>
+		<button id="get" data-required="name">get</button>
+		<button id="load" data-required="name">load</button>
+		<button id="save">save</button>
+	</div>
+	<div class="section" id="animsmanager">
+		<label>anims</label>
+		<input id="anim_name" name="name"/>
+		<button id="select_anim" data-required="name">select</button>
+		<button id="del_anim" data-required="name">del</button>
+	</div>
+	<div class="section" id="exporter">
+		<label>export</label>
+		<button id="frm_to_png">png</button>
+		<button id="anim_to_pngs">pngs</button>
+		<button id="anim_to_gif">gif</button>
+		<button id="anim_to_avi">avi</button>
+	</div>
+	<div class="section" id="navigator">
+		<label>navigation</label>
+		<button id="run">run</button>
+		<button id="auto_run">autorun</button>
+		<button id="play">play</button>
+		<button id="auto_play">autoplay</button>
+		<button id="prev_frm">prev</button>
+		<button id="next_frm">next</button>
+		<button id="first_frm">first</button>
+		<button id="last_frm">last</button>
+	</div>
+	<div class="section" id="elementsorganizer">
+		<label>elements</label>
+		<button id="move_element_backward">&lt; move</button>
+		<button id="move_element_forward">move &gt;</button>
+		<button id="del_element">del</button>
+		<label>cell</label>
+		<button id="add_cell_before">&lt; add</button>
+		<button id="add_cell_after">add &gt;</button>
+		<label>animref</label>
+		<input id="anim_name" name="name"/>
+		<button id="add_animref_before" data-required="name">&lt; add</button>
+		<button id="add_animref_after" data-required="name">add &gt;</button>
+	</div>
+	<div class="section" id="layersorganizer">
+		<label>layers</label>
+		<button id="add_layer">add</button>
+		<button id="move_layer_up">move up</button>
+		<button id="move_layer_down">move down</button>
+		<button id="del_layer">del</button>
+	</div>
+	<div class="section" id="tagger">
+		<label>tags</label>
+		<input id="tag_descriptoin" name="tag"/>
+		<button id="add_tag" data-required="tag">add</button>
+		<button id="rm_tags">clear</button>
+	</div>
+	<div class="section" id="drawer">
+		<label>drawing</label>
+		<button id="clear">clear</button>
+		<label>tools</label>
+		<select id="tool-selector">
+			<option value="draw">draw</option>
+			<option value="erease">erease</option>
+		</select>
+	</div>
+</div>
+
+<div id="element-statusbar">
+	<label>Element</label>
+	<label>type</label><span id="type"></span>
+	<label>len</label><span id="len"></span>
+	<label>tags</label><span id="tags"></span>
+	<label>name</label><span id="name"></span>
+</div>
+
+<table id="timeline"></table>
+
+<canvas id="canvas"></canvas>
+
+</body>
+	<script src="/js/client.js"></script>
+	<script src="/js/modules.js"></script>
+	<script src="/js/edit-on-top-of-default.js"></script>
+	<script src="/js/shortcuts.js"></script>
+
+</html>

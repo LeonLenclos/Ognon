@@ -1,4 +1,4 @@
-const canvas = new Canvas("canvas", true);
+const canvas = new SweetCanvas("canvas", true);
 modules = [canvas];
 
 

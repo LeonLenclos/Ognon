@@ -112,6 +112,7 @@ option {
 canvas {
 	display: block;
 	margin: 6px auto;
+     cursor: crosshair;
 }
 
 /*TIMELINE*/

@@ -1,0 +1,121 @@
+{
+  "q": {
+    "description":"Toogle play mode.",
+    "control": "/navigator/play",
+    "modulesMethods": ["onCursorMove","onAnimChange"],
+    "specials": "autoUpdateOnPlay"
+  },
+  "a": {
+    "description":"Auto run.",
+    "control": "/navigator/auto_run",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "s": {
+    "description":"Go to next frame.",
+    "control": "/navigator/next_frm",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "z": {
+    "description":"Go to previous frame.",
+    "control": "/navigator/prev_frm",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "d": {
+    "description":"Go to last frame.",
+    "control": "/navigator/last_frm",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "e": {
+    "description":"Go to first frame.",
+    "control": "/navigator/first_frm",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "F9": {
+    "description":"Toogle sleek view.",
+    "specials": "toggleSleekView"
+  },
+  "u": {
+    "description":"Move the current ellement backward.",
+    "control": "/elementsorganizer/move_element_backward",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "j": {
+    "description":"Move the current ellement forward.",
+    "control": "/elementsorganizer/move_element_forward",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "f": {
+    "description":"Add a cell after.",
+    "control": "/elementsorganizer/add_cell_after",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "r": {
+    "description":"Add a cell before.",
+    "control": "/elementsorganizer/add_cell_before",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "v": {
+    "description":"Clear the current cell.",
+    "control": "/drawer/clear",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "c": {
+    "description":"Delete the current element.",
+    "control": "/elementsorganizer/del_element",
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "œ": {
+    "description":"Select anim 'master'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"master"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "&": {
+    "description":"Select anim 'a'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"a"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "é": {
+    "description":"Select anim 'b'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"b"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "\"": {
+    "description":"Select anim 'c'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"c"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "'": {
+    "description":"Select anim 'd'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"d"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "(": {
+    "description":"Select anim 'e'.",
+    "control": "/animsmanager/select_anim",
+    "args": {"name":"e"},
+    "modulesMethods": ["onCursorMove","onAnimChange"]
+  },
+  "=": {
+    "description":"Get project 'tt1'.",
+    "control": "/projectmanager/get",
+    "args": {"name":"tt1"},
+    "modulesMethods": ["onCursorMove","onAnimChange","setup"]
+  },
+  "$": {
+    "description":"Get project 'tt2'.",
+    "control": "/projectmanager/get",
+    "args": {"name":"tt2"},
+    "modulesMethods": ["onCursorMove","onAnimChange","setup"]
+  },
+  "*": {
+    "description":"Get project 'tt3'.",
+    "control": "/projectmanager/get",
+    "args": {"name":"tt3"},
+    "modulesMethods": ["onCursorMove","onAnimChange","setup"]
+  }
+}

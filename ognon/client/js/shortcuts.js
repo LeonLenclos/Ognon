@@ -2,7 +2,7 @@ let shortcuts = {};
 let specials = {};
 let keysPressed = [];
 
-fetch('/js/shortcuts.json')
+fetch('/js/shortcuts-ognon-keyboard.json')
 .then(response=>response.json())
 .then(json=>shortcuts=json);
 
@@ -16,13 +16,20 @@ doShortcut = action => {
     }
     if(action.control){
         fetch('/control'+action.control, initOptions(args))
-        .then(handleResponse);
+        .then(handleResponse)
+        .then(()=>{
+            if(action.modulesMethod){
+                callModulesMethod(action.modulesMethod)
+            }
+            if(action.modulesMethods){
+                for (var i = 0; i < action.modulesMethods.length; i++) {
+                    callModulesMethod(action.modulesMethods[i]);
+                }
+            }
+        })
     }
     if(action.specials){
         specials[action.specials](args);
-    }
-    if(action.modulesMethod){
-        callModulesMethod(action.modulesMethod)
     }
 };
 

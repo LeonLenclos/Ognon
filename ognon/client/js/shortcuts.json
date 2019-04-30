@@ -55,7 +55,7 @@
     "control": "/navigator/lower_layer",
     "modulesMethod": "onCursorMove"
   },
-  "F12": {
+  "F9": {
     "description":"Toogle sleek view.",
     "specials": "toggleSleekView"
   },

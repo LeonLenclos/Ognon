@@ -1,4 +1,10 @@
 /****************
+**** SETTINGS ***
+****************/
+
+const PRECISION = 3; // Min pixel length of a stroke
+
+/****************
 **** MODULES ****
 ****************/
 let modules = [];
@@ -29,17 +35,25 @@ const onCanvasMouseDown = (e) => {
 }
 
 const onCanvasMouseMove = (e) => {
+
+    canvas.cursorPosX = e.offsetX;
+    canvas.cursorPosY = e.offsetY;
+
     if(canvas.pMouseX){
-        let tool = document.getElementById('tool-selector').value
-        if (tool == 'draw'){
-            args = {coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]};
-        } else if (tool == 'erease'){
-            args = {coords:[e.offsetX, e.offsetY]};
+        // send tool request only if the distance between mouse and pMouse is greater than PRECISION
+        if(Math.abs(canvas.pMouseX - e.offsetX) > PRECISION || Math.abs(canvas.pMouseY - e.offsetY) > PRECISION) {
+            let tool = document.getElementById('tool-selector').value
+            if (tool == 'draw'){
+                args = {coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]};
+            } else if (tool == 'erease'){
+                args = {coords:[e.offsetX, e.offsetY]};
+            }
+            fetch('/control/drawer/'+tool+'/', initOptions(args))
+            .then(()=>callModulesMethod('onDraw'))
+
+            canvas.pMouseX = e.offsetX;
+            canvas.pMouseY = e.offsetY;
         }
-        fetch('/control/drawer/'+tool+'/', initOptions(args))
-        .then(()=>callModulesMethod('onDraw'))
-        canvas.pMouseX = e.offsetX;
-        canvas.pMouseY = e.offsetY;
     }
 }
 
@@ -63,6 +77,20 @@ const drawLines = (lines, style, ctx) => {
     ctx.stroke();
 
 }
+
+
+const drawCursor = (x, y, ctx) => {
+    // !!! UNUSED
+        let raduis = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, raduis, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'black';
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'white';
+      ctx.stroke();
+}
+
 const clearCanvas = (ctx, bgColor) => {
     ctx.fillStyle = bgColor;
     ctx.fillRect(
@@ -76,9 +104,11 @@ const clearCanvas = (ctx, bgColor) => {
 
 class Canvas extends Module {
 
-    constructor(id, noOnionSkin=false) {
+    constructor(id, noOnionSkin=false, onTopOfDefault=false) {
         super(id);
-        this.onAnimChange = this.onDraw = this.onCursorMove = noOnionSkin ? this.draw : this.update
+        this.onTopOfDefault = onTopOfDefault
+        this.onAnimChange = this.onDraw = this.onCursorMove = noOnionSkin ? this.draw : this.update;
+        this.responseHandler = handleResponse;
     }
 
     loadConfig(config) {
@@ -93,6 +123,7 @@ class Canvas extends Module {
     }
 
     setup() {
+
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
@@ -100,7 +131,7 @@ class Canvas extends Module {
 
         // load config
         fetch('/view/get_view_config/', initOptions())
-        .then(handleResponse)
+        .then(this.responseHandler)
         .then(json => this.loadConfig(json))
     }
 
@@ -108,11 +139,14 @@ class Canvas extends Module {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
+        console.log('update')
         fetch('/view/get_cursor_infos/', initOptions())
-        .then(handleResponse)
+        .then(this.responseHandler)
         .then(json =>{
             if (json.playing) {
                 this.draw()
+            } else if (this.onTopOfDefault){
+                this.drawOnionSkinWithDefault()
             } else {
                 this.drawOnionSkin()
             }
@@ -124,28 +158,68 @@ class Canvas extends Module {
         Draw lines given by /view/get_lines/ 
         */
         fetch('/view/get_lines/', initOptions())
-        .then(handleResponse)
+        .then(this.responseHandler)
         .then(lines => {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(lines, {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
+            // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
         });
     }
 
     drawOnionSkin() {
         /*
-        Draw lines given by /view/get_lines/ and /view/get_onion_skin/""
+        Draw lines given by /view/get_onion_skin/""
         */
         fetch('/view/get_onion_skin/', initOptions({onion_range:[-1,0,1]}))
-        .then(handleResponse)
+        .then(this.responseHandler)
         .then(onionSkin => {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(onionSkin[-1], {lineWidth:this.onionWidth, lineColor:this.onionBwColor}, this.ctx);
             drawLines(onionSkin[1], {lineWidth:this.onionWidth, lineColor:this.onionFwColor}, this.ctx);
             drawLines(onionSkin[0], {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
+            // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
+        });
+    }
+
+    drawOnionSkinWithDefault() {
+        /*
+        Draw lines given by /view/get_onion_skin/
+        Also draw lines given by /view/get_lines/ with the default cursor
+        */
+        fetch('/view/get_lines/', initOptions({}, 'default'))
+        .then(this.responseHandler)
+        .then(lines => {
+            clearCanvas(this.ctx, this.backgroundColor);
+            drawLines(lines, {lineWidth:this.lineWidth, lineColor:'#0000CC'}, this.ctx);
+            this.drawOnionSkin()
         });
     }
 }
 
+
+class CanvasOnTopOfDefault extends Canvas {
+    /*
+    Same as Canvas but ignore errors
+    */
+    constructor(id, noOnionSkin=false) {
+        super(id, noOnionSkin);
+        this.responseHandler = handleResponseQuiet;
+    }
+
+}
+
+
+
+class SweetCanvas extends Canvas {
+    /*
+    Same as Canvas but ignore errors
+    */
+    constructor(id, noOnionSkin=false) {
+        super(id, noOnionSkin);
+        this.responseHandler = handleResponseQuiet;
+    }
+
+}
 
 
 /****************
@@ -173,7 +247,7 @@ const onControlClick = (e) => {
     .then(()=>callModulesMethod('onAnimChange'))
     .then(()=>callModulesMethod('onCursorMove'))
 
-}
+};
 
 //// CLASS ////
 
@@ -232,6 +306,7 @@ class Timeline extends Module {
         */
         const setActiveElement = (dataname, i, element) => {
             if(element.dataset[dataname] == i){
+                console.log(dataname, i)
                 element.classList.add('active');
             } else {
                 element.classList.remove('active');
@@ -306,7 +381,8 @@ class Timeline extends Module {
 
         fetch('/view/get_timeline/', initOptions())
         .then(handleResponse)
-        .then(json => createTimeline(json, this.elmt));
+        .then(json => createTimeline(json, this.elmt))
+        .then(this.onCursorMove());
     }
 }
 
