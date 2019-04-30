@@ -165,7 +165,7 @@ class OgnonOSCDispatcher(pythonosc.dispatcher.Dispatcher):
 
     def handlers_for_address(self, address_pattern):
         """yields Handler namedtuples matching the given OSC pattern."""
-        logging.info('osc - {path}'.format(path=self.path))
+        logging.info('osc - {path}'.format(path=address_pattern))
 
         def callback(path, cursor_id, *args):
             call_function(path, get_cursor(cursor_id), *args)
