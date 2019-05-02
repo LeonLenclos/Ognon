@@ -78,7 +78,7 @@ class Layer():
     """
     def __init__(self, elements=None):
         """Init a Layer with a first Cell"""
-        self.elements = elements or [Cell()]
+        self.elements = elements if elements is not None else [Cell()]
 
 
 class Anim():
@@ -89,7 +89,7 @@ class Anim():
     """
     def __init__(self, layers=None):
         """Init an Anim with a first Layer"""
-        self.layers = layers or [Layer()]
+        self.layers = layers if layers is not None else [Layer()]
 
 
 class Project():
@@ -109,7 +109,7 @@ class Project():
         default for config is default.ini content
         """
         self.name = name
-        self.anims = anims or {'master':Anim()}
+        self.anims = anims if anims is not None else {'master':Anim()}
          
 
         self.config = config or utils.parse_config(

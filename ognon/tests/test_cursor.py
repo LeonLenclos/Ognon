@@ -68,6 +68,13 @@ def test_constrain_frm(cursor):
     assert cursor.constrain_frm(1) == 1 
     assert cursor.constrain_frm(2) == 0 
     assert cursor.constrain_frm(3) == 1 
+    cursor.set_pos(anim="empty-anim")
+    assert cursor.constrain_frm(1) == 0
+    assert cursor.constrain_frm(0) == 0 
+    cursor.set_pos(anim="really-empty-anim")
+    assert cursor.constrain_frm(1) == 0
+    assert cursor.constrain_frm(0) == 0 
+
 
 def test_get_anim(cursor):
     assert cursor.get_anim() is cursor.proj.anims['master']
@@ -79,8 +86,14 @@ def test_get_layer(cursor):
     assert cursor.get_layer() is cursor.proj.anims['master'].layers[0]
     assert cursor.get_layer(anim='testing-anim') is cursor.proj.anims['testing-anim'].layers[0]
     assert cursor.get_layer(layer=1) is cursor.proj.anims['master'].layers[1]
-    with pytest.raises(IndexError):
-        cursor.get_layer(layer=10)
+    # with pytest.raises(IndexError):
+    #     cursor.get_layer(layer=10)
+    assert cursor.get_layer(layer=10) is None
+    
+    cursor.set_pos(anim="really-empty-anim")
+    print(cursor.get_layer())
+    assert cursor.get_layer() is None
+
 
 def test_anim_len(cursor):
     assert cursor.anim_len() == 2
@@ -89,6 +102,10 @@ def test_anim_len(cursor):
     assert cursor.anim_len('testing-anim-with-animref') == 8
     # self ref
     assert cursor.anim_len('testing-anim-with-self-ref') == 2
+
+    assert cursor.anim_len('really-empty-anim') == 0
+    assert cursor.anim_len('empty-anim') == 0
+
 
 def test_element_len(cursor):
     assert cursor.element_len(cursor.get_element()) == 1
@@ -110,3 +127,5 @@ def test_get_element_pos(cursor):
     # unexisting anim
     assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=0) == (0, cursor.proj.anims['testing-anim-with-self-ref'].layers[0].elements[0], 0)
     assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=1)[1].name == "/!\\ self-reference..."
+    assert cursor.get_element_pos(anim='empty-anim') is None
+    assert cursor.get_element_pos(anim='really-empty-anim') is None

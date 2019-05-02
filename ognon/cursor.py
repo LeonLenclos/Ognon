@@ -102,7 +102,10 @@ class Cursor():
         # except AttributeError:
             # raise NoProjectError()
         # Constrain layer.
-        self._pos['layer'] %= len(self.proj.anims[self._pos['anim']].layers)
+        try:
+            self._pos['layer'] %= len(self.proj.anims[self._pos['anim']].layers)
+        except ZeroDivisionError:
+            self._pos['layer'] = 0
         # Constrain frm.
         self._pos['frm'] = self.constrain_frm(self._pos['frm'])
 
@@ -112,6 +115,8 @@ class Cursor():
 
         Result will be different depending on whether the loop mode is on or off.
         """
+        if self.anim_len() == 0:
+            return 0
         if self.proj.config['play']['loop']:
             return frm % self.anim_len()
         if frm <= 0:
@@ -139,10 +144,13 @@ class Cursor():
     def get_layer(self, anim=None, layer=None):
         """
         Return the current layer or the specified layer in the specified anim
+        Return None if no layer
         """
         layer = layer if layer is not None else self.get_pos('layer')
-        return self.get_anim(anim).layers[layer]
-
+        try:
+            return self.get_anim(anim).layers[layer]
+        except IndexError:
+            return None
 
     # True if the given element is an AnimRef
     is_animref = lambda self, element: isinstance(element, model.AnimRef)
@@ -178,7 +186,7 @@ class Cursor():
                     at = tags.calculate_inside_pos(
                         at, self.element_len(e, True), tag)
                 return i, e, at
-
+    
 
     def get_element(self, anim=None, layer=None, frm=None):
         """
@@ -193,8 +201,12 @@ class Cursor():
         """
         anim = anim if anim else self._pos['anim']
         layer_len = lambda layer : sum(map(self.element_len, layer.elements))
-        return layer_len(max(self.get_anim(anim).layers, key=layer_len))
-
+        layers = self.get_anim(anim).layers
+        if layers:
+            return layer_len(max(self.get_anim(anim).layers, key=layer_len))
+        else:
+            # len is 0 if no layers
+            return 0
     def element_len(self, elmt, ignonre_tags=False):
         """
         Return the length of the given element
