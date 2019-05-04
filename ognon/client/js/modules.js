@@ -50,6 +50,7 @@ const onCanvasMouseMove = (e) => {
             }
             fetch('/control/drawer/'+tool+'/', initOptions(args))
             .then(()=>callModulesMethod('onDraw'))
+            .catch(handleError);
 
             canvas.pMouseX = e.offsetX;
             canvas.pMouseY = e.offsetY;
@@ -133,6 +134,7 @@ class Canvas extends Module {
         fetch('/view/get_view_config/', initOptions())
         .then(this.responseHandler)
         .then(json => this.loadConfig(json))
+        .catch(handleError);
     }
 
     update() {
@@ -151,6 +153,7 @@ class Canvas extends Module {
                 this.drawOnionSkin()
             }
         })
+        .catch(handleError);
     }
 
     draw() {
@@ -163,7 +166,8 @@ class Canvas extends Module {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(lines, {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
             // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
-        });
+        })
+        .catch(handleError);
     }
 
     drawOnionSkin() {
@@ -178,7 +182,8 @@ class Canvas extends Module {
             drawLines(onionSkin[1], {lineWidth:this.onionWidth, lineColor:this.onionFwColor}, this.ctx);
             drawLines(onionSkin[0], {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
             // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
-        });
+        })
+        .catch(handleError);
     }
 
     drawOnionSkinWithDefault() {
@@ -192,7 +197,8 @@ class Canvas extends Module {
             clearCanvas(this.ctx, this.backgroundColor);
             drawLines(lines, {lineWidth:this.lineWidth, lineColor:'#0000CC'}, this.ctx);
             this.drawOnionSkin()
-        });
+        })
+        .catch(handleError);
     }
 }
 
@@ -246,6 +252,7 @@ const onControlClick = (e) => {
     .then(handleResponse)
     .then(()=>callModulesMethod('onAnimChange'))
     .then(()=>callModulesMethod('onCursorMove'))
+    .catch(handleError);
 
 };
 
@@ -276,12 +283,14 @@ const onFrmClick = (e) => {
     let i = Number(e.currentTarget.dataset.frm);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(()=>callModulesMethod('onCursorMove'))
+    .catch(handleError);
 };
 
 const onLayerClick = (e) => {
     let layer = Number(e.currentTarget.dataset.layer);
     fetch('/control/navigator/go_to_layer/', initOptions({i:layer}))
-    .then(()=>callModulesMethod('onCursorMove'));
+    .then(()=>callModulesMethod('onCursorMove'))
+    .catch(handleError);
 }
 
 const onElementClick = (e) => {
@@ -289,7 +298,8 @@ const onElementClick = (e) => {
     let layer = Number(e.currentTarget.parentNode.dataset.layer);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(fetch('/control/navigator/go_to_layer/', initOptions({i:layer})))
-    .then(()=>callModulesMethod('onCursorMove'));
+    .then(()=>callModulesMethod('onCursorMove'))
+    .catch(handleError);
 }
 
 //// CLASS ////
@@ -320,7 +330,8 @@ class Timeline extends Module {
         }
         fetch('/view/get_cursor_infos/',initOptions())
         .then(handleResponse)
-        .then(json =>setActiveAll(json));
+        .then(json =>setActiveAll(json))
+        .catch(handleError);
     }
 
     onAnimChange() {
@@ -382,7 +393,8 @@ class Timeline extends Module {
         fetch('/view/get_timeline/', initOptions())
         .then(handleResponse)
         .then(json => createTimeline(json, this.elmt))
-        .then(this.onCursorMove());
+        .then(this.onCursorMove())
+        .catch(handleError);
     }
 }
 
@@ -407,6 +419,7 @@ class Statusbar extends Module {
         }
         fetch(this.requestPath, initOptions())
         .then(handleResponse)
-        .then(json => updateInfos(json, this.elmt));
+        .then(json => updateInfos(json, this.elmt))
+        .catch(handleError);
     }
 }
