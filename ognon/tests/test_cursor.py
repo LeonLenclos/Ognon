@@ -91,7 +91,6 @@ def test_get_layer(cursor):
     assert cursor.get_layer(layer=10) is None
     
     cursor.set_pos(anim="really-empty-anim")
-    print(cursor.get_layer())
     assert cursor.get_layer() is None
 
 
@@ -127,5 +126,6 @@ def test_get_element_pos(cursor):
     # unexisting anim
     assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=0) == (0, cursor.proj.anims['testing-anim-with-self-ref'].layers[0].elements[0], 0)
     assert cursor.get_element_pos(anim='testing-anim-with-self-ref', frm=1)[1].name == "/!\\ self-reference..."
-    assert cursor.get_element_pos(anim='empty-anim') is None
-    assert cursor.get_element_pos(anim='really-empty-anim') is None
+    assert cursor.get_element_pos(anim='empty-anim')[1].name == '/!\\ no element'
+    assert cursor.get_element_pos(anim='really-empty-anim')[1].name == '/!\\ no element'
+

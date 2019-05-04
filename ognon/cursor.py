@@ -168,24 +168,29 @@ class Cursor():
         element object and the position of the cursor inside the element
         Return None if no element.
         """
-        layer = self.get_layer(anim, layer)
-        frm = frm if frm is not None else self.get_pos('frm')
-        frm_ = 0
-        for i, e in enumerate(layer.elements):
-            if self.is_animref(e):
-                broken = model.BrokenElement
-                if self.is_unexisting_ref(e):
-                    e = broken('/!\\ "{}" does not exists...'.format(e.name))
-                elif self.is_self_ref(e):
-                    e = broken('/!\\ self-reference...')
-            length = self.element_len(e)
-            frm_ += length
-            if frm_ > frm:
-                at = frm-frm_+length
-                for tag in e.tags:
-                    at = tags.calculate_inside_pos(
-                        at, self.element_len(e, True), tag)
-                return i, e, at
+        broken = model.BrokenElement
+
+        if self.anim_len(anim):
+            layer = self.get_layer(anim, layer)
+            frm = frm if frm is not None else self.get_pos('frm')
+            frm_ = 0
+            for i, e in enumerate(layer.elements):
+                if self.is_animref(e):
+                    if self.is_unexisting_ref(e):
+                        e = broken(
+                            '/!\\ "{}" does not exists...'.format(e.name))
+                    elif self.is_self_ref(e):
+                        e = broken('/!\\ self-reference...')
+                length = self.element_len(e)
+                frm_ += length
+                if frm_ > frm:
+                    at = frm-frm_+length
+                    for tag in e.tags:
+                        at = tags.calculate_inside_pos(
+                            at, self.element_len(e, True), tag)
+                    return i, e, at
+        return 0, broken('/!\\ no element'), 0
+
     
 
     def get_element(self, anim=None, layer=None, frm=None):
@@ -224,6 +229,7 @@ class Cursor():
             length = 1
         if ignonre_tags:
             return length
-        for tag in elmt.tags:
-            length = tags.calculate_len(length, tag)
-        return length
+        else :
+            for tag in elmt.tags:
+                length = tags.calculate_len(length, tag)
+            return length
