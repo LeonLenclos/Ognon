@@ -1,3 +1,5 @@
+"use strict";
+
 /****************
 **** SETTINGS ***
 ****************/
@@ -10,8 +12,11 @@ const PRECISION = 3; // Min pixel length of a stroke
 let modules = [];
 function callModulesMethod(modulesMethod) {
     modules.forEach(mo => {
-        if(mo[modulesMethod]){
-            mo[modulesMethod]();
+        if(mo[modulesMethod] && !mo.busy){
+            mo.busy = true;
+            mo[modulesMethod](()=>{mo.busy = false});
+        } else if (mo.busy){
+            console.log(mo.id+"."+modulesMethod+" is busy...");
         }
     });
 }
@@ -20,6 +25,7 @@ class Module {
     constructor(id) {
         this.id = id;
         this.elmt = document.getElementById(id);
+        this.busy = false;
     }
 }
 
@@ -32,35 +38,34 @@ class Module {
 const onCanvasMouseDown = (e) => {
     canvas.pMouseX = e.offsetX;
     canvas.pMouseY = e.offsetY;
-}
-
-const onCanvasMouseMove = (e) => {
-
-    canvas.cursorPosX = e.offsetX;
-    canvas.cursorPosY = e.offsetY;
-
-    if(canvas.pMouseX){
-        // send tool request only if the distance between mouse and pMouse is greater than PRECISION
-        if(Math.abs(canvas.pMouseX - e.offsetX) > PRECISION || Math.abs(canvas.pMouseY - e.offsetY) > PRECISION) {
-            let tool = document.getElementById('tool-selector').value
-            if (tool == 'draw'){
-                args = {coords:[canvas.pMouseX, canvas.pMouseY, e.offsetX, e.offsetY]};
-            } else if (tool == 'erease'){
-                args = {coords:[e.offsetX, e.offsetY]};
-            }
-            fetch('/control/drawer/'+tool+'/', initOptions(args))
-            .then(()=>callModulesMethod('onDraw'))
-
-            canvas.pMouseX = e.offsetX;
-            canvas.pMouseY = e.offsetY;
-        }
-    }
-}
+};
 
 const onMouseUp = (e) => {
     canvas.pMouseX = null;
     canvas.pMouseY = null;
-}
+};
+
+const onCanvasMouseMove = (e) => {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if(canvas.pMouseX){
+        // send tool request only if the distance between mouse and pMouse is greater than PRECISION
+        if(Math.abs(canvas.pMouseX - x) > PRECISION
+        || Math.abs(canvas.pMouseY - y) > PRECISION) {
+            let tool = document.getElementById('tool-selector').value
+            let args;
+            if (tool == 'draw'){
+                args = {coords:[canvas.pMouseX,canvas.pMouseY,x,y]};
+            } else if (tool == 'erease'){
+                args = {coords:[x,y]};
+            }
+            fetch('/control/drawer/'+tool+'/', initOptions(args))
+            .then(()=>callModulesMethod('update'))
+            canvas.pMouseX = x;
+            canvas.pMouseY = y;
+        }
+    }
+};
 
 //// UTILS ////
 
@@ -75,40 +80,24 @@ const drawLines = (lines, style, ctx) => {
         }
     });
     ctx.stroke();
-
-}
-
-
-const drawCursor = (x, y, ctx) => {
-    // !!! UNUSED
-        let raduis = 2;
-      ctx.beginPath();
-      ctx.arc(x, y, raduis, 0, 2 * Math.PI, false);
-      ctx.fillStyle = 'black';
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'white';
-      ctx.stroke();
 }
 
 const clearCanvas = (ctx, bgColor) => {
     ctx.fillStyle = bgColor;
-    ctx.fillRect(
-        0,
-        0,
-        ctx.canvas.clientWidth,
-        ctx.canvas.clientHeight);
+    ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 }
 
 //// CLASS ////
 
 class Canvas extends Module {
-
     constructor(id, noOnionSkin=false, onTopOfDefault=false) {
         super(id);
-        this.onTopOfDefault = onTopOfDefault
-        this.onAnimChange = this.onDraw = this.onCursorMove = noOnionSkin ? this.draw : this.update;
+        this.noOnionSkin = noOnionSkin;
         this.responseHandler = handleResponse;
+
+        this.cache = {};
+        this.currentImageID = "";
+        this.updating = false;
     }
 
     loadConfig(config) {
@@ -122,7 +111,7 @@ class Canvas extends Module {
         this.onionWidth = config.onion_skin_line_width;
     }
 
-    setup() {
+    setup(callBack) {
 
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
@@ -132,82 +121,88 @@ class Canvas extends Module {
         // load config
         fetch('/view/get_view_config/', initOptions())
         .then(this.responseHandler)
-        .then(json => this.loadConfig(json))
+        .then(json =>{
+            this.loadConfig(json);
+            this.update(callBack);
+        });
+
+        // call update
     }
 
-    update() {
+    update(callBack) {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
-        console.log('update')
         fetch('/view/get_cursor_infos/', initOptions())
         .then(this.responseHandler)
         .then(json =>{
-            if (json.playing) {
-                this.draw()
-            } else if (this.onTopOfDefault){
-                this.drawOnionSkinWithDefault()
+            if (json.playing || this.noOnionSkin) {
+                this.draw(json, [0])
             } else {
-                this.drawOnionSkin()
+                this.draw(json, [-1, 0, 1])
             }
-        })
+            this.updating = false;
+            callBack();
+        });
+
     }
 
-    draw() {
+    draw(pos, onionRange=[0]) {
         /*
-        Draw lines given by /view/get_lines/ 
+        Draw lines given by /view/get_onion_skin/ 
         */
-        fetch('/view/get_lines/', initOptions())
-        .then(this.responseHandler)
-        .then(lines => {
-            clearCanvas(this.ctx, this.backgroundColor);
-            drawLines(lines, {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
-            // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
-        });
-    }
+        let cursorPos = pos.project_name + ' ' + pos.anim + ' ' +  pos.layer + ' ' + pos.frm;
+        let projState = pos.project_state_id;
+        let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
-    drawOnionSkin() {
-        /*
-        Draw lines given by /view/get_onion_skin/""
-        */
-        fetch('/view/get_onion_skin/', initOptions({onion_range:[-1,0,1]}))
-        .then(this.responseHandler)
-        .then(onionSkin => {
-            clearCanvas(this.ctx, this.backgroundColor);
-            drawLines(onionSkin[-1], {lineWidth:this.onionWidth, lineColor:this.onionBwColor}, this.ctx);
-            drawLines(onionSkin[1], {lineWidth:this.onionWidth, lineColor:this.onionFwColor}, this.ctx);
-            drawLines(onionSkin[0], {lineWidth:this.lineWidth, lineColor:this.lineColor}, this.ctx);
-            // drawCursor(this.cursorPosX, this.cursorPosY, this.ctx);
-        });
-    }
+        let getCol = (skin) => {
+            if(skin < 0){
+                return this.onionBwColor;
+            } else if (skin > 0) {
+                return this.onionFwColor;
+            } else{
+                return this.lineColor;
+            }
+        };
 
-    drawOnionSkinWithDefault() {
-        /*
-        Draw lines given by /view/get_onion_skin/
-        Also draw lines given by /view/get_lines/ with the default cursor
-        */
-        fetch('/view/get_lines/', initOptions({}, 'default'))
-        .then(this.responseHandler)
-        .then(lines => {
+        let drawSkin = (skins, i) => {
+            drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:getCol(i)}, this.ctx);
+        };
+
+        let drawSkins = (skins, range) => {
             clearCanvas(this.ctx, this.backgroundColor);
-            drawLines(lines, {lineWidth:this.lineWidth, lineColor:'#0000CC'}, this.ctx);
-            this.drawOnionSkin()
-        });
+            range.filter(e=>e!=0).forEach(i=>{
+                drawSkin(skins, i);
+            });
+            drawSkin(skins, 0);
+        };
+
+        if (this.currentImageID == imageID)
+        {
+            return;
+        }
+        else if (cursorPos in this.cache 
+                && onionRange.every((i)=> i in this.cache[cursorPos].onionSkin) 
+                && this.cache[cursorPos].state_id == projState)
+        {
+            drawSkins(this.cache[cursorPos].onionSkin, onionRange);
+            this.currentImageID = imageID
+        }
+        else
+        {
+            fetch('/view/get_onion_skin/', initOptions({onion_range:onionRange}))
+            .then(this.responseHandler)
+            .then(onionSkin => {
+                drawSkins(onionSkin, onionRange);
+                this.cache[cursorPos] = {
+                    state_id:projState,
+                    onionSkin:onionSkin
+                };
+                this.currentImageID = imageID
+            });
+        }
     }
 }
-
-
-class CanvasOnTopOfDefault extends Canvas {
-    /*
-    Same as Canvas but ignore errors
-    */
-    constructor(id, noOnionSkin=false) {
-        super(id, noOnionSkin);
-        this.responseHandler = handleResponseQuiet;
-    }
-
-}
-
 
 
 class SweetCanvas extends Canvas {
@@ -244,9 +239,7 @@ const onControlClick = (e) => {
 
     fetch(url, initOptions(args))
     .then(handleResponse)
-    .then(()=>callModulesMethod('onAnimChange'))
-    .then(()=>callModulesMethod('onCursorMove'))
-
+    .then(()=>callModulesMethod('update'));
 };
 
 //// CLASS ////
@@ -256,13 +249,12 @@ class Toolbar extends Module {
         super(id);
     }
 
-    setup() {
+    setup(callBack) {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
         this.elmt.querySelectorAll('#projectmanager button')
         .forEach(e=>e.addEventListener('click', ()=>callModulesMethod('setup')));
-        
-
+        callBack();
     }
 }
 
@@ -275,13 +267,13 @@ class Toolbar extends Module {
 const onFrmClick = (e) => {
     let i = Number(e.currentTarget.dataset.frm);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
-    .then(()=>callModulesMethod('onCursorMove'))
+    .then(()=>callModulesMethod('update'))
 };
 
 const onLayerClick = (e) => {
     let layer = Number(e.currentTarget.dataset.layer);
     fetch('/control/navigator/go_to_layer/', initOptions({i:layer}))
-    .then(()=>callModulesMethod('onCursorMove'));
+    .then(()=>callModulesMethod('update'));
 }
 
 const onElementClick = (e) => {
@@ -289,106 +281,139 @@ const onElementClick = (e) => {
     let layer = Number(e.currentTarget.parentNode.dataset.layer);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(fetch('/control/navigator/go_to_layer/', initOptions({i:layer})))
-    .then(()=>callModulesMethod('onCursorMove'));
+    .then(()=>callModulesMethod('update'));
+}
+///// UTILS /////
+
+const createElement = (frm, element) => {
+    let td = document.createElement("td");
+    td.addEventListener('click', onElementClick);
+    td.dataset.frm = frm;
+    td.setAttribute("colspan", element.len);
+    return td;
 }
 
+const createLayerHead = () => {
+    let td = document.createElement("td");
+    td.addEventListener('click', onLayerClick);
+    return td;
+}
+const createFrmHead = (i) => {
+    let td = document.createElement("td");
+    td.addEventListener('click', onFrmClick);
+    td.dataset.frm = i;
+    return td;
+}
+
+const createLayerRow = (i, elements) => {
+    let tdArray = [createLayerHead()];
+    let frm = 0;
+    for (let j = 0; j < elements.length; j++) {
+        tdArray.push(createElement(frm, elements[j]));
+        frm+=elements[j].len;
+    }
+    let layerRow = document.createElement("tr");
+    layerRow.classList.add('layer-row')
+    layerRow.dataset.layer = i;
+    tdArray.forEach(td=>layerRow.appendChild(td));
+
+    return layerRow;
+}
+
+const createFrmsRow = (len) => {
+    let tdArray = [createLayerHead()];
+    for (let i = 0; i < len; i++) {
+        tdArray.push(createFrmHead(i));
+    }
+    let frmsRow = document.createElement("tr");
+    frmsRow.classList.add('frms-row');
+    tdArray.forEach(td=>frmsRow.appendChild(td));
+    return frmsRow;
+}
+
+const createTimeline = (timeline, table) => {
+    while(table.firstChild && table.removeChild(table.firstChild)); //empty
+    table.appendChild(createFrmsRow(timeline.len));
+    for (var i = 0; i < timeline.layers.length; i++) {
+        table.appendChild(createLayerRow(i, timeline.layers[i]));
+    }
+}
+
+const setActiveElement = (dataname, i, element) => {
+    if(element.dataset[dataname] == i){
+        element.classList.add('active');
+    } else {
+        element.classList.remove('active');
+    }
+}
 //// CLASS ////
 
 class Timeline extends Module {
     constructor(id) {
         super(id);
+
+        this.currentImageID = "";
+        this.currentProjState = "";
+
     }
 
-    onCursorMove() {
+    setup(callBack) {
+        this.update(callBack);
+    }
+
+    update(callBack) {
+        fetch('/view/get_cursor_infos/', initOptions())
+        .then(handleResponse)
+        .then(json =>{
+            let cursorPos = json.project_name + ' ' + json.anim + ' ' +  json.layer + ' ' + json.frm;
+            let projState = json.project_state_id;
+            if (projState != this.currentProjState) {
+                this.updateTimeline(json, callBack);
+            } else if (cursorPos != this.currentCursorPos) {
+                this.updateActive(json, callBack);
+            }
+            else {
+                callBack();
+            }
+            this.currentCursorPos = cursorPos;
+            this.currentProjState = projState;
+        })
+    }
+
+    updateActive(pos, callBack) {
         /*
         Remove active class from frm-heading and layer-row.
         Set current layer and frm to active
         */
-        const setActiveElement = (dataname, i, element) => {
-            if(element.dataset[dataname] == i){
-                console.log(dataname, i)
-                element.classList.add('active');
-            } else {
-                element.classList.remove('active');
-            }
-        }
-        const setActiveAll = (cursor) => {
-            this.elmt.querySelectorAll('.frms-row td')
-            .forEach((e)=>setActiveElement('frm', cursor.frm, e));
-            this.elmt.querySelectorAll('.layer-row')
-            .forEach((e)=>setActiveElement('layer', cursor.layer, e));
-        }
-        fetch('/view/get_cursor_infos/',initOptions())
-        .then(handleResponse)
-        .then(json =>setActiveAll(json));
+        this.elmt.querySelectorAll('.frms-row td')
+        .forEach((e)=>setActiveElement('frm', pos.frm, e));
+        this.elmt.querySelectorAll('.layer-row')
+        .forEach((e)=>setActiveElement('layer', pos.layer, e));
+        callBack();
     }
 
-    onAnimChange() {
-
-        const createElement = (frm, element) => {
-            let td = document.createElement("td");
-            td.addEventListener('click', onElementClick);
-            td.dataset.frm = frm;
-            td.setAttribute("colspan", element.len);
-            return td;
-        }
-
-        const createLayerHead = () => {
-            let td = document.createElement("td");
-            td.addEventListener('click', onLayerClick);
-            return td;
-        }
-        const createFrmHead = (i) => {
-            let td = document.createElement("td");
-            td.addEventListener('click', onFrmClick);
-            td.dataset.frm = i;
-            return td;
-        }
-
-        const createLayerRow = (i, elements) => {
-            let tdArray = [createLayerHead()];
-            let frm = 0;
-            for (let j = 0; j < elements.length; j++) {
-                tdArray.push(createElement(frm, elements[j]));
-                frm+=elements[j].len;
-            }
-            let layerRow = document.createElement("tr");
-            layerRow.classList.add('layer-row')
-            layerRow.dataset.layer = i;
-            tdArray.forEach(td=>layerRow.appendChild(td));
-
-            return layerRow;
-        }
-
-        const createFrmsRow = (len) => {
-            let tdArray = [createLayerHead()];
-            for (let i = 0; i < len; i++) {
-                tdArray.push(createFrmHead(i));
-            }
-            let frmsRow = document.createElement("tr");
-            frmsRow.classList.add('frms-row');
-            tdArray.forEach(td=>frmsRow.appendChild(td));
-            return frmsRow;
-        }
-
-        const createTimeline = (timeline, table) => {
-            while(table.firstChild && table.removeChild(table.firstChild)); //empty
-            table.appendChild(createFrmsRow(timeline.len));
-            for (var i = 0; i < timeline.layers.length; i++) {
-                table.appendChild(createLayerRow(i, timeline.layers[i]));
-            }
-        }
-
+    updateTimeline(pos, callBack) {
         fetch('/view/get_timeline/', initOptions())
         .then(handleResponse)
-        .then(json => createTimeline(json, this.elmt))
-        .then(this.onCursorMove());
+        .then(json => {
+            createTimeline(json, this.elmt);
+            this.updateActive(pos, callBack);
+        });
     }
 }
 
 /******************
 **** STATUSBAR ****
 ******************/
+
+
+//// UTILS ////
+
+const updateInfos = (infos, statusbar) =>{
+    const null_to_str = (a) => a === null ? "" : a
+    statusbar.querySelectorAll('span')
+    .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
+}
 
 //// CLASS ////
 
@@ -399,14 +424,16 @@ class Statusbar extends Module {
         this.setup = this.onCursorMove
     }
 
-    onCursorMove() {
-        const updateInfos = (infos, statusbar) =>{
-            const null_to_str = (a) => a === null ? "" : a
-            statusbar.querySelectorAll('span')
-            .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
-        }
+    setup(callBack){
+        this.update(callBack);
+    }
+
+    update(callBack) {
         fetch(this.requestPath, initOptions())
         .then(handleResponse)
-        .then(json => updateInfos(json, this.elmt));
+        .then(json => {
+            updateInfos(json, this.elmt)
+            callBack();
+        });
     }
 }

@@ -4,4 +4,4 @@ modules = [canvas];
 
 ///////////// SETUP
 callModulesMethod('setup');
-startAutoUpdate('onCursorMove');
+startAutoUpdate();

@@ -38,17 +38,21 @@ const handleResponseQuiet = (res) => {
 let autoUpdating = false;
 const autoUpdateFrameRate = 24; //fps
 
-const autoUpdate = (method) => {
+const autoUpdate = () => {
     if (autoUpdating) {
-        callModulesMethod(method);
-        setTimeout(autoUpdate, 1000/autoUpdateFrameRate, method);
+        callModulesMethod('update');
+        setTimeout(autoUpdate, 1000/autoUpdateFrameRate);
     }
 }
-const startAutoUpdate = (method) => {
-    autoUpdating = true;
-    autoUpdate(method);
+const startAutoUpdate = () => {
+    if(!autoUpdating){
+        autoUpdating = true;
+        autoUpdate();
+    } else {
+        console.log("was already updatiung ! strange ????")
+    }
 }
-const stopAutoUpdate = (method) => {
+const stopAutoUpdate = () => {
     autoUpdating = false;
 }
 

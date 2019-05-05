@@ -1,6 +1,7 @@
 """This module provide control functions to manage projects"""
 
 from .. import projects
+from . import change_project_state
 
 def load(cursor, name=None):
     """
@@ -17,6 +18,8 @@ def get(cursor, name=None):
     name = name or cursor.proj.name
     cursor.proj = projects.get(name)
 
+
+@change_project_state
 def save(cursor, name=None):
     """
     Just call the projects.save function so it write datas in the default dir.

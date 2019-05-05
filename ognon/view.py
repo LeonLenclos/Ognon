@@ -88,10 +88,11 @@ def get_cursor_infos(cursor):
     """
     Return a dict containing informations about the cursor state
 
-    keys are : 'project_name', 'playing', 'loop', 'anim', 'frm', 'layer'
+    keys are : 'project_name', 'project_state_id', 'playing', 'loop', 'anim', 'frm', 'layer'
     """
     infos = {
         'project_name':cursor.proj.name,
+        'project_state_id':cursor.proj.state_id,
         'playing':cursor.playing,
     }
     infos.update(cursor.get_pos())

@@ -8,23 +8,23 @@ const cursorStatusbar = new Statusbar("cursor-statusbar", '/view/get_cursor_info
 
 modules = [canvas, timeline, toolbar, cursorStatusbar, elementStatusbar];
 
-
-///////////// SETUP
-toolbar.setup();
-   
     
 ///////////// AUTOUPDATE
-const autoUpdateOnPlay = () => {
-    fetch('/view/get_cursor_infos/', initOptions())
-    .then(response=>response.json())
-    .then(json=>{
-        if (json.playing){
-            startAutoUpdate('onCursorMove');
-        } else {
-            stopAutoUpdate();
-        }
-    });
-}
+// const autoUpdateOnPlay = () => {
+//     fetch('/view/get_cursor_infos/', initOptions())
+//     .then(response=>response.json())
+//     .then(json=>{
+//         console.log(json.playing)
+//         if (json.playing){
+//             startAutoUpdate();
+//         } else {
+//             stopAutoUpdate();
+//         }
+//     });
+// }
 
-document.getElementById('play').addEventListener('click', autoUpdateOnPlay)
-document.getElementById('auto_play').addEventListener('click', autoUpdateOnPlay)
+// document.getElementById('play').addEventListener('click', autoUpdateOnPlay)
+// document.getElementById('auto_play').addEventListener('click', autoUpdateOnPlay)
+
+callModulesMethod('setup');
+startAutoUpdate();

@@ -1,6 +1,7 @@
 """This module provide control functions to manage project's anims"""
 
 from .. import model
+from . import change_project_state
 
 def new_anim(cursor, name):
     """Add a new Anim to anims dict."""

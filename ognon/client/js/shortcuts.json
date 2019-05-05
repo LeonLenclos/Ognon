@@ -6,54 +6,54 @@
   "Space": {
     "description":"Toogle play mode.",
     "control": "/navigator/play",
-    "modulesMethod": "onCursorMove",
+    "modulesMethod": "update",
     "specials": "autoUpdateOnPlay"
   },
   "Shift+Space": {
     "description":"Auto play.",
     "control": "/navigator/auto_play",
-    "modulesMethod": "onCursorMove",
+    "modulesMethod": "update",
     "specials": "autoUpdateOnPlay"
   },
   "Enter": {
     "description":"Run the animation",
     "control": "/navigator/run",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "Shift+Enter": {
     "description":"Auto run.",
     "control": "/navigator/auto_run",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "ArrowRight": {
     "description":"Go to next frame.",
     "control": "/navigator/next_frm",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "ArrowLeft": {
     "description":"Go to previous frame.",
     "control": "/navigator/prev_frm",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "Shift+ArrowRight": {
     "description":"Go to last frame.",
     "control": "/navigator/last_frm",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "Shift+ArrowLeft": {
     "description":"Go to first frame.",
     "control": "/navigator/first_frm",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "ArrowUp": {
     "description":"Go to upper layer.",
     "control": "/navigator/upper_layer",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "ArrowDown": {
     "description":"Go to lower layer.",
     "control": "/navigator/lower_layer",
-    "modulesMethod": "onCursorMove"
+    "modulesMethod": "update"
   },
   "F9": {
     "description":"Toogle sleek view.",
@@ -62,31 +62,31 @@
   "Control+ArrowLeft": {
     "description":"Move the current ellement backward.",
     "control": "/elementsorganizer/move_element_backward",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   },
   "Control+ArrowRight": {
     "description":"Move the current ellement forward.",
     "control": "/elementsorganizer/move_element_forward",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   },
   "c": {
     "description":"Add a cell after.",
     "control": "/elementsorganizer/add_cell_after",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   },
   "Shift+c": {
     "description":"Add a cell before.",
     "control": "/elementsorganizer/add_cell_before",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   },
   "Backspace": {
     "description":"Clear the current cell.",
     "control": "/drawer/clear",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   },
   "Delete": {
     "description":"Delete the current element.",
     "control": "/elementsorganizer/del_element",
-    "modulesMethod": "onAnimChange"
+    "modulesMethod": "update"
   }
 }

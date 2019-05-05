@@ -110,7 +110,7 @@ class Project():
         """
         self.name = name
         self.anims = anims if anims is not None else {'master':Anim()}
-         
+        self.state_id = 0
 
         self.config = config or utils.parse_config(
             utils.pkgabspath('default.ini')
