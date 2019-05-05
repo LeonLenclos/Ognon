@@ -1,24 +1,42 @@
 "use strict";
-
 /****************
 **** SETTINGS ***
 ****************/
 
 const PRECISION = 3; // Min pixel length of a stroke
+const IGNORE_CALLMODMET_BUSY = false; // set to true for debugging
 
 /****************
 **** MODULES ****
 ****************/
 let modules = [];
+let callModulesMethodBusy = false;
+let callModulesMethodBusyCount = 0;
 function callModulesMethod(modulesMethod) {
-    modules.forEach(mo => {
-        if(mo[modulesMethod] && !mo.busy){
-            mo.busy = true;
-            mo[modulesMethod](()=>{mo.busy = false});
-        } else if (mo.busy){
-            console.log(mo.id+"."+modulesMethod+" is busy...");
-        }
-    });
+    if (!callModulesMethodBusy || IGNORE_CALLMODMET_BUSY) {
+        callModulesMethodBusy = true;
+        fetch('/view/get_cursor_infos/', initOptions())
+        .then(handleResponse)
+        .then(cursorInfos =>{
+            modules.forEach(mo => {
+                if(mo[modulesMethod] && !mo.busy){
+                    mo.busy = true;
+                    let callBack = ()=>{mo.busy = false; mo.busyCount = 0}
+                    mo[modulesMethod](callBack, cursorInfos);
+                } else if (mo.busy){
+                    mo.busyCount += 1;
+                    console.log("busy ("+mo.busyCount+") : "+mo.id+" ("+modulesMethod+")");
+                }
+            });
+            callModulesMethodBusy = false;
+            callModulesMethodBusyCount = 0;
+        })
+        .catch(handleError);
+    } else {
+        callModulesMethodBusyCount += 1;
+        console.log('busy ('+callModulesMethodBusyCount+') : callModulesMethod !')
+    }
+
 }
 
 class Module {
@@ -26,6 +44,7 @@ class Module {
         this.id = id;
         this.elmt = document.getElementById(id);
         this.busy = false;
+        this.busyCount = 0;
     }
 }
 
@@ -60,7 +79,7 @@ const onCanvasMouseMove = (e) => {
                 args = {coords:[x,y]};
             }
             fetch('/control/drawer/'+tool+'/', initOptions(args))
-            .then(()=>callModulesMethod('update'))
+            // .then(()=>callModulesMethod('update'))
             .catch(handleError);
             canvas.pMouseX = x;
             canvas.pMouseY = y;
@@ -112,7 +131,7 @@ class Canvas extends Module {
         this.onionWidth = config.onion_skin_line_width;
     }
 
-    setup(callBack) {
+    setup(callBack, cursorInfos) {
 
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
@@ -124,35 +143,30 @@ class Canvas extends Module {
         .then(this.responseHandler)
         .then(json =>{
             this.loadConfig(json);
-            this.update(callBack);
+            this.update(callBack, cursorInfos);
         })
         .catch(handleError);
     }
 
-    update(callBack) {
+    update(callBack, cursorInfos) {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
-        fetch('/view/get_cursor_infos/', initOptions())
-        .then(this.responseHandler)
-        .then(json =>{
-            if (json.playing || this.noOnionSkin) {
-                this.draw(json, [0])
-            } else {
-                this.draw(json, [-1, 0, 1])
-            }
-            this.updating = false;
-            callBack();
-        })
-        .catch(handleError);
+        if (cursorInfos.playing || this.noOnionSkin) {
+            this.draw(cursorInfos, [0])
+        } else {
+            this.draw(cursorInfos, [-1, 0, 1])
+        }
+        this.updating = false;
+        callBack();
     }
 
-    draw(pos, onionRange=[0]) {
+    draw(cursorInfos, onionRange=[0]) {
         /*
         Draw lines given by /view/get_onion_skin/ 
         */
-        let cursorPos = pos.project_name + ' ' + pos.anim + ' ' +  pos.layer + ' ' + pos.frm;
-        let projState = pos.project_state_id;
+        let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
+        let projState = cursorInfos.project_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
         let getCol = (skin) => {
@@ -190,7 +204,10 @@ class Canvas extends Module {
         }
         else
         {
-            fetch('/view/get_onion_skin/', initOptions({onion_range:onionRange}))
+            fetch('/view/get_onion_skin/', initOptions({
+                frm:cursorInfos.frm,
+                anim:cursorInfos.anim,
+                onion_range:onionRange}))
             .then(this.responseHandler)
             .then(onionSkin => {
                 drawSkins(onionSkin, onionRange);
@@ -241,7 +258,7 @@ const onControlClick = (e) => {
 
     fetch(url, initOptions(args))
     .then(handleResponse)
-    .then(()=>callModulesMethod('update'));
+   // .then(()=>callModulesMethod('update'))
     .catch(handleError);
 };
 
@@ -252,7 +269,7 @@ class Toolbar extends Module {
         super(id);
     }
 
-    setup(callBack) {
+    setup(callBack, cursorInfos) {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
         this.elmt.querySelectorAll('#projectmanager button')
@@ -270,14 +287,14 @@ class Toolbar extends Module {
 const onFrmClick = (e) => {
     let i = Number(e.currentTarget.dataset.frm);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
-    .then(()=>callModulesMethod('update'))
+    //.then(()=>callModulesMethod('update'))
     .catch(handleError);
 };
 
 const onLayerClick = (e) => {
     let layer = Number(e.currentTarget.dataset.layer);
     fetch('/control/navigator/go_to_layer/', initOptions({i:layer}))
-    .then(()=>callModulesMethod('update'))
+    //.then(()=>callModulesMethod('update'))
     .catch(handleError);
 }
 
@@ -286,7 +303,7 @@ const onElementClick = (e) => {
     let layer = Number(e.currentTarget.parentNode.dataset.layer);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(fetch('/control/navigator/go_to_layer/', initOptions({i:layer})))
-    .then(()=>callModulesMethod('update'))
+    //.then(()=>callModulesMethod('update'))
     .catch(handleError);
 }
 ///// UTILS /////
@@ -362,47 +379,43 @@ class Timeline extends Module {
 
     }
 
-    setup(callBack) {
-        this.update(callBack);
+    setup(callBack, cursorInfos) {
+        this.update(callBack, cursorInfos);
     }
 
-    update(callBack) {
-        fetch('/view/get_cursor_infos/', initOptions())
-        .then(handleResponse)
-        .then(json =>{
-            let cursorPos = json.project_name + ' ' + json.anim + ' ' +  json.layer + ' ' + json.frm;
-            let projState = json.project_state_id;
-            if (projState != this.currentProjState) {
-                this.updateTimeline(json, callBack);
-            } else if (cursorPos != this.currentCursorPos) {
-                this.updateActive(json, callBack);
-            }
-            else {
-                callBack();
-            }
-            this.currentCursorPos = cursorPos;
-            this.currentProjState = projState;
-        })
+    update(callBack, cursorInfos) {
+        let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
+        let projState = cursorInfos.project_state_id;
+        if (projState !== this.currentProjState) {
+            this.updateTimeline(callBack, cursorInfos);
+        } else if (cursorPos != this.currentCursorPos) {
+            this.updateActive(callBack, cursorInfos);
+        }
+        else {
+            callBack();
+        }
+        this.currentCursorPos = cursorPos;
+        this.currentProjState = projState;
     }
 
-    updateActive(pos, callBack) {
+    updateActive(callBack, cursorInfos) {
         /*
         Remove active class from frm-heading and layer-row.
         Set current layer and frm to active
         */
         this.elmt.querySelectorAll('.frms-row td')
-        .forEach((e)=>setActiveElement('frm', pos.frm, e));
+        .forEach((e)=>setActiveElement('frm', cursorInfos.frm, e));
         this.elmt.querySelectorAll('.layer-row')
-        .forEach((e)=>setActiveElement('layer', pos.layer, e));
+        .forEach((e)=>setActiveElement('layer', cursorInfos.layer, e));
         callBack();
     }
 
-    updateTimeline(pos, callBack) {
+    updateTimeline(callBack, cursorInfos) {
         fetch('/view/get_timeline/', initOptions())
         .then(handleResponse)
         .then(json => {
             createTimeline(json, this.elmt);
-            this.updateActive(pos, callBack);
+            this.updateActive(callBack, cursorInfos);
         })
         .catch(handleError);
     }
@@ -423,24 +436,57 @@ const updateInfos = (infos, statusbar) =>{
 
 //// CLASS ////
 
+class CursorStatusbar extends Module {
+    constructor(id) {
+        super(id);
+    }
+
+    setup(callBack, cursorInfos){
+        this.update(callBack, cursorInfos);
+    }
+
+    update(callBack, cursorInfos) {
+        updateInfos(cursorInfos, this.elmt)
+        callBack();
+    }
+}
+
 class Statusbar extends Module {
     constructor(id, requestPath) {
         super(id);
-        this.requestPath = requestPath
-        this.setup = this.onCursorMove
+        this.requestPath = requestPath;
+        this.currentElementID = ""
+        this.cache = {}
     }
 
-    setup(callBack){
-        this.update(callBack);
+    setup(callBack, cursorInfos){
+        this.update(callBack, cursorInfos);
     }
 
-    update(callBack) {
-        fetch(this.requestPath, initOptions())
-        .then(handleResponse)
-        .then(json => {
-            updateInfos(json, this.elmt)
+    update(callBack, cursorInfos) {
+        let cursorPos = cursorInfos.project_name+' '+cursorInfos.anim+' '+cursorInfos.layer+' '+cursorInfos.frm;
+        let projectState = cursorInfos.project_state_id
+        let elementID = cursorPos+' '+projectState;
+        if(elementID != this.currentElementID){
+            if(cursorPos in this.cache && this.cache[cursorPos].state_id == projectState){
+                updateInfos(this.cache[cursorPos].infos, this.elmt);
+                this.currentElementID = elementID;
+                callBack();
+            }
+            else {
+                fetch(this.requestPath, initOptions())
+                .then(handleResponse)
+                .then(json => {
+                    updateInfos(json, this.elmt);
+                    this.currentElementID = elementID;
+                    this.cache[cursorPos]={state_id:projectState, infos:json}
+                    callBack();
+
+                })
+                .catch(handleError);
+            }
+        } else {
             callBack();
-        })
-        .catch(handleError);
+        }
     }
 }

@@ -18,6 +18,7 @@ const initOptions = (args, differentCursor) => {
 
 const handleResponse = (res) => {
         if (res.status === 400) {
+            console.log(res);
             res.text().then(errMsg => alert(errMsg))
             throw 400
             return null
@@ -34,13 +35,14 @@ const handleResponseQuiet = (res) => {
 }
 
 const handleError = (e) => {
-    console.log("ERROR : " + e);
+    console.log("ERROR : ");
+    console.log(e);
 }
 
 // Auto update
 
 let autoUpdating = false;
-const autoUpdateFrameRate = 24; //fps
+const autoUpdateFrameRate = 25; //fps
 
 const autoUpdate = () => {
     if (autoUpdating) {

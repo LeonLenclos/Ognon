@@ -4,7 +4,7 @@ const canvas    = new Canvas("canvas");
 const timeline  = new Timeline("timeline");
 const toolbar   = new Toolbar("toolbar");
 const elementStatusbar = new Statusbar("element-statusbar", '/view/get_element_infos/');
-const cursorStatusbar = new Statusbar("cursor-statusbar", '/view/get_cursor_infos/');
+const cursorStatusbar = new CursorStatusbar("cursor-statusbar");
 
 modules = [canvas, timeline, toolbar, cursorStatusbar, elementStatusbar];
 
@@ -26,5 +26,22 @@ modules = [canvas, timeline, toolbar, cursorStatusbar, elementStatusbar];
 // document.getElementById('play').addEventListener('click', autoUpdateOnPlay)
 // document.getElementById('auto_play').addEventListener('click', autoUpdateOnPlay)
 
-callModulesMethod('setup');
-startAutoUpdate();
+fetch('/view/get_project_defined/', initOptions())
+.then(handleResponse)
+.then(project_defined=>{
+    if (!project_defined){
+        fetch('/control/projectmanager/get', initOptions({name:'my_project'}))
+        .then(handleResponse)
+        .then(()=>{
+            callModulesMethod('setup');
+            startAutoUpdate();
+        })
+        .catch(handleError);
+    } else {
+        callModulesMethod('setup');
+        startAutoUpdate();
+    }
+})
+.catch(handleError);
+
+
