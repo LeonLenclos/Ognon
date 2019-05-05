@@ -8,7 +8,7 @@ import os
 from . import model
 from . import projects
 from . import PROJECTS_DIR
-
+from .cursor import NoProjectError
 def get_path(cursor, file=""):
     """
     Return path to the project (or path to a file in the project).
@@ -98,6 +98,15 @@ def get_cursor_infos(cursor):
     infos.update(cursor.get_pos())
     return infos
 
+def get_project_defined(cursor):
+    """
+    Return True or False if the cursor has a project defined.
+    """
+    try:
+        return cursor.proj is not None
+    except NoProjectError:
+        return False
+
 def get_element_infos(cursor):
     """
     Return a dict containing informations about the current element
@@ -133,7 +142,7 @@ def get_lines(cursor, frm=None, anim=None):
                 lines += get_lines(cursor, anim=element.name, frm=at)
     return lines
 
-def get_onion_skin(cursor, onion_range=(0,)):
+def get_onion_skin(cursor, frm=None, anim=None, onion_range=(0,)):
     """
     Return a dict of anim lines.
 
@@ -143,8 +152,8 @@ def get_onion_skin(cursor, onion_range=(0,)):
 
     Values are given by the get_lines function passing the frm argument.
     """
-    frm = cursor.get_pos('frm')
+    frm = frm if frm is not None else cursor.get_pos('frm')
     return {
-        idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx))
+        idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
         for idx in onion_range
     }
