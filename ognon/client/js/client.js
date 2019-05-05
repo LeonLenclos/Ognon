@@ -33,6 +33,10 @@ const handleResponseQuiet = (res) => {
         return res.json();
 }
 
+const handleError = (e) => {
+    console.log("ERROR : " + e);
+}
+
 // Auto update
 
 let autoUpdating = false;
@@ -55,4 +59,3 @@ const startAutoUpdate = () => {
 const stopAutoUpdate = () => {
     autoUpdating = false;
 }
-

@@ -61,6 +61,7 @@ const onCanvasMouseMove = (e) => {
             }
             fetch('/control/drawer/'+tool+'/', initOptions(args))
             .then(()=>callModulesMethod('update'))
+            .catch(handleError);
             canvas.pMouseX = x;
             canvas.pMouseY = y;
         }
@@ -124,9 +125,8 @@ class Canvas extends Module {
         .then(json =>{
             this.loadConfig(json);
             this.update(callBack);
-        });
-
-        // call update
+        })
+        .catch(handleError);
     }
 
     update(callBack) {
@@ -143,8 +143,8 @@ class Canvas extends Module {
             }
             this.updating = false;
             callBack();
-        });
-
+        })
+        .catch(handleError);
     }
 
     draw(pos, onionRange=[0]) {
@@ -199,7 +199,9 @@ class Canvas extends Module {
                     onionSkin:onionSkin
                 };
                 this.currentImageID = imageID
-            });
+            })
+            .catch(handleError);
+
         }
     }
 }
@@ -240,6 +242,7 @@ const onControlClick = (e) => {
     fetch(url, initOptions(args))
     .then(handleResponse)
     .then(()=>callModulesMethod('update'));
+    .catch(handleError);
 };
 
 //// CLASS ////
@@ -268,12 +271,14 @@ const onFrmClick = (e) => {
     let i = Number(e.currentTarget.dataset.frm);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(()=>callModulesMethod('update'))
+    .catch(handleError);
 };
 
 const onLayerClick = (e) => {
     let layer = Number(e.currentTarget.dataset.layer);
     fetch('/control/navigator/go_to_layer/', initOptions({i:layer}))
-    .then(()=>callModulesMethod('update'));
+    .then(()=>callModulesMethod('update'))
+    .catch(handleError);
 }
 
 const onElementClick = (e) => {
@@ -281,7 +286,8 @@ const onElementClick = (e) => {
     let layer = Number(e.currentTarget.parentNode.dataset.layer);
     fetch('/control/navigator/go_to_frm/', initOptions({i:i}))
     .then(fetch('/control/navigator/go_to_layer/', initOptions({i:layer})))
-    .then(()=>callModulesMethod('update'));
+    .then(()=>callModulesMethod('update'))
+    .catch(handleError);
 }
 ///// UTILS /////
 
@@ -316,7 +322,6 @@ const createLayerRow = (i, elements) => {
     layerRow.classList.add('layer-row')
     layerRow.dataset.layer = i;
     tdArray.forEach(td=>layerRow.appendChild(td));
-
     return layerRow;
 }
 
@@ -398,7 +403,8 @@ class Timeline extends Module {
         .then(json => {
             createTimeline(json, this.elmt);
             this.updateActive(pos, callBack);
-        });
+        })
+        .catch(handleError);
     }
 }
 
@@ -434,6 +440,7 @@ class Statusbar extends Module {
         .then(json => {
             updateInfos(json, this.elmt)
             callBack();
-        });
+        })
+        .catch(handleError);
     }
 }
