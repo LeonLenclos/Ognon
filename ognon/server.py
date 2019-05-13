@@ -173,18 +173,18 @@ class OgnonOSCDispatcher(pythonosc.dispatcher.Dispatcher):
         yield pythonosc.dispatcher.Handler(callback, [])
 
 
-def serve(http_adress, osc_adress, enable_osc=True):
+def serve(http_address, osc_address, enable_osc=True):
     """
-    Serve forever on the given adresses.
+    Serve forever on the given addresses.
 
     Start to threading servers, an http server and an osc server.
     Set enable_osc to False to disable starting osc server thread.
     """
     dispatcher = OgnonOSCDispatcher()
-    osc_server = pythonosc.osc_server.OSCUDPServer(osc_adress, dispatcher)
+    osc_server = pythonosc.osc_server.OSCUDPServer(osc_address, dispatcher)
     osc_server_thread = threading.Thread(target=osc_server.serve_forever)
 
-    http_server = http.server.HTTPServer(http_adress, OgnonHTTPHandler)
+    http_server = http.server.HTTPServer(http_address, OgnonHTTPHandler)
     http_server_thread = threading.Thread(target=http_server.serve_forever)
 
     try :

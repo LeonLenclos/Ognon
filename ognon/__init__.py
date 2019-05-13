@@ -5,8 +5,8 @@ Run `python -m ognon` to start the server. Then browse http://localhost:40460
 import os
 
 __version__ = '1.α'
-HTTP_ADRESS = ('localhost', 40460)
-OSC_ADRESS = ('localhost', 50460)
+HTTP_ADDRESS = ('localhost', 40460)
+OSC_ADDRESS = ('localhost', 50460)
 PROJECTS_DIR = os.path.expanduser('~/ognons/')
 
 from . import model

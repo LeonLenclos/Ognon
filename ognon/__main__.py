@@ -9,7 +9,7 @@ import logging
 
 from . import utils
 from . import server
-from . import __version__, PROJECTS_DIR, HTTP_ADRESS, OSC_ADRESS
+from . import __version__, PROJECTS_DIR, HTTP_ADDRESS, OSC_ADDRESS
 
 # Parsing command line args
 parser = argparse.ArgumentParser(
@@ -22,15 +22,15 @@ parser.add_argument(
 parser.add_argument(
 	'-b', '--browse',
 	action='store_true',
-	help='open the adress in a web browser')
+	help='open the address in a web browser')
 parser.add_argument(
 	'--no-osc',
 	action='store_true',
 	help='also serve osc on another port.')
 parser.add_argument(
-	'--ip-adress',
+	'--ip-address',
 	type=str,
-	help='set a different server ip adress.')
+	help='set a different server ip address.')
 parser.add_argument(
 	'--projects-dir',
 	type=str,
@@ -44,7 +44,7 @@ logging.basicConfig(
 )
 
 def main(args):
-	global HTTP_ADRESS, OSC_ADRESS, PROJECTS_DIR
+	global HTTP_ADDRESS, OSC_ADDRESS, PROJECTS_DIR
 
 	# Test
 	if args.test:
@@ -59,20 +59,20 @@ def main(args):
 		PROJECTS_DIR = args.projects_dir
 	print("Working on file://{}".format(PROJECTS_DIR))
 
-	# Ip adress
-	if args.ip_adress:
-		HTTP_ADRESS = args.ip_adress, HTTP_ADRESS[1]
-		OSC_ADRESS = args.ip_adress, OSC_ADRESS[1]
+	# Ip address
+	if args.ip_address:
+		HTTP_ADDRESS = args.ip_address, HTTP_ADDRESS[1]
+		OSC_ADDRESS = args.ip_address, OSC_ADDRESS[1]
 
 	# Run Servers
-	server.serve(HTTP_ADRESS, OSC_ADRESS, not args.no_osc)
-	print("Serving on http://{}:{}".format(*HTTP_ADRESS))
+	server.serve(HTTP_ADDRESS, OSC_ADDRESS, not args.no_osc)
+	print("Serving on http://{}:{}".format(*HTTP_ADDRESS))
 	if not args.no_osc:
-		print("Serving on osc://{}:{}".format(*OSC_ADRESS))
+		print("Serving on osc://{}:{}".format(*OSC_ADDRESS))
 
 	# Open web browser
 	if args.browse:
-		webbrowser.open_new("http://{}:{}".format(*HTTP_ADRESS))
+		webbrowser.open_new("http://{}:{}".format(*HTTP_ADDRESS))
 
 
 main(parser.parse_args())
