@@ -1,4 +1,3 @@
-"use strict";
 /****************
 **** SETTINGS ***
 ****************/
@@ -374,7 +373,7 @@ class Timeline extends Module {
     constructor(id) {
         super(id);
 
-        this.currentImageID = "";
+        this.currentCursorPos = "";
         this.currentProjState = "";
 
     }
@@ -384,8 +383,8 @@ class Timeline extends Module {
     }
 
     update(callBack, cursorInfos) {
-        let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_state_id;
+        let cursorPos = cursorInfos.layer + ' ' + cursorInfos.frm;
+        let projState = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.project_state_id;
         if (projState !== this.currentProjState) {
             this.updateTimeline(callBack, cursorInfos);
         } else if (cursorPos != this.currentCursorPos) {
