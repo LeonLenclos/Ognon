@@ -22,6 +22,8 @@ def calculate_len(length, tag_description):
 	"""
 	tag = tag_description.split()
 	tag_name = tag.pop(0)
+	if length == 0:
+		return 0
 	try:
 		return tags[tag_name]['calculate_len'](length, *tag)
 	except KeyError:
@@ -35,6 +37,8 @@ def calculate_inside_pos(pos, length, tag_description):
 	"""
 	tag = tag_description.split()
 	tag_name = tag.pop(0)
+	if length == 0:
+		return 0
 	try:
 		return tags[tag_name]['calculate_inside_pos'](pos, length, *tag)
 	except KeyError:
