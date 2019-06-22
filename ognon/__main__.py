@@ -22,19 +22,24 @@ parser.add_argument(
 parser.add_argument(
 	'-b', '--browse',
 	action='store_true',
-	help='open the address in a web browser')
+	help='open web browser at the server address')
+parser.add_argument(
+	'-i', '--interactive',
+	action='store_true',
+	help='run the interactive Python console')
 parser.add_argument(
 	'--no-osc',
 	action='store_true',
-	help='also serve osc on another port.')
+	help='do not start the osc server')
 parser.add_argument(
-	'--ip-address',
+	'-a', '--ip-address',
 	type=str,
-	help='set a different server ip address.')
+	help='specify alternate ip address [default: localhost]')
 parser.add_argument(
-	'--projects-dir',
+	'-p', '--projects-dir',
 	type=str,
-	help='set a different projects directory.')
+	help='specify alternate projects directory [default: {}]'
+		.format(PROJECTS_DIR))
 
 # Logging
 logging.basicConfig(
