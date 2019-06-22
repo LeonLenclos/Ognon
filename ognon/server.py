@@ -19,6 +19,8 @@ from . import utils
 
 functions = {}
 cursors = {}
+http_server = None
+osc_server = None
 
 def get_function(path):
     """
@@ -180,6 +182,8 @@ def serve(http_address, osc_address, enable_osc=True):
     Start to threading servers, an http server and an osc server.
     Set enable_osc to False to disable starting osc server thread.
     """
+    global http_server, osc_server
+
     dispatcher = OgnonOSCDispatcher()
     osc_server = pythonosc.osc_server.OSCUDPServer(osc_address, dispatcher)
     osc_server_thread = threading.Thread(target=osc_server.serve_forever)
@@ -187,12 +191,14 @@ def serve(http_address, osc_address, enable_osc=True):
     http_server = http.server.HTTPServer(http_address, OgnonHTTPHandler)
     http_server_thread = threading.Thread(target=http_server.serve_forever)
 
-    try :
-        if enable_osc:
-            osc_server_thread.start()
-        http_server_thread.start()
-    except KeyboardInterrupt as e:
-        print('\n- shutdown -')
-        http_server.shutdown()
-        osc_server.shutdown()
-        raise e
+    if enable_osc:
+        osc_server_thread.start()
+    http_server_thread.start()
+
+def stop_serving():
+    """
+    Strop serving forever.
+    """
+    global http_server, osc_server
+    http_server.shutdown()
+    osc_server.shutdown()
