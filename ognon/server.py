@@ -19,6 +19,7 @@ from . import utils
 
 functions = {}
 cursors = {}
+
 http_server = None
 osc_server = None
 
@@ -97,6 +98,14 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         # The default server log is redirected to logging.DEBUG.
         logging.debug(format%args)
 
+    def write(self, *args):
+        """
+        Wrapper for the wfile.write method used to handle BrokenPipeError.
+        """
+        try:
+            self.wfile.write(*args)
+        except BrokenPipeError:
+            logging.warning('BrokenPipeError')
 
     def do_GET(self):
         """
@@ -124,7 +133,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
         self.send_header('Content-type', mimetype)
         self.end_headers()
-        self.wfile.write(content)
+        self.write(content)
 
         
     def do_POST(self):
@@ -148,12 +157,12 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(400)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
-            self.wfile.write(bytes('\n'.join(reply.args), 'utf-8'))
+            self.write(bytes('\n'.join(reply.args), 'utf-8'))
         else:
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.wfile.write(bytes(json.dumps(reply), 'utf-8'))
+            self.write(bytes(json.dumps(reply), 'utf-8'))
 
     def end_headers (self):
         #TODO: check if this is really useful ! 
