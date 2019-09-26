@@ -45,7 +45,7 @@ def test_get_timeline(cursor):
 
 def test_get_cursor_infos(cursor):
 	
-	for key in ('project_name', 'project_state_id', 'playing', 'anim', 'frm', 'layer'):
+	for key in ('project_name', 'project_state_id', 'project_draw_state_id', 'playing', 'anim', 'frm', 'layer'):
 		assert key in view.get_cursor_infos(cursor)	
 	# test jsonability
 	json.dumps(view.get_cursor_infos(cursor))

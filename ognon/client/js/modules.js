@@ -3,7 +3,7 @@
 ****************/
 
 const PRECISION = 3; // Min pixel length of a stroke
-const IGNORE_CALLMODMET_BUSY = false; // set to true for debugging
+const IGNORE_CALLMODMET_BUSY = true; // set to true for debugging
 
 /****************
 **** MODULES ****
@@ -53,6 +53,8 @@ class Module {
 
 //// EVENTS ////
 
+
+
 const onCanvasMouseDown = (e) => {
     canvas.pMouseX = e.offsetX;
     canvas.pMouseY = e.offsetY;
@@ -64,16 +66,20 @@ const onMouseUp = (e) => {
 };
 
 const onCanvasMouseMove = (e) => {
-    let x = e.offsetX;
-    let y = e.offsetY;
+
     if(canvas.pMouseX){
+        let x = e.offsetX;
+        let y = e.offsetY;
+        let px = canvas.pMouseX;
+        let py = canvas.pMouseY;
+
         // send tool request only if the distance between mouse and pMouse is greater than PRECISION
-        if(Math.abs(canvas.pMouseX - x) > PRECISION
-        || Math.abs(canvas.pMouseY - y) > PRECISION) {
+        if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
+
             let tool = document.getElementById('tool-selector').value
             let args;
             if (tool == 'draw'){
-                args = {coords:[canvas.pMouseX,canvas.pMouseY,x,y]};
+                args = {coords:[px,py,x,y]};
             } else if (tool == 'erease'){
                 args = {coords:[x,y]};
             }
@@ -86,6 +92,7 @@ const onCanvasMouseMove = (e) => {
     }
 };
 
+// const useCurrentTool(x1, y1, x2, y2)
 //// UTILS ////
 
 const drawLines = (lines, style, ctx) => {
@@ -165,7 +172,7 @@ class Canvas extends Module {
         Draw lines given by /view/get_onion_skin/ 
         */
         let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_state_id;
+        let projState = cursorInfos.project_state_id + ' '  + cursorInfos.project_draw_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
         let getCol = (skin) => {
