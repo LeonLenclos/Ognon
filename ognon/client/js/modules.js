@@ -54,40 +54,63 @@ class Module {
 //// EVENTS ////
 
 
+let mouseDownCoords = [];
+let onCallDrawerBusy = false;
+
+
+const callDrawer = () => {
+
+    onCallDrawerBusy = true;
+    let tool = document.getElementById('tool-selector').value
+    let args;
+    if (tool == 'draw'){
+        args = {coords:mouseDownCoords};
+    } else if (tool == 'erease'){
+        args = {coords:[mouseDownCoords[mouseDownCoords.length-2],mouseDownCoords[mouseDownCoords.lenght-1]]};
+    }
+    fetch('/control/drawer/'+tool+'/', initOptions(args))
+    .then(()=>{onCallDrawerBusy = false;})
+    .catch(handleError);
+};
 
 const onCanvasMouseDown = (e) => {
-    canvas.pMouseX = e.offsetX;
-    canvas.pMouseY = e.offsetY;
+    mouseDownCoords = [e.offsetX, e.offsetY];
 };
 
 const onMouseUp = (e) => {
-    canvas.pMouseX = null;
-    canvas.pMouseY = null;
+
+    callDrawer();
+    mouseDownCoords = [];
+    
+
 };
 
 const onCanvasMouseMove = (e) => {
 
-    if(canvas.pMouseX){
+    if(mouseDownCoords.length>1){
+
         let x = e.offsetX;
         let y = e.offsetY;
-        let px = canvas.pMouseX;
-        let py = canvas.pMouseY;
+        let px = mouseDownCoords[mouseDownCoords.length-2];
+        let py = mouseDownCoords[mouseDownCoords.length-1];
+
+        mouseDownCoords = mouseDownCoords.concat([x, y]);
+
 
         // send tool request only if the distance between mouse and pMouse is greater than PRECISION
         if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
 
-            let tool = document.getElementById('tool-selector').value
-            let args;
-            if (tool == 'draw'){
-                args = {coords:[px,py,x,y]};
-            } else if (tool == 'erease'){
-                args = {coords:[x,y]};
+            if(!onCallDrawerBusy){
+                // console.log(mouseDownCoords);
+                callDrawer();
+                mouseDownCoords = [x, y];
+
             }
-            fetch('/control/drawer/'+tool+'/', initOptions(args))
-            // .then(()=>callModulesMethod('update'))
-            .catch(handleError);
-            canvas.pMouseX = x;
-            canvas.pMouseY = y;
+            else {
+                console.log("busy : onCanvasMouseMove")
+            }
+
+
         }
     }
 };
