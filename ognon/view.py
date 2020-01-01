@@ -96,7 +96,8 @@ def get_cursor_infos(cursor):
         'project_draw_state_id':cursor.proj.draw_state_id,
         'playing':cursor.playing,
     }
-    infos.update(cursor.get_pos())
+    infos.update(cursor._pos)
+    # infos.update(cursor.get_pos())
     return infos
 
 def get_project_defined(cursor):

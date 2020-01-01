@@ -83,10 +83,6 @@ class Cursor():
         If no project, raise a NoProjectError
         """
 
-        # Ok, I think all the  exception for inapropriate requests can be raised
-        # From this method. (not sure)
-
-
         # Set position.
         if anim is not None:
             self._pos['anim'] = anim
@@ -96,16 +92,15 @@ class Cursor():
             self._pos['layer'] = layer
         if frm is not None:
             self._pos['frm'] = frm
-        # try:
         if self._pos['anim'] not in self.proj.anims:
             self._pos['anim'] = 'master'
-        # except AttributeError:
-            # raise NoProjectError()
+
         # Constrain layer.
         try:
             self._pos['layer'] %= len(self.proj.anims[self._pos['anim']].layers)
         except ZeroDivisionError:
             self._pos['layer'] = 0
+        
         # Constrain frm.
         self._pos['frm'] = self.constrain_frm(self._pos['frm'])
 

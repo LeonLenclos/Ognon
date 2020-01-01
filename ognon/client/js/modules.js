@@ -3,7 +3,7 @@
 ****************/
 
 const PRECISION = 3; // Min pixel length of a stroke
-const IGNORE_CALLMODMET_BUSY = true; // set to true for debugging
+const IGNORE_CALLMODMET_BUSY = false; // set to true for debugging
 
 /****************
 **** MODULES ****
@@ -24,7 +24,7 @@ function callModulesMethod(modulesMethod) {
                     mo[modulesMethod](callBack, cursorInfos);
                 } else if (mo.busy){
                     mo.busyCount += 1;
-                    console.log("busy ("+mo.busyCount+") : "+mo.id+" ("+modulesMethod+")");
+                    // console.log("busy ("+mo.busyCount+") : "+mo.id+" ("+modulesMethod+")");
                 }
             });
             callModulesMethodBusy = false;
@@ -33,7 +33,7 @@ function callModulesMethod(modulesMethod) {
         .catch(handleError);
     } else {
         callModulesMethodBusyCount += 1;
-        console.log('busy ('+callModulesMethodBusyCount+') : callModulesMethod !')
+        // console.log('busy ('+callModulesMethodBusyCount+') : callModulesMethod !')
     }
 
 }

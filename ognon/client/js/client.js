@@ -47,7 +47,7 @@ const autoUpdateFrameRate = 25; //fps
 const autoUpdate = () => {
     if (autoUpdating) {
         callModulesMethod('update');
-        setTimeout(autoUpdate, 1000/autoUpdateFrameRate);
+        requestAnimationFrame(autoUpdate, 1000/autoUpdateFrameRate);
     }
 }
 const startAutoUpdate = () => {
@@ -55,9 +55,11 @@ const startAutoUpdate = () => {
         autoUpdating = true;
         autoUpdate();
     } else {
-        console.log("was already updatiung ! strange ????")
+        console.log("was already autoUpdating ! strange ????")
     }
 }
 const stopAutoUpdate = () => {
     autoUpdating = false;
 }
+
+
