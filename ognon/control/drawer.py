@@ -3,14 +3,14 @@
 import math
 
 from .. import model
-from . import change_project_state
+from . import change_project_draw_state
 
-@change_project_state
+@change_project_draw_state
 def clear(cursor):
     """Clear all the current element content."""
     cursor.get_element().lines = []
 
-@change_project_state
+@change_project_draw_state
 def draw(cursor, coords):
     """Draw a line in the current element."""
     e = cursor.get_element()
@@ -20,7 +20,7 @@ def draw(cursor, coords):
     except (AssertionError, IndexError):
         e.lines.append(model.Line(coords))
 
-@change_project_state
+@change_project_draw_state
 def erease(cursor, coords, radius=5):
     """
     erease the first line in the current Cell that has a point in a distance

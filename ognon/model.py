@@ -97,7 +97,10 @@ class Project():
     This class describe Projects.
 
     A project contain Anims in an 'anims' dict where keys are anims names.
-    A Project also has a name and a config dict. 
+    A Project also has a name, config dict and two states id that should be
+    incremented each time the project changes. 'state_id' should be incremented
+    when the project organisation changes. 'draw_state_id' should be
+    incremented when the content of the elements changes.
     """
 
     def __init__(self, name, anims=None, config=None):
@@ -111,6 +114,7 @@ class Project():
         self.name = name
         self.anims = anims if anims is not None else {'master':Anim()}
         self.state_id = 0
+        self.draw_state_id = 0
 
         self.config = config or utils.parse_config(
             utils.pkgabspath('default.ini')

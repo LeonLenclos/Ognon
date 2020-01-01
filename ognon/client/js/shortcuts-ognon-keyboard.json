@@ -64,6 +64,11 @@
     "control": "/elementsorganizer/del_element",
     "modulesMethod": "update"
   },
+  "b": {
+    "description":"Delete the current layer.",
+    "control": "/layersorganizer/del_layer",
+    "modulesMethod": "update"
+  },
   "œ": {
     "description":"Select anim 'master'.",
     "control": "/animsmanager/select_anim",

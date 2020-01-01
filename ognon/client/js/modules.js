@@ -3,7 +3,7 @@
 ****************/
 
 const PRECISION = 3; // Min pixel length of a stroke
-const IGNORE_CALLMODMET_BUSY = false; // set to true for debugging
+const IGNORE_CALLMODMET_BUSY = true; // set to true for debugging
 
 /****************
 **** MODULES ****
@@ -53,39 +53,69 @@ class Module {
 
 //// EVENTS ////
 
+
+let mouseDownCoords = [];
+let onCallDrawerBusy = false;
+
+
+const callDrawer = () => {
+
+    onCallDrawerBusy = true;
+    let tool = document.getElementById('tool-selector').value
+    let args;
+    if (tool == 'draw'){
+        args = {coords:mouseDownCoords};
+    } else if (tool == 'erease'){
+        args = {coords:[mouseDownCoords[mouseDownCoords.length-2],mouseDownCoords[mouseDownCoords.lenght-1]]};
+    }
+    fetch('/control/drawer/'+tool+'/', initOptions(args))
+    .then(()=>{onCallDrawerBusy = false;})
+    .catch(handleError);
+};
+
 const onCanvasMouseDown = (e) => {
-    canvas.pMouseX = e.offsetX;
-    canvas.pMouseY = e.offsetY;
+    mouseDownCoords = [e.offsetX, e.offsetY];
 };
 
 const onMouseUp = (e) => {
-    canvas.pMouseX = null;
-    canvas.pMouseY = null;
+
+    callDrawer();
+    mouseDownCoords = [];
+    
+
 };
 
 const onCanvasMouseMove = (e) => {
-    let x = e.offsetX;
-    let y = e.offsetY;
-    if(canvas.pMouseX){
+
+    if(mouseDownCoords.length>1){
+
+        let x = e.offsetX;
+        let y = e.offsetY;
+        let px = mouseDownCoords[mouseDownCoords.length-2];
+        let py = mouseDownCoords[mouseDownCoords.length-1];
+
+        mouseDownCoords = mouseDownCoords.concat([x, y]);
+
+
         // send tool request only if the distance between mouse and pMouse is greater than PRECISION
-        if(Math.abs(canvas.pMouseX - x) > PRECISION
-        || Math.abs(canvas.pMouseY - y) > PRECISION) {
-            let tool = document.getElementById('tool-selector').value
-            let args;
-            if (tool == 'draw'){
-                args = {coords:[canvas.pMouseX,canvas.pMouseY,x,y]};
-            } else if (tool == 'erease'){
-                args = {coords:[x,y]};
+        if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
+
+            if(!onCallDrawerBusy){
+                // console.log(mouseDownCoords);
+                callDrawer();
+                mouseDownCoords = [x, y];
+
             }
-            fetch('/control/drawer/'+tool+'/', initOptions(args))
-            // .then(()=>callModulesMethod('update'))
-            .catch(handleError);
-            canvas.pMouseX = x;
-            canvas.pMouseY = y;
+            else {
+                console.log("busy : onCanvasMouseMove")
+            }
+
+
         }
     }
 };
 
+// const useCurrentTool(x1, y1, x2, y2)
 //// UTILS ////
 
 const drawLines = (lines, style, ctx) => {
@@ -165,7 +195,7 @@ class Canvas extends Module {
         Draw lines given by /view/get_onion_skin/ 
         */
         let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_state_id;
+        let projState = cursorInfos.project_state_id + ' '  + cursorInfos.project_draw_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
         let getCol = (skin) => {
