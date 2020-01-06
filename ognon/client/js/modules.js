@@ -3,47 +3,16 @@
 ****************/
 
 const PRECISION = 3; // Min pixel length of a stroke
-const IGNORE_CALLMODMET_BUSY = false; // set to true for debugging
 
 /****************
 **** MODULES ****
 ****************/
-let modules = [];
-let callModulesMethodBusy = false;
-let callModulesMethodBusyCount = 0;
-function callModulesMethod(modulesMethod) {
-    if (!callModulesMethodBusy || IGNORE_CALLMODMET_BUSY) {
-        callModulesMethodBusy = true;
-        fetch('/view/get_cursor_infos/', initOptions())
-        .then(handleResponse)
-        .then(cursorInfos =>{
-            modules.forEach(mo => {
-                if(mo[modulesMethod] && !mo.busy){
-                    mo.busy = true;
-                    let callBack = ()=>{mo.busy = false; mo.busyCount = 0}
-                    mo[modulesMethod](callBack, cursorInfos);
-                } else if (mo.busy){
-                    mo.busyCount += 1;
-                    // console.log("busy ("+mo.busyCount+") : "+mo.id+" ("+modulesMethod+")");
-                }
-            });
-            callModulesMethodBusy = false;
-            callModulesMethodBusyCount = 0;
-        })
-        .catch(handleError);
-    } else {
-        callModulesMethodBusyCount += 1;
-        // console.log('busy ('+callModulesMethodBusyCount+') : callModulesMethod !')
-    }
-
-}
 
 class Module {
     constructor(id) {
         this.id = id;
         this.elmt = document.getElementById(id);
         this.busy = false;
-        this.busyCount = 0;
     }
 }
 
@@ -163,7 +132,7 @@ class Canvas extends Module {
         this.onionWidth = config.onion_skin_line_width;
     }
 
-    setup(callBack, cursorInfos) {
+    setup(callBack, viewInfos) {
 
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
@@ -175,66 +144,70 @@ class Canvas extends Module {
         .then(this.responseHandler)
         .then(json =>{
             this.loadConfig(json);
-            this.update(callBack, cursorInfos);
+            this.update(callBack, viewInfos);
         })
         .catch(handleError);
     }
 
-    update(callBack, cursorInfos) {
+    update(callBack, viewInfos) {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
-        if (cursorInfos.playing || this.noOnionSkin) {
-            this.draw(cursorInfos, [0])
+        if (viewInfos['get_cursor_infos'].playing || this.noOnionSkin) {
+            this.draw(viewInfos, [0])
         } else {
-            this.draw(cursorInfos, [-1, 0, 1])
+            this.draw(viewInfos, [-1, 0, 1])
         }
         this.updating = false;
         callBack();
     }
 
-    draw(cursorInfos, onionRange=[0]) {
+    draw(viewInfos, onionRange=[0]) {
         /*
         Draw lines given by /view/get_onion_skin/ 
         */
-        let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_state_id + ' '  + cursorInfos.project_draw_state_id;
+        let c = viewInfos['get_cursor_infos']
+
+        let cursorPos = c.project_name + ' ' + c.anim + ' ' +  c.layer + ' ' + c.frm;
+        let projState = c.project_state_id + ' '  + c.project_draw_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
 
         if (this.currentImageID == imageID)
         {
-            return;
+            this.request = {}
         }
         else if (cursorPos in this.cache 
                 && this.cache[cursorPos].onionRange == onionRange.join()
                 && this.cache[cursorPos].state_id == projState)
         {
+            this.request = {}
             this.ctx.drawImage(this.cache[cursorPos].canvas,0,0);
             this.currentImageID = imageID
+
         }
         else
         {
-            fetch('/view/get_onion_skin/', initOptions({
-                frm:cursorInfos.frm,
-                anim:cursorInfos.anim,
-                onion_range:onionRange}))
-            .then(this.responseHandler)
-            .then(onionSkin => {
-                this.drawSkins(onionSkin, onionRange);
-                let cacheCanvas = document.createElement('canvas');
-                cacheCanvas.width = this.elmt.width;
-                cacheCanvas.height = this.elmt.height;
-                cacheCanvas.getContext('2d').drawImage(this.elmt,0,0);
-                this.cache[cursorPos] = {
-                    state_id:projState,
-                    onionRange:onionRange.join(),
-                    canvas:cacheCanvas
-                };
-                this.currentImageID = imageID
-            })
-            .catch(handleError);
-
+            this.request = {'get_onion_skin':{
+                frm:c.frm,
+                anim:c.anim,
+                onion_range:onionRange
+            }};
+            if (!viewInfos['get_onion_skin']) {
+                return;
+            }
+            let onionSkin = viewInfos['get_onion_skin']
+            this.drawSkins(onionSkin, onionRange);
+            let cacheCanvas = document.createElement('canvas');
+            cacheCanvas.width = this.elmt.width;
+            cacheCanvas.height = this.elmt.height;
+            cacheCanvas.getContext('2d').drawImage(this.elmt,0,0);
+            this.cache[cursorPos] = {
+                state_id:projState,
+                onionRange:onionRange.join(),
+                canvas:cacheCanvas
+            };
+            this.currentImageID = imageID
         }
     }
 
@@ -307,7 +280,7 @@ class Toolbar extends Module {
         super(id);
     }
 
-    setup(callBack, cursorInfos) {
+    setup(callBack, viewInfos) {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
         this.elmt.querySelectorAll('#projectmanager button')
@@ -417,45 +390,52 @@ class Timeline extends Module {
 
     }
 
-    setup(callBack, cursorInfos) {
-        this.update(callBack, cursorInfos);
+    setup(callBack, viewInfos) {
+        this.update(callBack, viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        let cursorPos = cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.project_state_id;
+    update(callBack, viewInfos) {
+        let c = viewInfos['get_cursor_infos']
+        let cursorPos = c.layer + ' ' + c.frm;
+        let projState = c.project_name + ' ' + c.anim + ' ' +  c.project_state_id;
+
         if (projState !== this.currentProjState) {
-            this.updateTimeline(callBack, cursorInfos);
+            this.request = {'get_timeline':{}};
+            this.updateTimeline(viewInfos, cursorPos, projState);
         } else if (cursorPos != this.currentCursorPos) {
-            this.updateActive(callBack, cursorInfos);
+            this.request = {};
+            this.updateActive(viewInfos);
         }
         else {
-            callBack();
+            this.request = {};
+
         }
-        this.currentCursorPos = cursorPos;
-        this.currentProjState = projState;
+        callBack();
+
     }
 
-    updateActive(callBack, cursorInfos) {
+    updateActive(viewInfos, cursorPos) {
         /*
         Remove active class from frm-heading and layer-row.
         Set current layer and frm to active
         */
+        let c = viewInfos['get_cursor_infos']
+
         this.elmt.querySelectorAll('.frms-row td')
-        .forEach((e)=>setActiveElement('frm', cursorInfos.frm, e));
+        .forEach((e)=>setActiveElement('frm', c.frm, e));
         this.elmt.querySelectorAll('.layer-row')
-        .forEach((e)=>setActiveElement('layer', cursorInfos.layer, e));
-        callBack();
+        .forEach((e)=>setActiveElement('layer', c.layer, e));
+        this.currentCursorPos = cursorPos;
     }
 
-    updateTimeline(callBack, cursorInfos) {
-        fetch('/view/get_timeline/', initOptions())
-        .then(handleResponse)
-        .then(json => {
-            createTimeline(json, this.elmt);
-            this.updateActive(callBack, cursorInfos);
-        })
-        .catch(handleError);
+    updateTimeline(viewInfos, cursorPos, projState) {
+        if (!viewInfos['get_timeline']) {
+            return;
+        }
+        createTimeline(viewInfos['get_timeline'], this.elmt);
+        this.updateActive(viewInfos);
+        this.currentProjState = projState;
+
     }
 }
 
@@ -466,10 +446,11 @@ class Timeline extends Module {
 
 //// UTILS ////
 
-const updateInfos = (infos, statusbar) =>{
+const updateInfos = (viewInfos, statusbar) =>{
+    c = viewInfos['get_cursor_infos']
     const null_to_str = (a) => a === null ? "" : a
     statusbar.querySelectorAll('span')
-    .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
+    .forEach(e=>e.innerHTML = null_to_str(c[e.id]))
 }
 
 //// CLASS ////
@@ -479,32 +460,35 @@ class CursorStatusbar extends Module {
         super(id);
     }
 
-    setup(callBack, cursorInfos){
-        this.update(callBack, cursorInfos);
+    setup(callBack, viewInfos){
+        this.update(callBack, viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        updateInfos(cursorInfos, this.elmt)
+    update(callBack, viewInfos) {
+        updateInfos(viewInfos, this.elmt)
         callBack();
     }
 }
 
 class Statusbar extends Module {
-    constructor(id, requestPath) {
+    constructor(id, view_function) {
         super(id);
-        this.requestPath = requestPath;
+        this.view_function = view_function;
         this.currentElementID = ""
         this.cache = {}
     }
 
-    setup(callBack, cursorInfos){
-        this.update(callBack, cursorInfos);
+    setup(callBack, viewInfos){
+        this.update(callBack, viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        let cursorPos = cursorInfos.project_name+' '+cursorInfos.anim+' '+cursorInfos.layer+' '+cursorInfos.frm;
-        let projectState = cursorInfos.project_state_id
+    update(callBack, viewInfos) {
+        let c = viewInfos['get_cursor_infos'];
+
+        let cursorPos = c.project_name+' '+c.anim+' '+c.layer+' '+c.frm;
+        let projectState = c.project_state_id;
         let elementID = cursorPos+' '+projectState;
+
         if(elementID != this.currentElementID){
             if(cursorPos in this.cache && this.cache[cursorPos].state_id == projectState){
                 updateInfos(this.cache[cursorPos].infos, this.elmt);
@@ -512,16 +496,17 @@ class Statusbar extends Module {
                 callBack();
             }
             else {
-                fetch(this.requestPath, initOptions())
-                .then(handleResponse)
-                .then(json => {
-                    updateInfos(json, this.elmt);
-                    this.currentElementID = elementID;
-                    this.cache[cursorPos]={state_id:projectState, infos:json}
-                    callBack();
+                if (!viewInfos[this.view_function]) {
+                    let request = {}
+                    request[this.view_function] = {}
+                    callBack(request);
+                    return;
+                }
 
-                })
-                .catch(handleError);
+                updateInfos(viewInfos[this.view_function], this.elmt);
+                this.currentElementID = elementID;
+                this.cache[cursorPos]={state_id:projectState, infos:json}
+                callBack();
             }
         } else {
             callBack();

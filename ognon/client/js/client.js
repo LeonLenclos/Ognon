@@ -1,6 +1,44 @@
 const url = new URL(window.location.href);
 const cursor = url.searchParams.get("cursor") || 'default';
 
+
+// Modules
+
+let modules = [];
+let callModulesMethodBusy = false;
+// let modulesRequest = {};
+
+const callModulesMethod = (modulesMethod) => {
+
+    if (callModulesMethodBusy) return;
+
+    const onLoad = (viewInfos) => {
+        modules.forEach(mo => {
+            if(mo.busy || !mo[modulesMethod]) return;
+            mo.busy = true;
+            let callBack = (request) => {
+                mo.busy = false;
+            }
+            mo[modulesMethod](callBack, viewInfos);
+        });
+        callModulesMethodBusy = false;
+    }
+
+    callModulesMethodBusy = true;
+
+    let modulesRequest = {'get_cursor_infos':{}}
+    modules.forEach(mo => {
+        modulesRequest = Object.assign(modulesRequest, mo.request)
+    });
+
+    fetch('/view/get/', initOptions({request:modulesRequest}))
+    .then(handleResponse)
+    .then(onLoad)
+    .catch(handleError);
+}
+
+// Request
+
 const initOptions = (args, differentCursor) => {
 
     requestCursor = differentCursor || cursor
