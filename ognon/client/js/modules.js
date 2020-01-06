@@ -201,27 +201,6 @@ class Canvas extends Module {
         let projState = cursorInfos.project_state_id + ' '  + cursorInfos.project_draw_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
-        let getCol = (skin) => {
-            if(skin < 0){
-                return this.onionBwColor;
-            } else if (skin > 0) {
-                return this.onionFwColor;
-            } else{
-                return this.lineColor;
-            }
-        };
-
-        let drawSkin = (skins, i) => {
-            drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:getCol(i)}, this.ctx);
-        };
-
-        let drawSkins = (skins, range) => {
-            clearCanvas(this.ctx, this.backgroundColor);
-            range.filter(e=>e!=0).forEach(i=>{
-                drawSkin(skins, i);
-            });
-            drawSkin(skins, 0);
-        };
 
         if (this.currentImageID == imageID)
         {
@@ -229,11 +208,9 @@ class Canvas extends Module {
         }
         else if (cursorPos in this.cache 
                 && this.cache[cursorPos].onionRange == onionRange.join()
-                // && onionRange.every((i)=> i in this.cache[cursorPos].onionSkin) 
                 && this.cache[cursorPos].state_id == projState)
         {
             this.ctx.drawImage(this.cache[cursorPos].canvas,0,0);
-            // drawSkins(this.cache[cursorPos].onionSkin, onionRange);
             this.currentImageID = imageID
         }
         else
@@ -244,7 +221,7 @@ class Canvas extends Module {
                 onion_range:onionRange}))
             .then(this.responseHandler)
             .then(onionSkin => {
-                drawSkins(onionSkin, onionRange);
+                this.drawSkins(onionSkin, onionRange);
                 let cacheCanvas = document.createElement('canvas');
                 cacheCanvas.width = this.elmt.width;
                 cacheCanvas.height = this.elmt.height;
@@ -259,6 +236,28 @@ class Canvas extends Module {
             .catch(handleError);
 
         }
+    }
+
+    getCol(skin){
+        if(skin < 0){
+            return this.onionBwColor;
+        } else if (skin > 0) {
+            return this.onionFwColor;
+        } else{
+            return this.lineColor;
+        }
+    }
+
+    drawSkin(skins, i) {
+        drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:this.getCol(i)}, this.ctx);
+    }
+
+    drawSkins(skins, range) {
+        clearCanvas(this.ctx, this.backgroundColor);
+        range.filter(e=>e!=0).forEach(i=>{
+            this.drawSkin(skins, i);
+        });
+        this.drawSkin(skins, 0);
     }
 }
 
