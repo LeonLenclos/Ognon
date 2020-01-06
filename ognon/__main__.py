@@ -48,7 +48,7 @@ parser.add_argument(
 logging.basicConfig(
     format='%(asctime)s:%(msecs)03d %(levelname)s: %(message)s',
     datefmt='%H:%M:%S',
-    level=logging.INFO
+    level=logging.WARNING
 )
 
 def main(args):
