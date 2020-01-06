@@ -45,28 +45,28 @@ def call_function(path, *args, **kwargs):
     Get a function with get_function, call it with passed args/kwargs and
     return the result.
     """
-    def handleError(*err_msg):
+    def handle_error(*err_msg):
         logging.warning(err_msg[0])
-        return Exception(*err_msg)
+        raise Exception(*err_msg)
 
     try:
         f = get_function(path)
     except (ImportError, AttributeError):
-        return handleError('Function not found - {path}'.format(path=path))
+        handle_error('Function not found - {path}'.format(path=path))
 
     try:
         return f(*args, **kwargs)
     except NotImplementedError:
-        return handleError('Not implemented - {path}'.format(path=path))
+        handle_error('Not implemented - {path}'.format(path=path))
     except cursor.NoProjectError:
-        return handleError('Undefine project',
+        handle_error('Undefine project',
             'You must first get a project.')
     except control.exporter.ExportDestNotFoundError:
-        return handleError('Destination not found',
+        handle_error('Destination not found',
             'You must save the project before exporting it.')
     except Exception:
         traceback.print_exc()
-        return handleError('Oups...',
+        handle_error('Oups...',
             'An error occurs in the server.')
 
 
@@ -151,13 +151,14 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
         cur = get_cursor(post_body.get('cursor'))
         args = post_body.get('args', {})
-        reply = call_function(self.path, cur, **args)
 
-        if isinstance(reply, Exception):
+        try:
+            reply = call_function(self.path, cur, **args)
+        except Exception as e:
             self.send_response(400)
             self.send_header('Content-Type', 'text/html')
             self.end_headers()
-            self.write(bytes('\n'.join(reply.args), 'utf-8'))
+            self.write(bytes('\n'.join(e.args), 'utf-8'))
         else:
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
