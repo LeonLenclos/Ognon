@@ -66,7 +66,9 @@ const callDrawer = () => {
     if (tool == 'draw'){
         args = {coords:mouseDownCoords};
     } else if (tool == 'erease'){
-        args = {coords:[mouseDownCoords[mouseDownCoords.length-2],mouseDownCoords[mouseDownCoords.lenght-1]]};
+        if(mouseDownCoords.length >= 2){
+            args = {coords:mouseDownCoords.slice(-2)};
+        }
     }
     fetch('/control/drawer/'+tool+'/', initOptions(args))
     .then(()=>{onCallDrawerBusy = false;})
@@ -122,12 +124,13 @@ const drawLines = (lines, style, ctx) => {
     ctx.lineWidth = style.lineWidth;
     ctx.strokeStyle = style.lineColor;
     ctx.beginPath();
-    lines.forEach((line) => {
-        ctx.moveTo(line[0], line[1]);
-        for (var i = 2; i < line.length; i+=2) {
-            ctx.lineTo(line[i], line[i+1]);
+    for (var i=0; i<lines.length; i++) {
+        ctx.moveTo(lines[i][0], lines[i][1]);
+        for (var j=2; j<lines[i].length; j+=2) {
+            ctx.lineTo(lines[i][j], lines[i][j+1]);
         }
-    });
+
+    }
     ctx.stroke();
 }
 
@@ -225,10 +228,12 @@ class Canvas extends Module {
             return;
         }
         else if (cursorPos in this.cache 
-                && onionRange.every((i)=> i in this.cache[cursorPos].onionSkin) 
+                && this.cache[cursorPos].onionRange == onionRange.join()
+                // && onionRange.every((i)=> i in this.cache[cursorPos].onionSkin) 
                 && this.cache[cursorPos].state_id == projState)
         {
-            drawSkins(this.cache[cursorPos].onionSkin, onionRange);
+            this.ctx.drawImage(this.cache[cursorPos].canvas,0,0);
+            // drawSkins(this.cache[cursorPos].onionSkin, onionRange);
             this.currentImageID = imageID
         }
         else
@@ -240,9 +245,14 @@ class Canvas extends Module {
             .then(this.responseHandler)
             .then(onionSkin => {
                 drawSkins(onionSkin, onionRange);
+                let cacheCanvas = document.createElement('canvas');
+                cacheCanvas.width = this.elmt.width;
+                cacheCanvas.height = this.elmt.height;
+                cacheCanvas.getContext('2d').drawImage(this.elmt,0,0);
                 this.cache[cursorPos] = {
                     state_id:projState,
-                    onionSkin:onionSkin
+                    onionRange:onionRange.join(),
+                    canvas:cacheCanvas
                 };
                 this.currentImageID = imageID
             })
