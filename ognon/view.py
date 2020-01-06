@@ -9,6 +9,19 @@ from . import model
 from . import projects
 from . import PROJECTS_DIR
 from .cursor import NoProjectError
+
+def get(cursor, request):
+    """
+    Take a dict with view function names as keys and a dict of kwargs as values.
+
+    Return a dict with view function names as keys and what they return as values
+    """
+    reply = {}
+    for view_function, kwargs in request.items(): 
+        fun = globals()[view_function]
+        reply[view_function] = fun(cursor, **kwargs)
+    return reply
+
 def get_path(cursor, file=""):
     """
     Return path to the project (or path to a file in the project).
