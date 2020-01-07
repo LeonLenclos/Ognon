@@ -16,10 +16,9 @@ const callModulesMethod = (modulesMethod) => {
         modules.forEach(mo => {
             if(mo.busy || !mo[modulesMethod]) return;
             mo.busy = true;
-            let callBack = (request) => {
-                mo.busy = false;
-            }
-            mo[modulesMethod](callBack, viewInfos);
+            mo[modulesMethod](viewInfos);
+            mo.busy = false;
+
         });
         callModulesMethodBusy = false;
     }
@@ -80,14 +79,22 @@ const handleError = (e) => {
 // Auto update
 
 let autoUpdating = false;
-const autoUpdateFrameRate = 25; //fps
-
-const autoUpdate = () => {
-    if (autoUpdating) {
+const FPS = 30; //fps
+const DELAY = 1000/FPS; //fps
+let time = null;
+let frame = -1;
+let tref;
+const autoUpdate = (timestamp) => {
+    if (!autoUpdating) return;
+    if(time == null) time = timestamp;
+    let seg = Math.floor((timestamp - time) / DELAY);
+    if(seg > frame){
+        frame = seg
         callModulesMethod('update');
-        requestAnimationFrame(autoUpdate, 1000/autoUpdateFrameRate);
     }
+    requestAnimationFrame(autoUpdate);
 }
+
 const startAutoUpdate = () => {
     if(!autoUpdating){
         autoUpdating = true;

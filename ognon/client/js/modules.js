@@ -2,7 +2,7 @@
 **** SETTINGS ***
 ****************/
 
-const PRECISION = 3; // Min pixel length of a stroke
+const PRECISION = 5; // Min pixel length of a stroke
 
 /****************
 **** MODULES ****
@@ -13,6 +13,15 @@ class Module {
         this.id = id;
         this.elmt = document.getElementById(id);
         this.busy = false;
+        this.request = {}
+    }
+
+    add_request(request) {
+        this.request = Object.assign(this.request, request)
+    }
+
+    reset_request(){
+        this.request = {}
     }
 }
 
@@ -58,31 +67,32 @@ const onMouseUp = (e) => {
 
 const onCanvasMouseMove = (e) => {
 
-    if(mouseDownCoords.length>1){
+    if(mouseDownCoords.length < 2) return;
 
-        let x = e.offsetX;
-        let y = e.offsetY;
-        let px = mouseDownCoords[mouseDownCoords.length-2];
-        let py = mouseDownCoords[mouseDownCoords.length-1];
-
-        mouseDownCoords = mouseDownCoords.concat([x, y]);
+    let x = e.offsetX;
+    let y = e.offsetY;
+    let px = mouseDownCoords[mouseDownCoords.length-2];
+    let py = mouseDownCoords[mouseDownCoords.length-1];
 
 
-        // send tool request only if the distance between mouse and pMouse is greater than PRECISION
-        if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
 
-            if(!onCallDrawerBusy){
-                // console.log(mouseDownCoords);
-                callDrawer();
-                mouseDownCoords = [x, y];
 
-            }
-            else {
-                console.log("busy : onCanvasMouseMove")
-            }
+    // store coords only if the distance between mouse and pMouse is greater than PRECISION
+    if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
+    
+    mouseDownCoords = mouseDownCoords.concat([x, y]);
 
+        if(!onCallDrawerBusy){
+            // console.log(mouseDownCoords);
+            callDrawer();
+            mouseDownCoords = [x, y];
 
         }
+        else {
+            console.log("busy : onCanvasMouseMove")
+        }
+
+
     }
 };
 
@@ -132,34 +142,41 @@ class Canvas extends Module {
         this.onionWidth = config.onion_skin_line_width;
     }
 
-    setup(callBack, viewInfos) {
+    setup(viewInfos) {
 
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
         addEventListener('mouseup',   onMouseUp);
 
-        // load config
-        fetch('/view/get_view_config/', initOptions())
-        .then(this.responseHandler)
-        .then(json =>{
-            this.loadConfig(json);
-            this.update(callBack, viewInfos);
-        })
-        .catch(handleError);
+        this.updateConfig = true
+        this.update(viewInfos);
     }
 
-    update(callBack, viewInfos) {
+    update(viewInfos) {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
+        this.reset_request();
+
+        if(viewInfos['get_view_config']){
+            this.loadConfig(viewInfos['get_view_config']);
+            this.updateConfig = false;
+        } else if (this.updateConfig) {
+            this.add_request({'get_view_config':{}})
+        }
+
         if (viewInfos['get_cursor_infos'].playing || this.noOnionSkin) {
             this.draw(viewInfos, [0])
         } else {
             this.draw(viewInfos, [-1, 0, 1])
         }
-        this.updating = false;
-        callBack();
+
+        if(mouseDownCoords.length>=2){
+            drawLines([mouseDownCoords],{lineWidth:this.lineWidth, lineColor:'#00CCCC'},this.ctx)
+        } // DONT WORK ?
+
+        this.updating = false; // useless ??
     }
 
     draw(viewInfos, onionRange=[0]) {
@@ -173,27 +190,30 @@ class Canvas extends Module {
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
 
+
         if (this.currentImageID == imageID)
         {
-            this.request = {}
+
+            return;
         }
         else if (cursorPos in this.cache 
                 && this.cache[cursorPos].onionRange == onionRange.join()
                 && this.cache[cursorPos].state_id == projState)
         {
-            this.request = {}
+
             this.ctx.drawImage(this.cache[cursorPos].canvas,0,0);
             this.currentImageID = imageID
 
         }
         else
-        {
-            this.request = {'get_onion_skin':{
+        {            
+            this.add_request({'get_onion_skin':{
                 frm:c.frm,
                 anim:c.anim,
                 onion_range:onionRange
-            }};
+            }});
             if (!viewInfos['get_onion_skin']) {
+
                 return;
             }
             let onionSkin = viewInfos['get_onion_skin']
@@ -280,12 +300,11 @@ class Toolbar extends Module {
         super(id);
     }
 
-    setup(callBack, viewInfos) {
+    setup(viewInfos) {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
         this.elmt.querySelectorAll('#projectmanager button')
         .forEach(e=>e.addEventListener('click', ()=>callModulesMethod('setup')));
-        callBack();
     }
 }
 
@@ -390,28 +409,26 @@ class Timeline extends Module {
 
     }
 
-    setup(callBack, viewInfos) {
-        this.update(callBack, viewInfos);
+    setup(viewInfos) {
+        this.update(viewInfos);
     }
 
-    update(callBack, viewInfos) {
+    update(viewInfos) {
+        this.reset_request();
+
         let c = viewInfos['get_cursor_infos']
         let cursorPos = c.layer + ' ' + c.frm;
         let projState = c.project_name + ' ' + c.anim + ' ' +  c.project_state_id;
 
         if (projState !== this.currentProjState) {
-            this.request = {'get_timeline':{}};
+            this.add_request({'get_timeline':{}});
             this.updateTimeline(viewInfos, cursorPos, projState);
         } else if (cursorPos != this.currentCursorPos) {
-            this.request = {};
             this.updateActive(viewInfos);
         }
         else {
-            this.request = {};
 
         }
-        callBack();
-
     }
 
     updateActive(viewInfos, cursorPos) {
@@ -460,13 +477,12 @@ class CursorStatusbar extends Module {
         super(id);
     }
 
-    setup(callBack, viewInfos){
-        this.update(callBack, viewInfos);
+    setup(viewInfos){
+        this.update(viewInfos);
     }
 
-    update(callBack, viewInfos) {
+    update(viewInfos) {
         updateInfos(viewInfos, this.elmt)
-        callBack();
     }
 }
 
@@ -478,11 +494,13 @@ class Statusbar extends Module {
         this.cache = {}
     }
 
-    setup(callBack, viewInfos){
-        this.update(callBack, viewInfos);
+    setup(viewInfos){
+        this.update(viewInfos);
     }
 
-    update(callBack, viewInfos) {
+    update(viewInfos) {
+        this.reset_request();
+
         let c = viewInfos['get_cursor_infos'];
 
         let cursorPos = c.project_name+' '+c.anim+' '+c.layer+' '+c.frm;
@@ -493,23 +511,17 @@ class Statusbar extends Module {
             if(cursorPos in this.cache && this.cache[cursorPos].state_id == projectState){
                 updateInfos(this.cache[cursorPos].infos, this.elmt);
                 this.currentElementID = elementID;
-                callBack();
             }
             else {
                 if (!viewInfos[this.view_function]) {
-                    let request = {}
-                    request[this.view_function] = {}
-                    callBack(request);
+                    this.add_request(this.view_function)
                     return;
                 }
 
                 updateInfos(viewInfos[this.view_function], this.elmt);
                 this.currentElementID = elementID;
                 this.cache[cursorPos]={state_id:projectState, infos:json}
-                callBack();
             }
-        } else {
-            callBack();
         }
     }
 }

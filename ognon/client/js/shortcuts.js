@@ -10,6 +10,7 @@ shortcutRepresentation = (keysArray) =>
     keysArray.map((key, i)=>key == ' ' ? 'Space' : key).join('+');
 
 doShortcut = action => {
+    console.log('do ', action)
     args = {};
     if(action.args){
         args = action.args;
