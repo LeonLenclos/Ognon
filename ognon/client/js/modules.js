@@ -2,7 +2,7 @@
 **** SETTINGS ***
 ****************/
 
-const PRECISION = 5; // Min pixel length of a stroke
+const PRECISION = 4; // Min pixel length of a stroke
 
 /****************
 **** MODULES ****
@@ -192,7 +192,6 @@ class Canvas extends Module {
 
         if (this.currentImageID == imageID)
         {
-
             return;
         }
         else if (cursorPos in this.cache 
@@ -207,12 +206,9 @@ class Canvas extends Module {
         else
         {            
             this.add_request({'get_onion_skin':{
-                frm:c.frm,
-                anim:c.anim,
                 onion_range:onionRange
             }});
             if (!viewInfos['get_onion_skin']) {
-
                 return;
             }
             let onionSkin = viewInfos['get_onion_skin']
