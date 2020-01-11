@@ -40,14 +40,13 @@ const callDrawer = () => {
 
     onCallDrawerBusy = true;
     let tool = document.getElementById('tool-selector').value
-    let args;
+    let args = {coords:[]};
     if (tool == 'draw'){
-        args = {coords:mouseDownCoords};
+        args.coords = mouseDownCoords;
     } else if (tool == 'erease'){
-        if(mouseDownCoords.length >= 2){
-            args = {coords:mouseDownCoords.slice(-2)};
-        }
-    }
+        if(mouseDownCoords.length < 2) return;
+        args.coords = mouseDownCoords.slice(-2);
+     }
     fetch('/control/drawer/'+tool+'/', initOptions(args))
     .then(()=>{onCallDrawerBusy = false;})
     .catch(handleError);
