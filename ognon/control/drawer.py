@@ -26,10 +26,12 @@ def erease(cursor, coords, radius=5):
     erease the first line in the current Cell that has a point in a distance
     from `coords` lower than `radius`.
     """
-    for i, l in enumerate(cursor.get_element().lines):
+    e = cursor.get_element()
+
+    for i, l in enumerate(e.lines):
         for point in _pairwise(l.coords):
             if _distance(coords, point) < radius:
-                del cursor.get_element().lines[i]
+                del e.lines[i]
                 return
 
 def _distance(p0, p1):
