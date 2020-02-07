@@ -2,7 +2,7 @@
 **** SETTINGS ***
 ****************/
 
-const PRECISION = 4; // Min pixel length of a stroke
+const PRECISION = 1; // Min pixel length of a stroke
 
 /****************
 **** MODULES ****
