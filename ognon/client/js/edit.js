@@ -3,7 +3,7 @@ let playing = false;
 const canvas    = new Canvas("canvas");
 const timeline  = new Timeline("timeline");
 const toolbar   = new Toolbar("toolbar");
-const elementStatusbar = new Statusbar("element-statusbar", {'get_element_infos':{}});
+const elementStatusbar = new Statusbar("element-statusbar", 'get_element_infos');
 const cursorStatusbar = new CursorStatusbar("cursor-statusbar");
 
 modules = [canvas, timeline, toolbar, cursorStatusbar, elementStatusbar];

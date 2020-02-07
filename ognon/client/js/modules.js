@@ -483,11 +483,10 @@ class Timeline extends Module {
 
 //// UTILS ////
 
-const updateInfos = (viewInfos, statusbar) =>{
-    c = viewInfos['get_cursor_infos']
+const updateInfos = (infos, statusbar) =>{
     const null_to_str = (a) => a === null ? "" : a
     statusbar.querySelectorAll('span')
-    .forEach(e=>e.innerHTML = null_to_str(c[e.id]))
+    .forEach(e=>e.innerHTML = null_to_str(infos[e.id]))
 }
 
 //// CLASS ////
@@ -502,7 +501,7 @@ class CursorStatusbar extends Module {
     }
 
     update(viewInfos) {
-        updateInfos(viewInfos, this.elmt)
+        updateInfos(viewInfos['get_cursor_infos'], this.elmt)
     }
 }
 
@@ -534,13 +533,15 @@ class Statusbar extends Module {
             }
             else {
                 if (!viewInfos[this.view_function]) {
-                    this.add_request(this.view_function)
+                    let req = {}; req[this.view_function] = {};
+                    this.add_request(req)
                     return;
                 }
+                let infos = viewInfos[this.view_function]
 
-                updateInfos(viewInfos[this.view_function], this.elmt);
+                updateInfos(infos, this.elmt);
                 this.currentElementID = elementID;
-                this.cache[cursorPos]={state_id:projectState, infos:json}
+                this.cache[cursorPos]={state_id:projectState, infos:infos}
             }
         }
     }
