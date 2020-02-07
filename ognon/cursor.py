@@ -42,6 +42,7 @@ class Cursor():
             'frm':0,
         }
         self.playing = False
+        self.clipboard = None
 
     @property
     def proj(self):
