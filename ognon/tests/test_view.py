@@ -79,12 +79,19 @@ def test_get_lines(cursor):
 	drawer.draw(cursor, line)
 	assert line in view.get_lines(cursor)
 
+	# test draft mode
+	from ..control import tagger
+	tagger.add_tag(cursor, 'draft')
+	assert line not in view.get_lines(cursor)
+	assert line in view.get_lines(cursor, draft=True)
+
 	# weak test on animref
 	cursor.set_pos(anim='testing-anim-with-animref',frm=5)
 	view.get_lines(cursor)
 	
 	# test jsonability
 	json.dumps(view.get_lines(cursor))
+
 
 def test_get_onion_skin(cursor):
 	from ..control import drawer

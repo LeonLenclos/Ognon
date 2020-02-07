@@ -137,12 +137,15 @@ def get_element_infos(cursor):
     }
     return infos
 
-def get_lines(cursor, frm=None, anim=None):
+def get_lines(cursor, frm=None, anim=None, draft=False):
     """
     Return a list of all current lines.
 
     Alternatives frm index and anim name can be passed.
 
+    If draft is set to True, return only 'draft' tagged elements lines.
+    Else, do not return 'draft' tagged elements lines.
+    
     The output is a list of lists since ognon lines can be describe as list of
     coords. (e.g. [x1, y1, x2, y2, x3, y3])
     """
@@ -151,6 +154,8 @@ def get_lines(cursor, frm=None, anim=None):
         pos = cursor.get_element_pos(layer=i, frm=frm, anim=anim)
         if pos is not None:
             _, element, at = pos
+            if ('draft' in element.tags) is not draft:
+                continue
             if type(element) is model.Cell:
                 lines += [line.coords for line in element.lines]
             if type(element) is model.AnimRef:
@@ -172,3 +177,20 @@ def get_onion_skin(cursor, frm=None, anim=None, onion_range=(0,)):
         idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
         for idx in onion_range
     }
+
+# def get_draft(cursor, frm=None, anim=None):
+#     """
+#     Return a dict of anim lines.
+
+#     Keys are given by the onion_range arg and are the frm to look at, relatively
+#     to the current frm. (eg. `onion_range=(-1,0)` means : 'look at the current
+#     frm and the previous frm')
+
+#     Values are given by the get_lines function passing the frm argument.
+#     """
+#     frm = frm if frm is not None else cursor.get_pos('frm')
+#     return {
+#         idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
+#         for idx in onion_range
+#     }
+

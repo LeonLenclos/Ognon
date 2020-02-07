@@ -166,9 +166,9 @@ class Canvas extends Module {
         }
 
         if (viewInfos['get_cursor_infos'].playing || this.noOnionSkin) {
-            this.draw(viewInfos, [0])
+            this.draw(viewInfos, [0], false)
         } else {
-            this.draw(viewInfos, [-1, 0, 1])
+            this.draw(viewInfos, [-1, 0, 1], true)
         }
 
         if(mouseDownCoords.length>=2){
@@ -178,7 +178,7 @@ class Canvas extends Module {
         this.updating = false; // useless ??
     }
 
-    draw(viewInfos, onionRange=[0]) {
+    draw(viewInfos, onionRange=[0], draft=false) {
         /*
         Draw lines given by /view/get_onion_skin/ 
         */
@@ -196,6 +196,7 @@ class Canvas extends Module {
         }
         else if (cursorPos in this.cache 
                 && this.cache[cursorPos].onionRange == onionRange.join()
+                && this.cache[cursorPos].draft == draft
                 && this.cache[cursorPos].state_id == projState)
         {
 
@@ -204,15 +205,35 @@ class Canvas extends Module {
 
         }
         else
-        {            
+        {           
+
             this.add_request({'get_onion_skin':{
                 onion_range:onionRange
             }});
+
             if (!viewInfos['get_onion_skin']) {
                 return;
             }
+
+            if(draft){
+                this.add_request({'get_lines':{
+                    draft:true
+                }});
+                if (viewInfos['get_lines']==undefined) {
+                    return;
+                }
+
+            }
+            clearCanvas(this.ctx, this.backgroundColor);
+
+            if (draft) {
+                let draftLines = viewInfos['get_lines']
+                this.drawDraft(draftLines);
+            }
+
             let onionSkin = viewInfos['get_onion_skin']
             this.drawSkins(onionSkin, onionRange);
+
             let cacheCanvas = document.createElement('canvas');
             cacheCanvas.width = this.elmt.width;
             cacheCanvas.height = this.elmt.height;
@@ -220,6 +241,7 @@ class Canvas extends Module {
             this.cache[cursorPos] = {
                 state_id:projState,
                 onionRange:onionRange.join(),
+                draft:draft,
                 canvas:cacheCanvas
             };
             this.currentImageID = imageID
@@ -236,12 +258,15 @@ class Canvas extends Module {
         }
     }
 
+    drawDraft(draftLines) {
+        drawLines(draftLines, {lineWidth:this.lineWidth, lineColor:'#0000CC'}, this.ctx);
+    }
+
     drawSkin(skins, i) {
         drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:this.getCol(i)}, this.ctx);
     }
 
     drawSkins(skins, range) {
-        clearCanvas(this.ctx, this.backgroundColor);
         range.filter(e=>e!=0).forEach(i=>{
             this.drawSkin(skins, i);
         });
