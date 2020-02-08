@@ -113,7 +113,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init a Layer with a first Cell&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="ow">or</span> <span class="p">[</span><span class="n">Cell</span><span class="p">()]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="k">if</span> <span class="n">elements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">Cell</span><span class="p">()]</span></div>
 
 
 <div class="viewcode-block" id="Anim"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Anim">[docs]</a><span class="k">class</span> <span class="nc">Anim</span><span class="p">():</span>
@@ -124,7 +124,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init an Anim with a first Layer&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="ow">or</span> <span class="p">[</span><span class="n">Layer</span><span class="p">()]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="k">if</span> <span class="n">layers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">Layer</span><span class="p">()]</span></div>
 
 
 <div class="viewcode-block" id="Project"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.model.Project">[docs]</a><span class="k">class</span> <span class="nc">Project</span><span class="p">():</span>
@@ -132,7 +132,10 @@
 <span class="sd">    This class describe Projects.</span>
 
 <span class="sd">    A project contain Anims in an &#39;anims&#39; dict where keys are anims names.</span>
-<span class="sd">    A Project also has a name and a config dict. </span>
+<span class="sd">    A Project also has a name, config dict and two states id that should be</span>
+<span class="sd">    incremented each time the project changes. &#39;state_id&#39; should be incremented</span>
+<span class="sd">    when the project organisation changes. &#39;draw_state_id&#39; should be</span>
+<span class="sd">    incremented when the content of the elements changes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">anims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -144,16 +147,13 @@
 <span class="sd">        default for config is default.ini content</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">anims</span> <span class="o">=</span> <span class="n">anims</span> <span class="ow">or</span> <span class="p">{</span><span class="s1">&#39;master&#39;</span><span class="p">:</span><span class="n">Anim</span><span class="p">()}</span>
-         
+        <span class="bp">self</span><span class="o">.</span><span class="n">anims</span> <span class="o">=</span> <span class="n">anims</span> <span class="k">if</span> <span class="n">anims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s1">&#39;master&#39;</span><span class="p">:</span><span class="n">Anim</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_state_id</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">parse_config</span><span class="p">(</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;default.ini&#39;</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;default.ini&#39;</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">parse_config</span><span class="p">(</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;default.ini&#39;</span><span class="p">)</span>
-        <span class="p">))</span></div>
+        <span class="p">)</span></div>
 </pre></div>
 
           </div>
