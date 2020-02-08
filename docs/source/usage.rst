@@ -143,3 +143,14 @@ Control Ognon with OSC and Puredata
 :download:`download simple-ognon-osc-client.pd <static/pd/simple-ognon-osc-client.pd>`
 
 .. seealso:: The good tutorial to use OSC with puredata :  http://write.flossmanuals.net/pure-data/osc/
+
+
+Docs
+----
+
+Build the docs with
+
+::
+
+ $ cd docs
+ $ make html
