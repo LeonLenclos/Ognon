@@ -67,3 +67,12 @@ specials.shortcutsHelp = () => {
         console.log(sc + ': ' + shortcuts[sc].description)
     }
 }
+
+specials.selectDraw = () => {
+    let selector = document.getElementById('tool-selector');
+    selector.selectedIndex = 0;
+}
+specials.selectErease = () => {
+    let selector = document.getElementById('tool-selector');
+    selector.selectedIndex = 1;
+}

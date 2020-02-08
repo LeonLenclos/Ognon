@@ -5,6 +5,14 @@
     "modulesMethod": "update",
     "specials": "autoUpdateOnPlay"
   },
+  "!": {
+    "description":"Select draw tool.",
+    "specials": "selectDraw"
+  },
+  ":": {
+    "description":"Select erease tool.",
+    "specials": "selectErease"
+  },
   "a": {
     "description":"Auto run.",
     "control": "/navigator/auto_run",
@@ -42,6 +50,16 @@
   "j": {
     "description":"Move the current ellement forward.",
     "control": "/elementsorganizer/move_element_forward",
+    "modulesMethod": "update"
+  },
+  "y": {
+    "description":"Copy the current ellement.",
+    "control": "/elementsorganizer/copy_element",
+    "modulesMethod": "update"
+  },
+  "h": {
+    "description":"Paste the current ellement.",
+    "control": "/elementsorganizer/paste_element",
     "modulesMethod": "update"
   },
   "f": {
