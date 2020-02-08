@@ -35,7 +35,19 @@
   <h1>Source code for ognon.tags</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module define tags function.</span>
+
+<span class="sd">Tags defined here :</span>
+
+<span class="sd">- `loop n`</span>
+<span class="sd">- `loopfor n`</span>
+<span class="sd">- `pendulum n`</span>
+<span class="sd">- `pendulum2 n`</span>
+<span class="sd">- `random n`</span>
+<span class="sd">- `startafter n`</span>
+<span class="sd">- `endafter n`</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
 
 <div class="viewcode-block" id="calculate_len"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.tags.calculate_len">[docs]</a><span class="k">def</span> <span class="nf">calculate_len</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">tag_description</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -45,6 +57,8 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">tag</span> <span class="o">=</span> <span class="n">tag_description</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 	<span class="n">tag_name</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">return</span> <span class="mi">0</span>
 	<span class="k">try</span><span class="p">:</span>
 		<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_len&#39;</span><span class="p">](</span><span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span>
 	<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -58,17 +72,54 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">tag</span> <span class="o">=</span> <span class="n">tag_description</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 	<span class="n">tag_name</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">return</span> <span class="mi">0</span>
 	<span class="k">try</span><span class="p">:</span>
 		<span class="k">return</span> <span class="n">tags</span><span class="p">[</span><span class="n">tag_name</span><span class="p">][</span><span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">](</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">*</span><span class="n">tag</span><span class="p">)</span>
 	<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
 		<span class="k">return</span> <span class="n">pos</span></div>
+
+<div class="viewcode-block" id="random_calculate_inside_pos"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.tags.random_calculate_inside_pos">[docs]</a><span class="k">def</span> <span class="nf">random_calculate_inside_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+	<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">pos</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+	<span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 <span class="n">tags</span> <span class="o">=</span> <span class="p">{</span>
 	<span class="s1">&#39;loop&#39;</span><span class="p">:{</span>
 		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="n">length</span><span class="p">,</span>
 		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">pos</span><span class="o">%</span><span class="n">length</span><span class="p">,</span>
 	<span class="p">},</span>
+	<span class="s1">&#39;loopfor&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">),</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">pos</span><span class="o">%</span><span class="n">length</span><span class="p">,</span>
+	<span class="p">},</span>
+	<span class="s1">&#39;pendulum&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">length</span> <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span>\
+			<span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>\
+			<span class="k">if</span> <span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">length</span>\
+			<span class="k">else</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+	<span class="p">},</span>
+	<span class="s1">&#39;pendulum2&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="n">length</span><span class="p">,</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span>\
+			<span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">length</span><span class="p">)</span>\
+			<span class="k">if</span> <span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">length</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span>\
+			<span class="k">else</span> <span class="mi">2</span><span class="o">*</span><span class="n">length</span> <span class="o">-</span> <span class="n">pos</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">length</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+	<span class="p">},</span>
+	<span class="s1">&#39;random&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span> <span class="n">random_calculate_inside_pos</span>
+	<span class="p">},</span>
+	<span class="s1">&#39;startafter&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">length</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">),</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">pos</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+	<span class="p">},</span>
+	<span class="s1">&#39;endafter&#39;</span><span class="p">:{</span>
+		<span class="s1">&#39;calculate_len&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">length</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">),</span>
+		<span class="s1">&#39;calculate_inside_pos&#39;</span><span class="p">:</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">pos</span> <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span>
+	<span class="p">},</span>
 <span class="p">}</span>
+
 </pre></div>
 
           </div>

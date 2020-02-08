@@ -1,6 +1,8 @@
 """This module provide control functions to create, delete and move elements
 into layers and layers into animation"""
 
+import copy
+
 from .. import model
 from . import navigator
 from . import change_project_state
@@ -63,23 +65,28 @@ def move_element_backward(cursor):
 
 @change_project_state
 def copy_element(cursor):
-    """Store a copy of the current element in the special _clipboard anim."""
-    raise NotImplementedError
+    """Store a copy of the current element in the clipboard."""
+    _, e, _ = cursor.get_element_pos()
+    cursor.clipboard = copy.deepcopy(e)
 
 @change_project_state
 def cut_element(cursor):
-    """Pop the current element to the special _clipboard anim."""
-    raise NotImplementedError
+    """Pop the current element to the clipboard."""
+    copy_element(cursor)
+    del_element(cursor)
 
 @change_project_state
 def paste_element(cursor):
-    """Copy the content of the special _clipboard anim at the current frm."""
-    raise NotImplementedError
+    """Copy the content of the special clipboard."""
+    if(cursor.clipboard):
+        add_element_after(cursor, copy.deepcopy(cursor.clipboard))
 
 @change_project_state
 def duplicate_element(cursor):
     """Duplicate the current element."""
-    raise NotImplementedError
+    _, e, _ = cursor.get_element_pos()
+    add_element_after(cursor, copy.deepcopy(e))
+
     
 def _pop_element_at(cursor, i):
     """Remove and return the element with the index i in the current layer."""

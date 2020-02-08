@@ -55,6 +55,9 @@
 <span class="n">functions</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">cursors</span> <span class="o">=</span> <span class="p">{}</span>
 
+<span class="n">http_server</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">osc_server</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="get_function"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.get_function">[docs]</a><span class="k">def</span> <span class="nf">get_function</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a function from the functions dict.</span>
@@ -77,28 +80,28 @@
 <span class="sd">    Get a function with get_function, call it with passed args/kwargs and</span>
 <span class="sd">    return the result.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">handleError</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">err_msg</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span> <span class="ne">Exception</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="o">*</span><span class="n">err_msg</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Function not found - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Function not found - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Not implemented - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Not implemented - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">cursor</span><span class="o">.</span><span class="n">NoProjectError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Undefine project&#39;</span><span class="p">,</span>
+        <span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Undefine project&#39;</span><span class="p">,</span>
             <span class="s1">&#39;You must first get a project.&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">control</span><span class="o">.</span><span class="n">exporter</span><span class="o">.</span><span class="n">ExportDestNotFoundError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Destination not found&#39;</span><span class="p">,</span>
+        <span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Destination not found&#39;</span><span class="p">,</span>
             <span class="s1">&#39;You must save the project before exporting it.&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">handleError</span><span class="p">(</span><span class="s1">&#39;Oups...&#39;</span><span class="p">,</span>
+        <span class="n">handle_error</span><span class="p">(</span><span class="s1">&#39;Oups...&#39;</span><span class="p">,</span>
             <span class="s1">&#39;An error occurs in the server.&#39;</span><span class="p">)</span></div>
 
 
@@ -130,6 +133,14 @@
         <span class="c1"># The default server log is redirected to logging.DEBUG.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">format</span><span class="o">%</span><span class="n">args</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="OgnonHTTPHandler.write"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper for the wfile.write method used to handle BrokenPipeError.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BrokenPipeError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;BrokenPipeError&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OgnonHTTPHandler.do_GET"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_GET">[docs]</a>    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -143,19 +154,21 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/index.html&#39;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">mimetype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;OK&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">pkgabspath</span><span class="p">(</span><span class="s1">&#39;client/404.html&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="s1">&#39;Not found&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
 
         
 <div class="viewcode-block" id="OgnonHTTPHandler.do_POST"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.do_POST">[docs]</a>    <span class="k">def</span> <span class="nf">do_POST</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -173,18 +186,19 @@
 
         <span class="n">cur</span> <span class="o">=</span> <span class="n">get_cursor</span><span class="p">(</span><span class="n">post_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cursor&#39;</span><span class="p">))</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">post_body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">reply</span> <span class="o">=</span> <span class="n">call_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reply</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reply</span> <span class="o">=</span> <span class="n">call_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">cur</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/html&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">args</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">reply</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">reply</span><span class="p">),</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="OgnonHTTPHandler.end_headers"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonHTTPHandler.end_headers">[docs]</a>    <span class="k">def</span> <span class="nf">end_headers</span> <span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1">#TODO: check if this is really useful ! </span>
@@ -198,7 +212,7 @@
 
 <div class="viewcode-block" id="OgnonOSCDispatcher.handlers_for_address"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.OgnonOSCDispatcher.handlers_for_address">[docs]</a>    <span class="k">def</span> <span class="nf">handlers_for_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address_pattern</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;yields Handler namedtuples matching the given OSC pattern.&quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;osc - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;osc - </span><span class="si">{path}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">address_pattern</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cursor_id</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
             <span class="n">call_function</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">get_cursor</span><span class="p">(</span><span class="n">cursor_id</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -206,29 +220,33 @@
         <span class="k">yield</span> <span class="n">pythonosc</span><span class="o">.</span><span class="n">dispatcher</span><span class="o">.</span><span class="n">Handler</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="p">[])</span></div></div>
 
 
-<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">http_adress</span><span class="p">,</span> <span class="n">osc_adress</span><span class="p">,</span> <span class="n">enable_osc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">http_address</span><span class="p">,</span> <span class="n">osc_address</span><span class="p">,</span> <span class="n">enable_osc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Serve forever on the given adresses.</span>
+<span class="sd">    Serve forever on the given addresses.</span>
 
 <span class="sd">    Start to threading servers, an http server and an osc server.</span>
 <span class="sd">    Set enable_osc to False to disable starting osc server thread.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">http_server</span><span class="p">,</span> <span class="n">osc_server</span>
+
     <span class="n">dispatcher</span> <span class="o">=</span> <span class="n">OgnonOSCDispatcher</span><span class="p">()</span>
-    <span class="n">osc_server</span> <span class="o">=</span> <span class="n">pythonosc</span><span class="o">.</span><span class="n">osc_server</span><span class="o">.</span><span class="n">OSCUDPServer</span><span class="p">(</span><span class="n">osc_adress</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">)</span>
+    <span class="n">osc_server</span> <span class="o">=</span> <span class="n">pythonosc</span><span class="o">.</span><span class="n">osc_server</span><span class="o">.</span><span class="n">OSCUDPServer</span><span class="p">(</span><span class="n">osc_address</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">)</span>
     <span class="n">osc_server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">osc_server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
 
-    <span class="n">http_server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">http_adress</span><span class="p">,</span> <span class="n">OgnonHTTPHandler</span><span class="p">)</span>
+    <span class="n">http_server</span> <span class="o">=</span> <span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">(</span><span class="n">http_address</span><span class="p">,</span> <span class="n">OgnonHTTPHandler</span><span class="p">)</span>
     <span class="n">http_server_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">http_server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
 
-    <span class="k">try</span> <span class="p">:</span>
-        <span class="k">if</span> <span class="n">enable_osc</span><span class="p">:</span>
-            <span class="n">osc_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="n">http_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">- shutdown -&#39;</span><span class="p">)</span>
-        <span class="n">http_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-        <span class="n">osc_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="n">e</span></div>
+    <span class="k">if</span> <span class="n">enable_osc</span><span class="p">:</span>
+        <span class="n">osc_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">http_server_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="stop_serving"><a class="viewcode-back" href="../../ognon_pkg_documentation.html#ognon.server.stop_serving">[docs]</a><span class="k">def</span> <span class="nf">stop_serving</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Strop serving forever.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">http_server</span><span class="p">,</span> <span class="n">osc_server</span>
+    <span class="n">http_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+    <span class="n">osc_server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
 </pre></div>
 
           </div>

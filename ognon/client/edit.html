@@ -63,6 +63,10 @@
 		<button id="move_element_backward">&lt; move</button>
 		<button id="move_element_forward">move &gt;</button>
 		<button id="del_element">del</button>
+		<button id="duplicate_element">duplicate</button>
+		<button id="copy_element">copy</button>
+		<button id="cut_element">cut</button>
+		<button id="paste_element">paste</button>
 		<label>cell</label>
 		<button id="add_cell_before">&lt; add</button>
 		<button id="add_cell_after">add &gt;</button>
@@ -70,6 +74,7 @@
 		<input id="anim_name" name="name"/>
 		<button id="add_animref_before" data-required="name">&lt; add</button>
 		<button id="add_animref_after" data-required="name">add &gt;</button>
+
 	</div>
 	<div class="section" id="layersorganizer">
 		<label>layers</label>
@@ -97,7 +102,7 @@
 
 <table id="timeline"></table>
 
-<canvas id="canvas"></canvas>
+<canvas id="canvas" moz-opaque></canvas>
 
 </body>
 	<script src="/js/client.js"></script>

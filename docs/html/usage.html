@@ -50,7 +50,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+------------+</span>
 <span class="o">|</span> <span class="n">Ognon</span> <span class="n">v1</span><span class="o">.</span><span class="n">x</span> <span class="o">|</span>
 <span class="o">+------------+</span>
-<span class="n">Working</span> <span class="n">on</span> <span class="n">file</span><span class="p">:</span><span class="o">///</span><span class="n">home</span><span class="o">/</span><span class="n">leon</span><span class="o">/</span><span class="n">ognons</span><span class="o">/</span>
+<span class="n">Working</span> <span class="n">on</span> <span class="n">file</span><span class="p">:</span><span class="o">///</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">ognons</span><span class="o">/</span>
 <span class="n">Serving</span> <span class="n">on</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">40460</span>
 <span class="n">Serving</span> <span class="n">on</span> <span class="n">osc</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">50460</span>
 </pre></div>
@@ -102,11 +102,8 @@
 <span class="p">{</span>
         <span class="nx">cursor</span><span class="o">:</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
         <span class="nx">args</span><span class="o">:</span><span class="p">{</span>
-                <span class="nx">x1</span><span class="o">:</span><span class="mi">23</span><span class="p">,</span>
-                <span class="nx">x2</span><span class="o">:</span><span class="mi">54</span>
-                <span class="nx">y1</span><span class="o">:</span><span class="mi">23</span><span class="p">,</span>
-                <span class="nx">y2</span><span class="o">:</span><span class="mi">54</span>
-        <span class="p">},</span>
+                <span class="nx">coords</span><span class="o">:</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">]</span>
+        <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -181,6 +178,14 @@
 </div>
 </div>
 </div>
+<div class="section" id="docs">
+<h2>Docs<a class="headerlink" href="#docs" title="Permalink to this headline">¶</a></h2>
+<p>Build the docs with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd docs
+$ make html
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -209,6 +214,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#advanced-command-line-options">Advanced command line options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#http-server-api">HTTP Server API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#osc-server-api">OSC Server API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docs">Docs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ognon_web_interface.html">Ognon web interface</a></li>

@@ -10,6 +10,7 @@ shortcutRepresentation = (keysArray) =>
     keysArray.map((key, i)=>key == ' ' ? 'Space' : key).join('+');
 
 doShortcut = action => {
+    console.log('do ', action)
     args = {};
     if(action.args){
         args = action.args;
@@ -65,4 +66,13 @@ specials.shortcutsHelp = () => {
     for(let sc in shortcuts){
         console.log(sc + ': ' + shortcuts[sc].description)
     }
+}
+
+specials.selectDraw = () => {
+    let selector = document.getElementById('tool-selector');
+    selector.selectedIndex = 0;
+}
+specials.selectErease = () => {
+    let selector = document.getElementById('tool-selector');
+    selector.selectedIndex = 1;
 }

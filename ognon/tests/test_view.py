@@ -1,6 +1,22 @@
 from .. import view
 import json
 
+def test_get(cursor):
+	get_onion_skin_reply =  view.get_onion_skin(cursor, onion_range=(-1,0,1))
+	get_cursor_infos_reply = view.get_cursor_infos(cursor)
+
+	get_reply = view.get(cursor, {
+		'get_onion_skin':{'onion_range':(-1,0,1)},
+		'get_cursor_infos':{}
+	})
+	assert get_reply == {
+		'get_onion_skin':get_onion_skin_reply,
+		'get_cursor_infos':get_cursor_infos_reply
+	}
+
+	# test jsonability
+	json.dumps(get_reply)
+	
 def test_get_path(cursor):
 	import os
 	path = view.get_path(cursor)
@@ -63,12 +79,19 @@ def test_get_lines(cursor):
 	drawer.draw(cursor, line)
 	assert line in view.get_lines(cursor)
 
+	# test draft mode
+	from ..control import tagger
+	tagger.add_tag(cursor, 'draft')
+	assert line not in view.get_lines(cursor)
+	assert line in view.get_lines(cursor, draft=True)
+
 	# weak test on animref
 	cursor.set_pos(anim='testing-anim-with-animref',frm=5)
 	view.get_lines(cursor)
 	
 	# test jsonability
 	json.dumps(view.get_lines(cursor))
+
 
 def test_get_onion_skin(cursor):
 	from ..control import drawer

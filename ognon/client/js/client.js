@@ -1,6 +1,43 @@
 const url = new URL(window.location.href);
 const cursor = url.searchParams.get("cursor") || 'default';
 
+
+// Modules
+
+let modules = [];
+let callModulesMethodBusy = false;
+// let modulesRequest = {};
+
+const callModulesMethod = (modulesMethod) => {
+
+    if (callModulesMethodBusy) return;
+
+    const onLoad = (viewInfos) => {
+        modules.forEach(mo => {
+            if(mo.busy || !mo[modulesMethod]) return;
+            mo.busy = true;
+            mo[modulesMethod](viewInfos);
+            mo.busy = false;
+
+        });
+        callModulesMethodBusy = false;
+    }
+
+    callModulesMethodBusy = true;
+
+    let modulesRequest = {'get_cursor_infos':{}}
+    modules.forEach(mo => {
+        modulesRequest = Object.assign(modulesRequest, mo.request)
+    });
+
+    fetch('/view/get/', initOptions({request:modulesRequest}))
+    .then(handleResponse)
+    .then(onLoad)
+    .catch(handleError);
+}
+
+// Request
+
 const initOptions = (args, differentCursor) => {
 
     requestCursor = differentCursor || cursor
@@ -42,22 +79,32 @@ const handleError = (e) => {
 // Auto update
 
 let autoUpdating = false;
-const autoUpdateFrameRate = 25; //fps
-
-const autoUpdate = () => {
-    if (autoUpdating) {
+const FPS = 30; //fps
+const DELAY = 1000/FPS; //fps
+let time = null;
+let frame = -1;
+let tref;
+const autoUpdate = (timestamp) => {
+    if (!autoUpdating) return;
+    if(time == null) time = timestamp;
+    let seg = Math.floor((timestamp - time) / DELAY);
+    if(seg > frame){
+        frame = seg
         callModulesMethod('update');
-        setTimeout(autoUpdate, 1000/autoUpdateFrameRate);
     }
+    requestAnimationFrame(autoUpdate);
 }
+
 const startAutoUpdate = () => {
     if(!autoUpdating){
         autoUpdating = true;
         autoUpdate();
     } else {
-        console.log("was already updatiung ! strange ????")
+        console.log("was already autoUpdating ! strange ????")
     }
 }
 const stopAutoUpdate = () => {
     autoUpdating = false;
 }
+
+

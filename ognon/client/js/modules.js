@@ -2,48 +2,26 @@
 **** SETTINGS ***
 ****************/
 
-const PRECISION = 3; // Min pixel length of a stroke
-const IGNORE_CALLMODMET_BUSY = true; // set to true for debugging
+const PRECISION = 1; // Min pixel length of a stroke
 
 /****************
 **** MODULES ****
 ****************/
-let modules = [];
-let callModulesMethodBusy = false;
-let callModulesMethodBusyCount = 0;
-function callModulesMethod(modulesMethod) {
-    if (!callModulesMethodBusy || IGNORE_CALLMODMET_BUSY) {
-        callModulesMethodBusy = true;
-        fetch('/view/get_cursor_infos/', initOptions())
-        .then(handleResponse)
-        .then(cursorInfos =>{
-            modules.forEach(mo => {
-                if(mo[modulesMethod] && !mo.busy){
-                    mo.busy = true;
-                    let callBack = ()=>{mo.busy = false; mo.busyCount = 0}
-                    mo[modulesMethod](callBack, cursorInfos);
-                } else if (mo.busy){
-                    mo.busyCount += 1;
-                    console.log("busy ("+mo.busyCount+") : "+mo.id+" ("+modulesMethod+")");
-                }
-            });
-            callModulesMethodBusy = false;
-            callModulesMethodBusyCount = 0;
-        })
-        .catch(handleError);
-    } else {
-        callModulesMethodBusyCount += 1;
-        console.log('busy ('+callModulesMethodBusyCount+') : callModulesMethod !')
-    }
-
-}
 
 class Module {
     constructor(id) {
         this.id = id;
         this.elmt = document.getElementById(id);
         this.busy = false;
-        this.busyCount = 0;
+        this.request = {}
+    }
+
+    add_request(request) {
+        this.request = Object.assign(this.request, request)
+    }
+
+    reset_request(){
+        this.request = {}
     }
 }
 
@@ -62,12 +40,13 @@ const callDrawer = () => {
 
     onCallDrawerBusy = true;
     let tool = document.getElementById('tool-selector').value
-    let args;
+    let args = {coords:[]};
     if (tool == 'draw'){
-        args = {coords:mouseDownCoords};
+        args.coords = mouseDownCoords;
     } else if (tool == 'erease'){
-        args = {coords:[mouseDownCoords[mouseDownCoords.length-2],mouseDownCoords[mouseDownCoords.lenght-1]]};
-    }
+        if(mouseDownCoords.length < 2) return;
+        args.coords = mouseDownCoords.slice(-2);
+     }
     fetch('/control/drawer/'+tool+'/', initOptions(args))
     .then(()=>{onCallDrawerBusy = false;})
     .catch(handleError);
@@ -87,31 +66,32 @@ const onMouseUp = (e) => {
 
 const onCanvasMouseMove = (e) => {
 
-    if(mouseDownCoords.length>1){
+    if(mouseDownCoords.length < 2) return;
 
-        let x = e.offsetX;
-        let y = e.offsetY;
-        let px = mouseDownCoords[mouseDownCoords.length-2];
-        let py = mouseDownCoords[mouseDownCoords.length-1];
-
-        mouseDownCoords = mouseDownCoords.concat([x, y]);
+    let x = e.offsetX;
+    let y = e.offsetY;
+    let px = mouseDownCoords[mouseDownCoords.length-2];
+    let py = mouseDownCoords[mouseDownCoords.length-1];
 
 
-        // send tool request only if the distance between mouse and pMouse is greater than PRECISION
-        if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
 
-            if(!onCallDrawerBusy){
-                // console.log(mouseDownCoords);
-                callDrawer();
-                mouseDownCoords = [x, y];
 
-            }
-            else {
-                console.log("busy : onCanvasMouseMove")
-            }
+    // store coords only if the distance between mouse and pMouse is greater than PRECISION
+    if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
+    
+    mouseDownCoords = mouseDownCoords.concat([x, y]);
 
+        if(!onCallDrawerBusy){
+            // console.log(mouseDownCoords);
+            callDrawer();
+            mouseDownCoords = [x, y];
 
         }
+        else {
+            console.log("busy : onCanvasMouseMove")
+        }
+
+
     }
 };
 
@@ -122,12 +102,13 @@ const drawLines = (lines, style, ctx) => {
     ctx.lineWidth = style.lineWidth;
     ctx.strokeStyle = style.lineColor;
     ctx.beginPath();
-    lines.forEach((line) => {
-        ctx.moveTo(line[0], line[1]);
-        for (var i = 2; i < line.length; i+=2) {
-            ctx.lineTo(line[i], line[i+1]);
+    for (var i=0; i<lines.length; i++) {
+        ctx.moveTo(lines[i][0], lines[i][1]);
+        for (var j=2; j<lines[i].length; j+=2) {
+            ctx.lineTo(lines[i][j], lines[i][j+1]);
         }
-    });
+
+    }
     ctx.stroke();
 }
 
@@ -160,95 +141,136 @@ class Canvas extends Module {
         this.onionWidth = config.onion_skin_line_width;
     }
 
-    setup(callBack, cursorInfos) {
+    setup(viewInfos) {
 
         this.ctx = this.elmt.getContext('2d');
         this.elmt.addEventListener('mousedown', onCanvasMouseDown);
         this.elmt.addEventListener('mousemove', onCanvasMouseMove);
         addEventListener('mouseup',   onMouseUp);
 
-        // load config
-        fetch('/view/get_view_config/', initOptions())
-        .then(this.responseHandler)
-        .then(json =>{
-            this.loadConfig(json);
-            this.update(callBack, cursorInfos);
-        })
-        .catch(handleError);
+        this.updateConfig = true
+        this.update(viewInfos);
     }
 
-    update(callBack, cursorInfos) {
+    update(viewInfos) {
         /*
         Call draw or drawOnionSkin depending on playing info given by /view/get_cursor_infos/
         */
-        if (cursorInfos.playing || this.noOnionSkin) {
-            this.draw(cursorInfos, [0])
-        } else {
-            this.draw(cursorInfos, [-1, 0, 1])
+        this.reset_request();
+
+        if(viewInfos['get_view_config']){
+            this.loadConfig(viewInfos['get_view_config']);
+            this.updateConfig = false;
+        } else if (this.updateConfig) {
+            this.add_request({'get_view_config':{}})
         }
-        this.updating = false;
-        callBack();
+
+        if (viewInfos['get_cursor_infos'].playing || this.noOnionSkin) {
+            this.draw(viewInfos, [0], false)
+        } else {
+            this.draw(viewInfos, [-1, 0, 1], true)
+        }
+
+        if(mouseDownCoords.length>=2){
+            drawLines([mouseDownCoords],{lineWidth:this.lineWidth, lineColor:'#00CCCC'},this.ctx)
+        } // DONT WORK ?
+
+        this.updating = false; // useless ??
     }
 
-    draw(cursorInfos, onionRange=[0]) {
+    draw(viewInfos, onionRange=[0], draft=false) {
         /*
         Draw lines given by /view/get_onion_skin/ 
         */
-        let cursorPos = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_state_id + ' '  + cursorInfos.project_draw_state_id;
+        let c = viewInfos['get_cursor_infos']
+
+        let cursorPos = c.project_name + ' ' + c.anim + ' ' +  c.layer + ' ' + c.frm;
+        let projState = c.project_state_id + ' '  + c.project_draw_state_id;
         let imageID = cursorPos + ' ' + projState + ' '  + onionRange;
 
-        let getCol = (skin) => {
-            if(skin < 0){
-                return this.onionBwColor;
-            } else if (skin > 0) {
-                return this.onionFwColor;
-            } else{
-                return this.lineColor;
-            }
-        };
 
-        let drawSkin = (skins, i) => {
-            drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:getCol(i)}, this.ctx);
-        };
-
-        let drawSkins = (skins, range) => {
-            clearCanvas(this.ctx, this.backgroundColor);
-            range.filter(e=>e!=0).forEach(i=>{
-                drawSkin(skins, i);
-            });
-            drawSkin(skins, 0);
-        };
 
         if (this.currentImageID == imageID)
         {
             return;
         }
         else if (cursorPos in this.cache 
-                && onionRange.every((i)=> i in this.cache[cursorPos].onionSkin) 
+                && this.cache[cursorPos].onionRange == onionRange.join()
+                && this.cache[cursorPos].draft == draft
                 && this.cache[cursorPos].state_id == projState)
         {
-            drawSkins(this.cache[cursorPos].onionSkin, onionRange);
+
+            this.ctx.drawImage(this.cache[cursorPos].canvas,0,0);
             this.currentImageID = imageID
-        }
-        else
-        {
-            fetch('/view/get_onion_skin/', initOptions({
-                frm:cursorInfos.frm,
-                anim:cursorInfos.anim,
-                onion_range:onionRange}))
-            .then(this.responseHandler)
-            .then(onionSkin => {
-                drawSkins(onionSkin, onionRange);
-                this.cache[cursorPos] = {
-                    state_id:projState,
-                    onionSkin:onionSkin
-                };
-                this.currentImageID = imageID
-            })
-            .catch(handleError);
 
         }
+        else
+        {           
+
+            this.add_request({'get_onion_skin':{
+                onion_range:onionRange
+            }});
+
+            if (!viewInfos['get_onion_skin']) {
+                return;
+            }
+
+            if(draft){
+                this.add_request({'get_lines':{
+                    draft:true
+                }});
+                if (viewInfos['get_lines']==undefined) {
+                    return;
+                }
+
+            }
+            clearCanvas(this.ctx, this.backgroundColor);
+
+            if (draft) {
+                let draftLines = viewInfos['get_lines']
+                this.drawDraft(draftLines);
+            }
+
+            let onionSkin = viewInfos['get_onion_skin']
+            this.drawSkins(onionSkin, onionRange);
+
+            let cacheCanvas = document.createElement('canvas');
+            cacheCanvas.width = this.elmt.width;
+            cacheCanvas.height = this.elmt.height;
+            cacheCanvas.getContext('2d').drawImage(this.elmt,0,0);
+            this.cache[cursorPos] = {
+                state_id:projState,
+                onionRange:onionRange.join(),
+                draft:draft,
+                canvas:cacheCanvas
+            };
+            this.currentImageID = imageID
+        }
+    }
+
+    getCol(skin){
+        if(skin < 0){
+            return this.onionBwColor;
+        } else if (skin > 0) {
+            return this.onionFwColor;
+        } else{
+            return this.lineColor;
+        }
+    }
+
+    drawDraft(draftLines) {
+        drawLines(draftLines, {lineWidth:this.lineWidth, lineColor:'#0000CC'}, this.ctx);
+    }
+
+    drawSkin(skins, i) {
+        drawLines(skins[i], {lineWidth:this.lineWidth, lineColor:this.getCol(i)}, this.ctx);
+    }
+
+    drawSkins(skins, range) {
+        range.filter(e=>e!=0).forEach(i=>{
+            this.drawSkin(skins, i);
+        });
+        this.drawSkin(skins, 0);
     }
 }
 
@@ -298,12 +320,11 @@ class Toolbar extends Module {
         super(id);
     }
 
-    setup(callBack, cursorInfos) {
+    setup(viewInfos) {
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
         this.elmt.querySelectorAll('#projectmanager button')
         .forEach(e=>e.addEventListener('click', ()=>callModulesMethod('setup')));
-        callBack();
     }
 }
 
@@ -408,45 +429,50 @@ class Timeline extends Module {
 
     }
 
-    setup(callBack, cursorInfos) {
-        this.update(callBack, cursorInfos);
+    setup(viewInfos) {
+        this.update(viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        let cursorPos = cursorInfos.layer + ' ' + cursorInfos.frm;
-        let projState = cursorInfos.project_name + ' ' + cursorInfos.anim + ' ' +  cursorInfos.project_state_id;
+    update(viewInfos) {
+        this.reset_request();
+
+        let c = viewInfos['get_cursor_infos']
+        let cursorPos = c.layer + ' ' + c.frm;
+        let projState = c.project_name + ' ' + c.anim + ' ' +  c.project_state_id;
+
         if (projState !== this.currentProjState) {
-            this.updateTimeline(callBack, cursorInfos);
+            this.add_request({'get_timeline':{}});
+            this.updateTimeline(viewInfos, cursorPos, projState);
         } else if (cursorPos != this.currentCursorPos) {
-            this.updateActive(callBack, cursorInfos);
+            this.updateActive(viewInfos);
         }
         else {
-            callBack();
+
         }
-        this.currentCursorPos = cursorPos;
-        this.currentProjState = projState;
     }
 
-    updateActive(callBack, cursorInfos) {
+    updateActive(viewInfos, cursorPos) {
         /*
         Remove active class from frm-heading and layer-row.
         Set current layer and frm to active
         */
+        let c = viewInfos['get_cursor_infos']
+
         this.elmt.querySelectorAll('.frms-row td')
-        .forEach((e)=>setActiveElement('frm', cursorInfos.frm, e));
+        .forEach((e)=>setActiveElement('frm', c.frm, e));
         this.elmt.querySelectorAll('.layer-row')
-        .forEach((e)=>setActiveElement('layer', cursorInfos.layer, e));
-        callBack();
+        .forEach((e)=>setActiveElement('layer', c.layer, e));
+        this.currentCursorPos = cursorPos;
     }
 
-    updateTimeline(callBack, cursorInfos) {
-        fetch('/view/get_timeline/', initOptions())
-        .then(handleResponse)
-        .then(json => {
-            createTimeline(json, this.elmt);
-            this.updateActive(callBack, cursorInfos);
-        })
-        .catch(handleError);
+    updateTimeline(viewInfos, cursorPos, projState) {
+        if (!viewInfos['get_timeline']) {
+            return;
+        }
+        createTimeline(viewInfos['get_timeline'], this.elmt);
+        this.updateActive(viewInfos);
+        this.currentProjState = projState;
+
     }
 }
 
@@ -470,52 +496,53 @@ class CursorStatusbar extends Module {
         super(id);
     }
 
-    setup(callBack, cursorInfos){
-        this.update(callBack, cursorInfos);
+    setup(viewInfos){
+        this.update(viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        updateInfos(cursorInfos, this.elmt)
-        callBack();
+    update(viewInfos) {
+        updateInfos(viewInfos['get_cursor_infos'], this.elmt)
     }
 }
 
 class Statusbar extends Module {
-    constructor(id, requestPath) {
+    constructor(id, view_function) {
         super(id);
-        this.requestPath = requestPath;
+        this.view_function = view_function;
         this.currentElementID = ""
         this.cache = {}
     }
 
-    setup(callBack, cursorInfos){
-        this.update(callBack, cursorInfos);
+    setup(viewInfos){
+        this.update(viewInfos);
     }
 
-    update(callBack, cursorInfos) {
-        let cursorPos = cursorInfos.project_name+' '+cursorInfos.anim+' '+cursorInfos.layer+' '+cursorInfos.frm;
-        let projectState = cursorInfos.project_state_id
+    update(viewInfos) {
+        this.reset_request();
+
+        let c = viewInfos['get_cursor_infos'];
+
+        let cursorPos = c.project_name+' '+c.anim+' '+c.layer+' '+c.frm;
+        let projectState = c.project_state_id;
         let elementID = cursorPos+' '+projectState;
+
         if(elementID != this.currentElementID){
             if(cursorPos in this.cache && this.cache[cursorPos].state_id == projectState){
                 updateInfos(this.cache[cursorPos].infos, this.elmt);
                 this.currentElementID = elementID;
-                callBack();
             }
             else {
-                fetch(this.requestPath, initOptions())
-                .then(handleResponse)
-                .then(json => {
-                    updateInfos(json, this.elmt);
-                    this.currentElementID = elementID;
-                    this.cache[cursorPos]={state_id:projectState, infos:json}
-                    callBack();
+                if (!viewInfos[this.view_function]) {
+                    let req = {}; req[this.view_function] = {};
+                    this.add_request(req)
+                    return;
+                }
+                let infos = viewInfos[this.view_function]
 
-                })
-                .catch(handleError);
+                updateInfos(infos, this.elmt);
+                this.currentElementID = elementID;
+                this.cache[cursorPos]={state_id:projectState, infos:infos}
             }
-        } else {
-            callBack();
         }
     }
 }

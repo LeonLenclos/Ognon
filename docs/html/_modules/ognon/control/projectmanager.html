@@ -36,6 +36,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;This module provide control functions to manage projects&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">projects</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">change_project_state</span>
 
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -52,12 +53,14 @@
     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">projects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.projectmanager.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="nd">@change_project_state</span>
+<span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Just call the projects.save function so it write datas in the default dir.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">name</span>
-    <span class="n">projects</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="p">)</span></div>
+    <span class="n">projects</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -89,6 +92,8 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../control.html">ognon.control</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

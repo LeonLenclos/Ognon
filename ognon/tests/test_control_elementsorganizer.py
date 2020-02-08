@@ -85,7 +85,35 @@ def test_move_element_backward(cursor):
 	assert debugs_list(cursor) == [0,1,4,2,3]
 	assert cursor.get_pos('frm') == 2
 
+def test_copy_element(cursor):
+	init_orga(cursor)
+	assert control.elementsorganizer.copy_element(cursor) is None
+	assert debugs_list(cursor) == [0,1,2,3,4]
+	assert cursor.get_pos('frm') == 0
+	assert cursor.clipboard.debug == 0
+
+def test_cut_element(cursor):
+	init_orga(cursor)
+	assert control.elementsorganizer.cut_element(cursor) is None
+	assert debugs_list(cursor) == [1,2,3,4]
+	assert cursor.get_pos('frm') == 0
+	assert cursor.clipboard.debug == 0
+
+
+def test_paste_element(cursor):
+	init_orga(cursor)
+	control.elementsorganizer.copy_element(cursor)
+	control.navigator.last_frm(cursor)
+	assert control.elementsorganizer.paste_element(cursor) is None
+	assert debugs_list(cursor) == [0,1,2,3,4,0]
+
+def test_duplicate_element(cursor):
+	init_orga(cursor)
+	assert control.elementsorganizer.duplicate_element(cursor) is None
+	assert debugs_list(cursor) == [0,0,1,2,3,4]
+
 def test__pop_element_at(cursor):
 	element = cursor.get_layer().elements[0]
 	assert control.elementsorganizer._pop_element_at(cursor, 0) is element
 	assert len(cursor.get_layer().elements) == 1
+
