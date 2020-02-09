@@ -44,6 +44,12 @@ def get_projects_tree(cursor):
         for project_name in projects.get_saved_projects_list()
     }
 
+def get_projects(cursor):
+    """
+    Return a list of all projects in the projects dir
+    """
+    return [proj for proj in projects.get_saved_projects_list()]
+
 def get_view_config(cursor, option=None):
     """
     Return the projects view configuration.
