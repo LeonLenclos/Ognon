@@ -152,5 +152,5 @@ Build the docs with
 
 ::
 
- $ cd docs
+ $ cd docs/
  $ make html

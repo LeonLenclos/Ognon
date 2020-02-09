@@ -68,13 +68,14 @@
 
     <span class="k">return</span> <span class="n">img</span>
 
-<div class="viewcode-block" id="frm_to_png"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.frm_to_png">[docs]</a><span class="k">def</span> <span class="nf">frm_to_png</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_frm_to_img</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Save the current frm on the disk as a png image.</span>
+<span class="sd">    Save the current frm or the given frm on the disk as an image.</span>
 
-<span class="sd">    Location is given by export&gt;png_name in the config file.</span>
+<span class="sd">    ext must be an image file extension supported by pillow</span>
+<span class="sd">    and for which a path is given in the config file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">name_format</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;export&#39;</span><span class="p">][</span><span class="s1">&#39;png_name&#39;</span><span class="p">]</span>
+    <span class="n">name_format</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">proj</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;export&#39;</span><span class="p">][</span><span class="n">ext</span><span class="o">+</span><span class="s1">&#39;_name&#39;</span><span class="p">]</span>
     <span class="n">anim</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;anim&#39;</span><span class="p">)</span>
     <span class="n">frm</span> <span class="o">=</span> <span class="n">frm</span> <span class="k">if</span> <span class="n">frm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">cursor</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="s1">&#39;frm&#39;</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">name_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anim</span><span class="o">=</span><span class="n">anim</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">))</span>
@@ -82,16 +83,42 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_frm_to_pilimage</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="n">frm</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ExportDestNotFoundError</span><span class="p">()</span>    </div>
+        <span class="k">raise</span> <span class="n">ExportDestNotFoundError</span><span class="p">()</span>    
+
+<span class="k">def</span> <span class="nf">_anim_to_imgs</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save all animation frms on the disk as a images.</span>
+
+<span class="sd">    ext must be an image file extension supported by pillow</span>
+<span class="sd">    and for which a path is given in the config file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">frm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">()):</span>
+        <span class="n">_frm_to_img</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">frm</span><span class="p">)</span>
+
+<div class="viewcode-block" id="frm_to_png"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.frm_to_png">[docs]</a><span class="k">def</span> <span class="nf">frm_to_png</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save the current frm on the disk as a png image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_frm_to_img</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">frm</span><span class="p">)</span>  </div>
+
+<div class="viewcode-block" id="frm_to_tga"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.frm_to_tga">[docs]</a><span class="k">def</span> <span class="nf">frm_to_tga</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save the current frm on the disk as a png image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_frm_to_img</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s1">&#39;tga&#39;</span><span class="p">,</span> <span class="n">frm</span><span class="p">)</span>  </div>
+
 
 <div class="viewcode-block" id="anim_to_pngs"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.anim_to_pngs">[docs]</a><span class="k">def</span> <span class="nf">anim_to_pngs</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save all animation frms on the disk as a png images.</span>
-
-<span class="sd">    Location is given by export&gt;png_name in the config file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">frm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">anim_len</span><span class="p">()):</span>
-        <span class="n">frm_to_png</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">frm</span><span class="p">)</span></div>
+    <span class="n">_anim_to_imgs</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">)</span>  </div>
+
+<div class="viewcode-block" id="anim_to_tgas"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.anim_to_tgas">[docs]</a><span class="k">def</span> <span class="nf">anim_to_tgas</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save all animation frms on the disk as a tgas images.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_anim_to_imgs</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="s1">&#39;tga&#39;</span><span class="p">)</span>  </div>
 
 <div class="viewcode-block" id="anim_to_gif"><a class="viewcode-back" href="../../../ognon_pkg_documentation.html#ognon.control.exporter.anim_to_gif">[docs]</a><span class="k">def</span> <span class="nf">anim_to_gif</span><span class="p">(</span><span class="n">cursor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

@@ -14,10 +14,11 @@ def clear(cursor):
 def draw(cursor, coords):
     """Draw a line in the current element."""
     e = cursor.get_element()
-    try:
-        assert e.lines[-1].coords[-2:] == coords[:2]
+    if not hasattr(e, 'lines'): return
+
+    if len(e.lines) and e.lines[-1].coords[-2:] == coords[:2]:
         e.lines[-1].coords.extend(coords[2:])
-    except (AssertionError, IndexError):
+    else:
         e.lines.append(model.Line(coords))
 
 @change_project_draw_state
@@ -27,12 +28,30 @@ def erease(cursor, coords, radius=5):
     from `coords` lower than `radius`.
     """
     e = cursor.get_element()
+    if not hasattr(e, 'lines'): return
 
     for i, l in enumerate(e.lines):
-        for point in _pairwise(l.coords):
-            if _distance(coords, point) < radius:
-                del e.lines[i]
-                return
+        for erease_point in _pairwise(coords):
+            for line_point in _pairwise(l.coords):
+                if _distance(erease_point, line_point) < radius:
+                    del e.lines[i]
+                    return
+
+@change_project_draw_state
+def move(cursor, coords):
+    """
+    move all the Cell lines.
+    """
+    e = cursor.get_element()
+    if not hasattr(e, 'lines'): return
+
+    offset_x = coords[-2] - coords[0]
+    offset_y = coords[-1] - coords[1]
+
+    for i, l in enumerate(e.lines):
+        for j, point in enumerate(_pairwise(l.coords)):
+            e.lines[i].coords[j*2] = point[0] + offset_x
+            e.lines[i].coords[j*2+1] = point[1] + offset_y
 
 def _distance(p0, p1):
     """Return the distance between two points."""

@@ -32,6 +32,12 @@ def test_get_projects_tree(cursor):
 	# test jsonability
 	json.dumps(view.get_projects_tree(cursor))
 
+def test_get_projects(cursor):
+	# WARNING: weak test
+	
+	# test jsonability
+	json.dumps(view.get_projects_tree(cursor))
+
 def test_get_view_config(cursor):
 
 	assert view.get_view_config(cursor) == cursor.proj.config['view']	

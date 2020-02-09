@@ -29,14 +29,15 @@
 <div id="toolbar">
 	<div class="section" id="projectmanager">
 		<label>project</label>
-		<input id="project_name" name="name"/>
+		
+		<select class="customOptionSelect" data-list-from="get_projects"></select><input id="project_name" name="name"/>
 		<button id="get" data-required="name">get</button>
 		<button id="load" data-required="name">load</button>
 		<button id="save">save</button>
 	</div>
 	<div class="section" id="animsmanager">
 		<label>anims</label>
-		<input id="anim_name" name="name"/>
+		<select class="customOptionSelect" data-list-from="get_anims"></select><input id="anim_name" name="name"/>
 		<button id="select_anim" data-required="name">select</button>
 		<button id="del_anim" data-required="name">del</button>
 	</div>
@@ -44,6 +45,7 @@
 		<label>export</label>
 		<button id="frm_to_png">png</button>
 		<button id="anim_to_pngs">pngs</button>
+		<button id="anim_to_tgas">tgas</button>
 		<button id="anim_to_gif">gif</button>
 		<button id="anim_to_avi">avi</button>
 	</div>
@@ -96,6 +98,7 @@
 		<select id="tool-selector">
 			<option value="draw">draw</option>
 			<option value="erease">erease</option>
+			<option value="move">move</option>
 		</select>
 	</div>
 </div>

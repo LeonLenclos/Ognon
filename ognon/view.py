@@ -44,6 +44,12 @@ def get_projects_tree(cursor):
         for project_name in projects.get_saved_projects_list()
     }
 
+def get_projects(cursor):
+    """
+    Return a list of all projects in the projects dir
+    """
+    return [proj for proj in projects.get_saved_projects_list()]
+
 def get_view_config(cursor, option=None):
     """
     Return the projects view configuration.
@@ -177,20 +183,3 @@ def get_onion_skin(cursor, frm=None, anim=None, onion_range=(0,)):
         idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
         for idx in onion_range
     }
-
-# def get_draft(cursor, frm=None, anim=None):
-#     """
-#     Return a dict of anim lines.
-
-#     Keys are given by the onion_range arg and are the frm to look at, relatively
-#     to the current frm. (eg. `onion_range=(-1,0)` means : 'look at the current
-#     frm and the previous frm')
-
-#     Values are given by the get_lines function passing the frm argument.
-#     """
-#     frm = frm if frm is not None else cursor.get_pos('frm')
-#     return {
-#         idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
-#         for idx in onion_range
-#     }
-

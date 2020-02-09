@@ -37,19 +37,18 @@ let onCallDrawerBusy = false;
 
 
 const callDrawer = () => {
-
+    //callDrawer only if not busy and at least 2 points in coords
+    if(onCallDrawerBusy || mouseDownCoords.length<4){
+        return false;
+    }
     onCallDrawerBusy = true;
     let tool = document.getElementById('tool-selector').value
     let args = {coords:[]};
-    if (tool == 'draw'){
-        args.coords = mouseDownCoords;
-    } else if (tool == 'erease'){
-        if(mouseDownCoords.length < 2) return;
-        args.coords = mouseDownCoords.slice(-2);
-     }
+    args.coords = mouseDownCoords;
     fetch('/control/drawer/'+tool+'/', initOptions(args))
     .then(()=>{onCallDrawerBusy = false;})
     .catch(handleError);
+    return true;
 };
 
 const onCanvasMouseDown = (e) => {
@@ -79,13 +78,10 @@ const onCanvasMouseMove = (e) => {
     // store coords only if the distance between mouse and pMouse is greater than PRECISION
     if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
     
-    mouseDownCoords = mouseDownCoords.concat([x, y]);
+        mouseDownCoords = mouseDownCoords.concat([x, y]);
 
-        if(!onCallDrawerBusy){
-            // console.log(mouseDownCoords);
-            callDrawer();
+        if(callDrawer()){
             mouseDownCoords = [x, y];
-
         }
         else {
             console.log("busy : onCanvasMouseMove")
@@ -313,6 +309,42 @@ const onControlClick = (e) => {
     .catch(handleError);
 };
 
+const onCustomOptionSelectChange = (e) => {
+    let el = e.currentTarget;
+    if(el.options[el.selectedIndex].value=='customOption'){
+        el.nextSibling.disabled=false;
+        el.nextSibling.focus();
+        el.nextSibling.style.display='inline';
+        el.nextSibling.value = '';
+    } else{
+        el.nextSibling.disabled=true;
+        el.nextSibling.value = el.value;
+        el.nextSibling.style.display='none';
+    }
+}
+
+//// UTILS ////
+
+const updateCustomOptionSelect = (infos, e, listFrom) => {
+    e.querySelectorAll('[data-list-from='+listFrom+']')
+    .forEach(e=>{
+        while (e.firstChild) {
+            e.removeChild(e.firstChild);
+        }
+        let new_opt = document.createElement('option');  
+        new_opt.value = 'customOption'
+        new_opt.innerHTML = '[new]';
+        e.appendChild(new_opt);
+
+        infos[listFrom].forEach((opt_name)=>{
+            let opt = document.createElement('option');  
+            opt.value = opt_name
+            opt.innerHTML = opt_name;
+            e.appendChild(opt);
+        })
+    })
+}
+
 //// CLASS ////
 
 class Toolbar extends Module {
@@ -321,11 +353,38 @@ class Toolbar extends Module {
     }
 
     setup(viewInfos) {
+        this.elmt.querySelectorAll(".customOptionSelect")
+        .forEach(e=>e.addEventListener('change', onCustomOptionSelectChange));
+
         this.elmt.querySelectorAll("button")
         .forEach(control=>control.addEventListener('click', onControlClick));
+
         this.elmt.querySelectorAll('#projectmanager button')
         .forEach(e=>e.addEventListener('click', ()=>callModulesMethod('setup')));
     }
+
+    update(viewInfos) {
+        this.reset_request();
+
+        let c = viewInfos['get_cursor_infos'];
+
+        let projectState = c.project_state_id;
+
+        if(projectState != this.projectState){
+
+            if (!viewInfos['get_projects'] || !viewInfos['get_anims']) {
+                this.add_request({'get_projects':{}})
+                this.add_request({'get_anims':{}})
+                return;
+            }
+
+
+            updateCustomOptionSelect(viewInfos, this.elmt, 'get_projects');
+            updateCustomOptionSelect(viewInfos, this.elmt, 'get_anims');
+            this.projectState = projectState;
+        }
+    }
+
 }
 
 /*****************

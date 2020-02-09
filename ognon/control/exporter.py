@@ -33,13 +33,14 @@ def _frm_to_pilimage(cursor, frm=None):
 
     return img
 
-def frm_to_png(cursor, frm=None):
+def _frm_to_img(cursor, ext, frm=None):
     """
-    Save the current frm on the disk as a png image.
+    Save the current frm or the given frm on the disk as an image.
 
-    Location is given by export>png_name in the config file.
+    ext must be an image file extension supported by pillow
+    and for which a path is given in the config file.
     """
-    name_format = cursor.proj.config['export']['png_name']
+    name_format = cursor.proj.config['export'][ext+'_name']
     anim = cursor.get_pos('anim')
     frm = frm if frm is not None else cursor.get_pos('frm')
     path = view.get_path(cursor, name_format.format(anim=anim, frm=frm))
@@ -49,14 +50,40 @@ def frm_to_png(cursor, frm=None):
     except FileNotFoundError:
         raise ExportDestNotFoundError()    
 
+def _anim_to_imgs(cursor, ext):
+    """
+    Save all animation frms on the disk as a images.
+
+    ext must be an image file extension supported by pillow
+    and for which a path is given in the config file.
+    """
+    for frm in range(cursor.anim_len()):
+        _frm_to_img(cursor, ext, frm)
+
+def frm_to_png(cursor, frm=None):
+    """
+    Save the current frm on the disk as a png image.
+    """
+    _frm_to_img(cursor, 'png', frm)  
+
+def frm_to_tga(cursor, frm=None):
+    """
+    Save the current frm on the disk as a png image.
+    """
+    _frm_to_img(cursor, 'tga', frm)  
+
+
 def anim_to_pngs(cursor):
     """
     Save all animation frms on the disk as a png images.
-
-    Location is given by export>png_name in the config file.
     """
-    for frm in range(cursor.anim_len()):
-        frm_to_png(cursor, frm)
+    _anim_to_imgs(cursor, 'png')  
+
+def anim_to_tgas(cursor):
+    """
+    Save all animation frms on the disk as a tgas images.
+    """
+    _anim_to_imgs(cursor, 'tga')  
 
 def anim_to_gif(cursor):
     """
