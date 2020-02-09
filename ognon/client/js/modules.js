@@ -37,19 +37,18 @@ let onCallDrawerBusy = false;
 
 
 const callDrawer = () => {
-
+    //callDrawer only if not busy and at least 2 points in coords
+    if(onCallDrawerBusy || mouseDownCoords.length<4){
+        return false;
+    }
     onCallDrawerBusy = true;
     let tool = document.getElementById('tool-selector').value
     let args = {coords:[]};
-    if (tool == 'draw'){
-        args.coords = mouseDownCoords;
-    } else if (tool == 'erease'){
-        if(mouseDownCoords.length < 2) return;
-        args.coords = mouseDownCoords.slice(-2);
-     }
+    args.coords = mouseDownCoords;
     fetch('/control/drawer/'+tool+'/', initOptions(args))
     .then(()=>{onCallDrawerBusy = false;})
     .catch(handleError);
+    return true;
 };
 
 const onCanvasMouseDown = (e) => {
@@ -79,13 +78,10 @@ const onCanvasMouseMove = (e) => {
     // store coords only if the distance between mouse and pMouse is greater than PRECISION
     if(Math.abs(px - x) > PRECISION || Math.abs(py - y) > PRECISION) {
     
-    mouseDownCoords = mouseDownCoords.concat([x, y]);
+        mouseDownCoords = mouseDownCoords.concat([x, y]);
 
-        if(!onCallDrawerBusy){
-            // console.log(mouseDownCoords);
-            callDrawer();
+        if(callDrawer()){
             mouseDownCoords = [x, y];
-
         }
         else {
             console.log("busy : onCanvasMouseMove")
