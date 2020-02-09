@@ -3,6 +3,7 @@ This package contain bunch of stateless functions. organized into modules.
 They all takes a :class:`Cursor` object as first argument and does not return
 any value.
 """
+
 def change_project_state(fun):
     """
     This decorator is for control function that change the project state.

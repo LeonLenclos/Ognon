@@ -44,7 +44,7 @@ def move(cursor, coords):
     """
     e = cursor.get_element()
     if not hasattr(e, 'lines'): return
-    
+
     offset_x = coords[-2] - coords[0]
     offset_y = coords[-1] - coords[1]
 
