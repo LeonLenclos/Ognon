@@ -9,8 +9,8 @@ project_name = 'to'
 guide_name = 'cache'
 width, height = 2048, 1080
 hlines = [] # list of horizontal lines y positions
-vlines = [25, width-25] # list of vertical lines x positions
-rectangles = [] # list of rectangles (x1,y1,x2,y2) position
+vlines = [25, width-25, 400] # list of vertical lines x positions
+rectangles = [(75,50,width-75,height-75)] # list of rectangles (x1,y1,x2,y2) position
 
 
 cell = Cell(lines=[
