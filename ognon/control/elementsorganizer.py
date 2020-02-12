@@ -51,6 +51,7 @@ def del_element(cursor):
 def move_element_forward(cursor):
     """Move the current forward."""
     i, _, _ = cursor.get_element_pos()
+    # TODO: cant a  `i, e, _ = ...` be better than _pop_element_at bellow ?
     if i < len(cursor.get_layer().elements)-1:
         cursor.get_layer().elements.insert(i+1, _pop_element_at(cursor, i))
         navigator.next_frm(cursor)

@@ -16,3 +16,19 @@ def select_anim(cursor, name):
 def del_anim(cursor, name):
     """Delete an Anim from anims dict."""
     del cursor.proj.anims[name]
+
+@change_project_state
+def new_animref(cursor, name):
+    """
+    Create a new anim, add current element to it
+    and replace current element by an Animref linking to it.
+    """
+    i, e, _ = cursor.get_element_pos()
+    new_anim(cursor, name)
+    cursor.get_layer(anim=name, layer=0).elements = [e]
+    cursor.get_layer().elements[i]=model.AnimRef(name)
+
+def select_animref(cursor):
+    """Set cursor anim name from current animref."""
+    _, e, _ = cursor.get_element_pos()
+    select_anim(cursor, e.name)
