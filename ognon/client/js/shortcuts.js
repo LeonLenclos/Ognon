@@ -76,3 +76,7 @@ specials.selectErease = () => {
     let selector = document.getElementById('tool-selector');
     selector.selectedIndex = 1;
 }
+specials.selectMove = () => {
+    let selector = document.getElementById('tool-selector');
+    selector.selectedIndex = 2;
+}

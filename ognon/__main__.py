@@ -101,6 +101,7 @@ def interactive():
     - tags
     - utils
     - view
+    - scripts
     
     And to the cursors dictionnary :
     - cursors
@@ -110,7 +111,16 @@ def interactive():
 
     # import modules and objects
     import ognon
-    from . import control, cursor, model, projects, server, tags, utils, view
+    from . import control
+    from . import cursor
+    from . import model
+    from . import projects
+    from . import server
+    from . import tags
+    from . import utils
+    from . import view
+    from . import scripts
+
     from ognon.server import cursors
 
     # quit function

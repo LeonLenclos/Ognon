@@ -13,6 +13,10 @@
     "description":"Select erease tool.",
     "specials": "selectErease"
   },
+  ";": {
+    "description":"Select move tool.",
+    "specials": "selectMove"
+  },
   "a": {
     "description":"Auto run.",
     "control": "/navigator/auto_run",
