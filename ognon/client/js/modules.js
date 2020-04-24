@@ -101,6 +101,7 @@ const onCanvasMouseMove = (e) => {
 
 const drawLines = (lines, style, ctx) => {
     ctx.lineWidth = style.lineWidth;
+    ctx.lineJoin =  "round";
     ctx.strokeStyle = style.lineColor;
     ctx.beginPath();
     for (var i=0; i<lines.length; i++) {
