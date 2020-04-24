@@ -1,3 +1,8 @@
+/*
+* This file defines the modules.
+*/
+
+
 /****************
 **** SETTINGS ***
 ****************/
@@ -11,9 +16,9 @@ const PRECISION = 1; // Min pixel length of a stroke
 class Module {
     constructor(id) {
         this.id = id;
-        this.elmt = document.getElementById(id);
+        this.elmt = document.getElementById(id); 
         this.busy = false;
-        this.request = {}
+        this.request = {};
     }
 
     add_request(request) {

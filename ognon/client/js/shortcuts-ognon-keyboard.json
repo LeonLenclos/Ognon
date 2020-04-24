@@ -2,8 +2,7 @@
   "q": {
     "description":"Toogle play mode.",
     "control": "/navigator/play",
-    "modulesMethod": "update",
-    "specials": "autoUpdateOnPlay"
+    "modulesMethod": "update"
   },
   "!": {
     "description":"Select draw tool.",

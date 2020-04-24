@@ -1,27 +1,15 @@
-let playing = false;
-
-const toolbar   = new Toolbar("toolbar");
-const statusbar = new Statusbar("statusbar");
-
-modules = [toolbar, statusbar];
+/*
+* This file is the script of remotecontrol.html page.
+*/
 
 
-///////////// SETUP
-callModulesMethod('setup')
+// Init modules.
+modules = [
+    new Toolbar("toolbar"),
+    new Statusbar("element-statusbar", 'get_element_infos'),
+];
 
-
-///////////// AUTOUPDATE
-const autoUpdateOnPlay = () => {
-    fetch('/view/get_cursor_infos/', initOptions())
-    .then(response=>response.json())
-    .then(json=>{
-        console.log(json);
-        if (json.playing){
-            startAutoUpdate('onCursorMove');
-        } else {
-            stopAutoUpdate();
-        }
-    });
-}
-
-document.getElementById('play').addEventListener('click', autoUpdateOnPlay)
+    
+// Start.
+callModulesMethod('setup');
+startAutoUpdate();

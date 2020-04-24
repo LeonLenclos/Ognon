@@ -6,14 +6,12 @@
   "Space": {
     "description":"Toogle play mode.",
     "control": "/navigator/play",
-    "modulesMethod": "update",
-    "specials": "autoUpdateOnPlay"
+    "modulesMethod": "update"
   },
   "Shift+Space": {
     "description":"Auto play.",
     "control": "/navigator/auto_play",
-    "modulesMethod": "update",
-    "specials": "autoUpdateOnPlay"
+    "modulesMethod": "update"
   },
   "Enter": {
     "description":"Run the animation",
