@@ -10,9 +10,18 @@ Tags defined here :
 - `random n`
 - `startafter n`
 - `endafter n`
-
+- `draft`
+- `mask`
 """
 import random
+
+
+def read_tag_description(tag_description):
+	"""
+	Return a two elements tuple with tag name and tag args.
+	"""
+	splited = tag_description.split()
+	return splited.pop(0), splited
 
 def calculate_len(length, tag_description):
 	"""
@@ -20,12 +29,12 @@ def calculate_len(length, tag_description):
 
 	Call the calculate_len function of the tag.
 	"""
-	tag = tag_description.split()
-	tag_name = tag.pop(0)
+	tag_name, args = read_tag_description(tag_description)
+
 	if length == 0:
 		return 0
 	try:
-		return tags[tag_name]['calculate_len'](length, *tag)
+		return tags[tag_name]['calculate_len'](length, *args)
 	except KeyError:
 		return length
 
@@ -35,14 +44,41 @@ def calculate_inside_pos(pos, length, tag_description):
 
 	Call the calculate_inside_pos function of the tag.
 	"""
-	tag = tag_description.split()
-	tag_name = tag.pop(0)
+	tag_name, args = read_tag_description(tag_description)
+
 	if length == 0:
 		return 0
 	try:
-		return tags[tag_name]['calculate_inside_pos'](pos, length, *tag)
+		return tags[tag_name]['calculate_inside_pos'](pos, length, *args)
 	except KeyError:
 		return pos
+
+def calculate_coords(coords, playing, pos, length, tag_description):
+	"""
+	Return the lines description modified by the tag.
+
+	Call the calculate_lines function of the tag.
+	"""
+	tag_name, args = read_tag_description(tag_description)
+
+	try:
+		return tags[tag_name]['calculate_coords'](coords, playing, pos, length, *args)
+	except KeyError:
+		return coords
+
+def calculate_line_type(line_type, playing, tag_description):
+	"""
+	Return the lines description modified by the tag.
+
+	Call the calculate_lines function of the tag.
+	"""
+	tag_name, args = read_tag_description(tag_description)
+
+	try:
+		return tags[tag_name]['calculate_line_type'](line_type, playing, *args)
+	except KeyError:
+		return line_type
+
 
 def random_calculate_inside_pos(pos, length, n):
 	random.seed(pos+int(n))
@@ -82,6 +118,13 @@ tags = {
 	'endafter':{
 		'calculate_len':lambda length, n: length + int(n),
 		'calculate_inside_pos':lambda pos, length, n: pos if pos < length-1 else length-1
+	},
+	'draft':{
+		'calculate_line_type':lambda line_type, playing: line_type if playing else line_type.union({'draft'}),
+		'calculate_coords':lambda coords, playing, pos, length: [] if playing else coords
+	},
+	'mask':{
+		'calculate_line_type':lambda line_type, playing: line_type.union({'mask'})
 	},
 }
 

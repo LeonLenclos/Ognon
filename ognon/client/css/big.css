@@ -1,0 +1,34 @@
+/* Big Buttons */
+.big .button-bar.col1 {
+    width:38px;
+}
+
+
+.big .button-bar.col2 {
+    width:80px;
+}
+
+.big .img-button img{
+    width: 32px;
+}
+
+.big .img-button{
+    border: 2px solid black;    
+}
+
+.big .button-bar hr {
+    height: 36px;
+    margin: 0 16px;
+    border: none;
+    border-left: 2px solid black;
+}
+
+.big .button-bar.col2 hr,
+.big .button-bar.col1 hr {
+    width: 36px;
+    height: 0;
+    margin: 16px 0;
+    border: none;
+    border-top: 2px solid black;
+}
+

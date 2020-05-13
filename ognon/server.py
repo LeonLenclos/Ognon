@@ -9,6 +9,7 @@ import importlib
 import threading
 import logging
 import traceback
+from urllib.parse import urlparse
 
 import pythonosc.osc_server
 import pythonosc.dispatcher
@@ -91,7 +92,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
     We wait two kinds of requests :
     
     - GET requests to provide client pages.
-    - POST requests to call functions from view or control.
+    - POST requests to call functions from ognon.
     """
 
     def log_message(self, format, *args):
@@ -110,26 +111,25 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         """
         Handler for GET request.
-
-        append the path to the base url of client files and call the parrent
-        do_GET method.
         """
         logging.info('http - GET {path}'.format(path=self.path))
+        path = urlparse(self.path).path
+        if path == '/':
+            path = '/edit.html'
 
-        if self.path == '/':
-            self.path = '/index.html'
-        path = utils.pkgabspath('client') + self.path.split('?')[0]
+        file_path = utils.pkgabspath('client') + path
         content = ''
-        mimetype = self.guess_type(path)
+        mimetype = self.guess_type(file_path)
 
         try:
-            with open(path, 'rb') as f:
+            with open(file_path, 'rb') as f:
                 self.send_response(200)
                 content = f.read()
         except FileNotFoundError:
             with open(utils.pkgabspath('client/404.html'), 'rb') as f:
                 self.send_response(404)
                 content = f.read()
+
 
         self.send_header('Content-type', mimetype)
         self.end_headers()
@@ -148,12 +148,10 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len).decode('utf-8'))
-
-        cur = get_cursor(post_body.get('cursor'))
-        args = post_body.get('args', {})
-
+        if 'cursor' in post_body:
+            post_body['cursor'] = get_cursor(post_body.get('cursor'))
         try:
-            reply = call_function(self.path, cur, **args)
+            reply = call_function(self.path, **post_body)
         except Exception as e:
             self.send_response(400)
             self.send_header('Content-Type', 'text/html')
@@ -163,7 +161,7 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
-            self.write(bytes(json.dumps(reply), 'utf-8'))
+            self.write(bytes(json.dumps(reply, cls=utils.SetEncoder), 'utf-8'))
 
     def end_headers (self):
         #TODO: check if this is really useful ! 

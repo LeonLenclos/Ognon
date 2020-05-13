@@ -14,6 +14,8 @@ optionF = foo
 [sectionB]
 option = Bar
 """
+
+
 def test_parse_config():
 	with open('/tmp/ogn/test.ini', 'w') as f:
 		f.write(test_ini)
@@ -29,3 +31,8 @@ def test_parse_config():
 		'option':'Bar'
 	},'DEFAULT':{}
 }
+
+
+def test_SetEncoder():
+	import json
+	assert json.dumps(set([1,2,3,4,5]), cls=utils.SetEncoder) == '[1, 2, 3, 4, 5]'

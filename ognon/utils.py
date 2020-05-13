@@ -4,6 +4,7 @@ This module define utils function.
 
 import configparser
 import os
+import json
 
 def pkgabspath(file=''):
 	"""
@@ -30,3 +31,10 @@ def parse_config(path):
 		parser.read_file(f)
 	return {k:{k_:convert(v_) for k_, v_ in dict(v).items()}
 		for k, v in dict(parser).items()}
+
+
+class SetEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, set):
+			return list(obj)
+		return json.JSONEncoder.default(self, obj)
