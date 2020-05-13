@@ -6,8 +6,10 @@ import copy
 from .. import model
 from . import navigator
 from . import change_project_state
+from . import change_cursor_state
 
 @change_project_state
+@change_cursor_state
 def add_element_after(cursor, element):
     """Add the passed element after the current frm."""
     i, _, _ = cursor.get_element_pos()
@@ -21,6 +23,7 @@ def add_element_before(cursor, element):
     cursor.get_layer().elements.insert(i, element)
 
 @change_project_state
+@change_cursor_state
 def add_cell_after(cursor):
     """Add a Cell after the current frm."""
     add_element_after(cursor, model.Cell())
@@ -32,6 +35,7 @@ def add_cell_before(cursor):
     add_element_before(cursor, model.Cell())
 
 @change_project_state
+@change_cursor_state
 def add_animref_after(cursor, name):
     """Add an AnimRef after the current frm."""
     add_element_after(cursor, model.AnimRef(name))
@@ -42,12 +46,14 @@ def add_animref_before(cursor, name):
     add_element_before(cursor, model.AnimRef(name))
 
 @change_project_state   
+@change_cursor_state
 def del_element(cursor):
     """Delete the current element."""
     i, _, _ = cursor.get_element_pos()
     cursor.get_layer().elements.pop(i)
 
 @change_project_state
+@change_cursor_state
 def move_element_forward(cursor):
     """Move the current forward."""
     i, _, _ = cursor.get_element_pos()
@@ -57,6 +63,7 @@ def move_element_forward(cursor):
         navigator.next_frm(cursor)
 
 @change_project_state
+@change_cursor_state
 def move_element_backward(cursor):
     """Move the current backward."""
     i, _, _ = cursor.get_element_pos()
@@ -65,18 +72,21 @@ def move_element_backward(cursor):
         navigator.prev_frm(cursor)
 
 @change_project_state
+@change_cursor_state
 def copy_element(cursor):
     """Store a copy of the current element in the clipboard."""
     _, e, _ = cursor.get_element_pos()
     cursor.clipboard = copy.deepcopy(e)
 
 @change_project_state
+@change_cursor_state
 def cut_element(cursor):
     """Pop the current element to the clipboard."""
     copy_element(cursor)
     del_element(cursor)
 
 @change_project_state
+@change_cursor_state
 def paste_element(cursor):
     """Copy the content of the special clipboard."""
     if(cursor.clipboard):
