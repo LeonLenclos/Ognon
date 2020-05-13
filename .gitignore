@@ -25,3 +25,6 @@ pip-delete-this-directory.txt
 
 # Sphinx documentation
 docs/_build/
+
+# Graphism
+*.xcf
