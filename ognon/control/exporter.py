@@ -33,8 +33,8 @@ def _frm_to_pilimage(cursor, frm=None):
     img = PIL.Image.new("RGB", (width*scale, height*scale), bg_color)
     draw = PIL.ImageDraw.Draw(img)
         
-    for line in view.get_lines(cursor, frm=frm):
-        coords = [coord * scale for coord in line]
+    for line in view.get_lines(cursor, frm=frm, playing=True):
+        coords = [coord * scale for coord in line['coords']]
         coords_grouped = [(x, y) for x, y in zip(*[iter(coords)]*2)]
         draw.line(tuple(coords_grouped), fill=line_color, width=stroke*scale, joint='curve')
 
