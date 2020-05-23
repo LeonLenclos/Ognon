@@ -39,7 +39,7 @@ def get_projects(cursor):
     """
     Return a list of all projects in the projects dir
     """
-    return [proj for proj in projects.get_saved_projects_list()]
+    return sorted([proj for proj in projects.get_saved_projects_list()])
 
 def get_view_config(cursor, option=None):
     """
@@ -63,7 +63,7 @@ def get_anims(cursor):
     """
     Return a list of the projects' anims.
     """
-    return [anim for anim in cursor.proj.anims]
+    return sorted([anim for anim in cursor.proj.anims])
 
 def get_playing(cursor):
     """
