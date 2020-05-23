@@ -47,11 +47,33 @@ ogn-module {
 
 }
 
+.scroll.center {
+    display: block;
+
+}
+
 /* Canvas */
 
-#lightbox-canvas {
-    margin: auto;
+#lightbox-canvas[data-tool=draw][data-bw-contrast=black] {
+    cursor:url("/img/cursor/draw.cur"), default;
 }
+#lightbox-canvas[data-tool=draw][data-bw-contrast=white] {
+    cursor:url("/img/cursor/white-draw.cur"), default;
+}
+#lightbox-canvas[data-tool=erease][data-bw-contrast=black] {
+    cursor:url("/img/cursor/erease.cur"), default;
+}
+#lightbox-canvas[data-tool=erease][data-bw-contrast=white] {
+    cursor:url("/img/cursor/white-erease.cur"), default;
+}
+#lightbox-canvas[data-tool=move][data-bw-contrast=black] {
+    cursor:url("/img/cursor/move.cur"), default;
+}
+#lightbox-canvas[data-tool=move][data-bw-contrast=white] {
+    cursor:url("/img/cursor/white-move.cur"), default;
+}
+
+
 
 /* Button */
 
@@ -223,7 +245,10 @@ button:active{
 
 
 /* Timeline */
+#timeline{
+    height: 100px;
 
+}
 #timeline-table{
    border-collapse: collapse;
    table-layout: fixed ;
@@ -243,6 +268,7 @@ button:active{
 
 #timeline-table td:first-child {
     width: 16px;
+
 }
 
 #timeline-table .frms-row td,
@@ -298,7 +324,9 @@ span[data-status] {
     padding: 1px 2px;
 }
 
-
+h3 {
+    margin:0 5px 0 15px;
+}
 /* About / help */
 
 #about, #help {
@@ -308,10 +336,12 @@ span[data-status] {
     margin:auto;
     max-height: 100px;
     max-width:750px;
+    
 }
-#about, #help > * {
+#about > *, #help > * {
     margin: 5px 15px;
 }
+
 #about img{
     width: 16px;
 }

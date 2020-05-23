@@ -1,5 +1,5 @@
 const url = new URL(window.location.href);
-const FPS = 5//30; // fps
+const FPS = 24//30; // fps
 
 class App {
     constructor(){
@@ -16,8 +16,30 @@ class App {
             Promise.all(promises)
             .then((res)=>this.startAutoUpdate())
             .catch(error=>this.handleError(error));
-
         }
+
+        // Shortcuts
+        this.shortcuts = ognKeyboardShortcuts;
+        this.keysPressed = new Set();
+
+        window.addEventListener("keydown", e =>{
+            if(e.target.localName == 'input') return;
+            this.keysPressed.add(e.key)
+            let repr = shortcutRepresentation(Array.from(this.keysPressed))
+            console.log(Array.from(this.keysPressed))
+
+            if(this.shortcuts[repr]){
+                this.doAction(this.shortcuts[repr].action, this.shortcuts[repr].args);
+                e.preventDefault();
+            }
+        }); 
+
+        window.addEventListener("keyup", e =>{
+            // Test : clear keyPressed on key Up
+            this.keysPressed.clear();
+            // keysPressed = keysPressed.filter(item => item != e.key);
+        });
+
     }
 
     handleError(error, message){
@@ -127,3 +149,7 @@ class App {
 
 
 let app = new App();
+
+
+
+

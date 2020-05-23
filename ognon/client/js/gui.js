@@ -130,7 +130,11 @@ class LightboxCanvas {
     }
 
     updateDrawing(drawing) {
-        this.clear(this.config.view[(drawing.playing?'background_color':'edit_background_color')]);
+        let bgColor = this.config.view[drawing.playing?'background_color':'edit_background_color'];
+        this.clear(bgColor);
+
+        this.el.dataset.bwContrast = rgbToBwContrast(hexToRgb(bgColor))
+
         drawing.lines.forEach((line)=>{
             if(!line.line_type){
                 this.drawLines(line.coords, this.stylesOf(drawing.playing?'line':'edit'))
@@ -192,12 +196,12 @@ class LightboxCanvas {
 
     clear(bgColor){
         this.ctx.fillStyle = bgColor;
-        this.ctx.fillRect(0, 0, this.ctx.canvas.clientWidth, this.ctx.canvas.clientHeight);
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     }
 
     selectTool(tool){
         this.tool = tool;
-        this.el.style.cursor='url("/img/cursor/'+tool+'.cur"), default'
+        this.el.dataset.tool = tool
     }
     
     scale(value){
