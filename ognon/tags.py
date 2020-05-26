@@ -119,6 +119,13 @@ tags = {
 		'calculate_len':lambda length, n: length + int(n),
 		'calculate_inside_pos':lambda pos, length, n: pos if pos < length-1 else length-1
 	},
+	'startat':{
+		'calculate_len':lambda length, n: length - int(n),
+		'calculate_inside_pos':lambda pos, length, n: pos + int(n)
+	},
+	'endat':{
+		'calculate_len':lambda length, n: int(n),
+	},
 	'draft':{
 		'calculate_line_type':lambda line_type, playing: line_type if playing else line_type.union({'draft'}),
 		'calculate_coords':lambda coords, playing, pos, length: [] if playing else coords
