@@ -107,9 +107,28 @@ class LightboxCanvas {
 
         this.ctx = this.el.getContext('2d', {alpha:false});
 
-        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e));
-        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e));
-        addEventListener('mouseup', (e)=>this.onMouseUp(e));
+        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e.offsetX, e.offsetY));
+        this.el.addEventListener('touchstart', (e)=>{
+            let rect = e.target.getBoundingClientRect();
+            let x = e.targetTouches[0].pageX - rect.left;
+            let y = e.targetTouches[0].pageY - rect.top;
+            this.onMouseDown(x, y)
+            e.preventDefault();
+        });
+
+        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e.offsetX, e.offsetY));
+        this.el.addEventListener('touchmove', (e)=>{
+
+            let rect = e.target.getBoundingClientRect();
+            let x = e.targetTouches[0].pageX - rect.left;
+            let y = e.targetTouches[0].pageY - rect.top;
+
+            this.onMouseMove(x, y)
+            e.preventDefault();
+        });
+
+        addEventListener('mouseup', (e)=>this.onMouseUp());
+        addEventListener('touchend', (e)=>this.onMouseUp());
 
         this.zoomReset();
         this.selectTool('draw');
@@ -161,19 +180,17 @@ class LightboxCanvas {
         return true;
     }
 
-    onMouseDown(e){
-        this.drawCoords = [e.offsetX, e.offsetY];
+    onMouseDown(x, y){
+        this.drawCoords = [x, y];
     }
 
-    onMouseUp(e){
+    onMouseUp(){
         this.callDrawer();
         this.drawCoords = [];
     }
 
-    onMouseMove(e){
+    onMouseMove(x, y){
         if(this.drawCoords.length < 2) return;
-        let x = e.offsetX;
-        let y = e.offsetY;
         let px = this.drawCoords[this.drawCoords.length-2];
         let py = this.drawCoords[this.drawCoords.length-1];
         // store coords only if the distance between mouse and pMouse is greater than PRECISION
