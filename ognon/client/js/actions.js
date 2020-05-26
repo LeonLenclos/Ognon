@@ -282,7 +282,7 @@ app.addAction('tagAdd', {
    description:"Add a tag to the selected element",
     serverCursorFunction:'/control/tagger/add_tag/',
     args:{
-        name:{
+        tag:{
         description:"Tag",
         }
     }
