@@ -1,5 +1,5 @@
 const url = new URL(window.location.href);
-const FPS = 24//30; // fps
+const FPS = 24// fps
 
 class App {
     constructor(){
