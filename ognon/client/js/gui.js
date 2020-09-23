@@ -107,38 +107,37 @@ class LightboxCanvas {
 
         this.ctx = this.el.getContext('2d', {alpha:false});
 
-        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e.offsetX, e.offsetY));
+        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e.offsetX/this.zoom, e.offsetY/this.zoom));
         this.el.addEventListener('touchstart', (e)=>{
             let rect = e.target.getBoundingClientRect();
             let x = e.targetTouches[0].pageX - rect.left;
             let y = e.targetTouches[0].pageY - rect.top;
-            this.onMouseDown(x, y)
+            this.onMouseDown(x/this.zoom, y/this.zoom)
             e.preventDefault();
         });
 
-        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e.offsetX, e.offsetY));
+        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e.offsetX/this.zoom, e.offsetY/this.zoom));
         this.el.addEventListener('touchmove', (e)=>{
 
             let rect = e.target.getBoundingClientRect();
             let x = e.targetTouches[0].pageX - rect.left;
             let y = e.targetTouches[0].pageY - rect.top;
 
-            this.onMouseMove(x, y)
+            this.onMouseMove(x/this.zoom, y/this.zoom)
             e.preventDefault();
         });
 
         addEventListener('mouseup', (e)=>this.onMouseUp());
         addEventListener('touchend', (e)=>this.onMouseUp());
 
-        this.zoomReset();
+        this.zoom=1;
         this.selectTool('draw');
     }
 
 
     updateConfig(config) {
         this.config = config;
-        this.el.width = config.view.width;
-        this.el.height = config.view.height;
+        this.scale(1)
     }
 
     stylesOf(lineType){
@@ -206,8 +205,10 @@ class LightboxCanvas {
         this.ctx.lineWidth = style.lineWidth;
         this.ctx.lineJoin = "round";
         this.ctx.beginPath();
-        this.ctx.moveTo(lines[0], lines[1]);
-        for (var i=2; i<lines.length; i+=2) this.ctx.lineTo(lines[i], lines[i+1]);
+        this.ctx.moveTo(lines[0]*this.zoom, lines[1]*this.zoom);
+        for (var i=2; i<lines.length; i+=2){
+            this.ctx.lineTo(lines[i]*this.zoom, lines[i+1]*this.zoom)
+        };
         this.ctx.stroke();
     }
 
@@ -222,23 +223,33 @@ class LightboxCanvas {
     }
     
     scale(value){
-        this.el.style.transform='scale('+value+')';
+        this.zoom=value;
+        this.el.width = this.config.view.width * this.zoom;
+        this.el.height = this.config.view.height * this.zoom;
+    }
+
+    zoomContains(){
+        
+        let referenceWidth = this.el.parentElement.clientWidth;
+        let referenceHeight = this.el.parentElement.clientHeight;
+        let ratio = Math.min(
+            referenceWidth / this.config.view.width,
+            referenceHeight / this.config.view.height
+        );
+        this.scale(ratio)
     }
 
     zoomIn(){
-        this.zoom += 0.1;
-        this.scale(this.zoom)
+        ;
+        this.scale(this.zoom + 0.1)
     }
 
     zoomOut(){
-        this.zoom -= 0.1;
-        this.zoom = this.zoom > 0 ? this.zoom : 0.1;
-        this.scale(this.zoom)
+        this.scale(this.zoom-0.1 > 0 ? this.zoom-0.1 : 0.1)
     }
 
     zoomReset(){
-        this.zoom = 1;
-        this.scale(this.zoom)
+        this.scale(1)
     }
 }
 

@@ -332,3 +332,10 @@ app.addAction('zoomReset', {
    description:"Reset the animation canvas zoom ratio to 1.",
     clientFunction:(args)=>app.modules['lightbox'].canvas.zoomReset(),
 });
+
+app.addAction('zoomContains', {
+    menu:'Lightbox',
+   text:'Zoom Contains',
+   description:"Scale the animation canvas to make the image fully visible",
+    clientFunction:(args)=>app.modules['lightbox'].canvas.zoomContains(),
+});
