@@ -164,7 +164,7 @@ class LightboxCanvas {
                 })
             } else {
                 this.drawLines(line.coords, this.stylesOf(defaultType));
-            }
+            }   
             
         });
     }
