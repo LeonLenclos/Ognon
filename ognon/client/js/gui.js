@@ -141,26 +141,31 @@ class LightboxCanvas {
     }
 
     stylesOf(lineType){
-        return {
-            lineWidth:Number(this.config.view[lineType+'_width']),
-            lineColor:this.config.view[lineType+'_color'],
-        };
+        if(lineType+'_width' in this.config.view
+        && lineType+'_color' in this.config.view){
+            return {
+                lineWidth:Number(this.config.view[lineType+'_width']),
+                lineColor:this.config.view[lineType+'_color'],
+            };
+        }
     }
 
     updateDrawing(drawing) {
         let bgColor = this.config.view[drawing.playing?'background_color':'edit_background_color'];
         this.clear(bgColor);
 
-        this.el.dataset.bwContrast = rgbToBwContrast(hexToRgb(bgColor))
+        this.el.dataset.bwContrast = rgbToBwContrast(hexToRgb(bgColor));
 
+        let defaultType = drawing.playing?'line':'edit';
         drawing.lines.forEach((line)=>{
-            if(!line.line_type){
-                this.drawLines(line.coords, this.stylesOf(drawing.playing?'line':'edit'))
-            } else {
+            if(line.line_type){
                 line.line_type.forEach(lineType=>{
-                this.drawLines(line.coords, this.stylesOf(lineType))
-            })
+                    this.drawLines(line.coords, this.stylesOf(lineType) || this.stylesOf(defaultType));
+                })
+            } else {
+                this.drawLines(line.coords, this.stylesOf(defaultType));
             }
+            
         });
     }
 
