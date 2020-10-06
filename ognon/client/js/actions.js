@@ -38,6 +38,12 @@ app.addAction('ognToggleGUISize', {
    description:"Toggle between big and small graphic user interface.",
     clientFunction:()=>document.body.classList.toggle('big'),
 });
+app.addAction('ognToggleFullScreen', {
+    menu:'Ognon',
+    text:'Toggle Full Screen',
+   description:"Toggle between window and full screen.",
+    clientFunction:()=>document.fullscreenElement?document.exitFullscreen():document.body.requestFullscreen(),
+});
 // Project 
 app.addAction('projectGet', {
     menu:'Project',
