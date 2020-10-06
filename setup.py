@@ -15,5 +15,6 @@ setup(
         'pytest',
         'python-osc',
         'requests',
+        'ptpython'
     ],
 )
