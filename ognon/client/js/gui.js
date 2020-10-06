@@ -74,7 +74,6 @@ class OgnModule {
     }
 
     update(viewInfos){
-
         this.onUpdate.forEach((f)=>f(viewInfos))
     }
 }
@@ -107,23 +106,23 @@ class LightboxCanvas {
 
         this.ctx = this.el.getContext('2d', {alpha:false});
 
-        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e.offsetX/this.zoom, e.offsetY/this.zoom));
+        this.el.addEventListener('mousedown', (e)=>this.onMouseDown(e.offsetX, e.offsetY));
         this.el.addEventListener('touchstart', (e)=>{
             let rect = e.target.getBoundingClientRect();
             let x = e.targetTouches[0].pageX - rect.left;
             let y = e.targetTouches[0].pageY - rect.top;
-            this.onMouseDown(x/this.zoom, y/this.zoom)
+            this.onMouseDown(x, y)
             e.preventDefault();
         });
 
-        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e.offsetX/this.zoom, e.offsetY/this.zoom));
+        this.el.addEventListener('mousemove', (e)=>this.onMouseMove(e.offsetX, e.offsetY));
         this.el.addEventListener('touchmove', (e)=>{
 
             let rect = e.target.getBoundingClientRect();
             let x = e.targetTouches[0].pageX - rect.left;
             let y = e.targetTouches[0].pageY - rect.top;
 
-            this.onMouseMove(x/this.zoom, y/this.zoom)
+            this.onMouseMove(x, y)
             e.preventDefault();
         });
 
@@ -185,6 +184,9 @@ class LightboxCanvas {
     }
 
     onMouseDown(x, y){
+        x /= this.zoom;
+        y /= this.zoom;
+
         this.drawCoords = [x, y];
     }
 
@@ -194,6 +196,9 @@ class LightboxCanvas {
     }
 
     onMouseMove(x, y){
+        x /= this.zoom;
+        y /= this.zoom;
+
         if(this.drawCoords.length < 2) return;
         let px = this.drawCoords[this.drawCoords.length-2];
         let py = this.drawCoords[this.drawCoords.length-1];
@@ -205,14 +210,22 @@ class LightboxCanvas {
             }
         }
     }
+
     drawLines(lines, style){
         this.ctx.strokeStyle = style.lineColor;
-        this.ctx.lineWidth = style.lineWidth;
+        this.ctx.lineWidth = style.lineWidth * this.zoom;
         this.ctx.lineJoin = "round";
         this.ctx.beginPath();
-        this.ctx.moveTo(lines[0]*this.zoom, lines[1]*this.zoom);
-        for (var i=2; i<lines.length; i+=2){
-            this.ctx.lineTo(lines[i]*this.zoom, lines[i+1]*this.zoom)
+
+        for (let i=0; i<lines.length; i+=2){
+            let x = lines[i]*this.zoom;
+            let y = lines[i+1]*this.zoom;
+            if(i==0){
+                this.ctx.moveTo(x, y);
+            }
+            else {
+                this.ctx.lineTo(x, y);
+            }
         };
         this.ctx.stroke();
     }
@@ -228,29 +241,39 @@ class LightboxCanvas {
     }
     
     scale(value){
+
         this.zoom=value;
-        this.el.width = this.config.view.width * this.zoom;
-        this.el.height = this.config.view.height * this.zoom;
+        if (this.zoom <= 0){
+            this.zoom = 0.1;
+        }
+        let newWidth = this.config.view.width * this.zoom;
+        let newHeight = this.config.view.height * this.zoom;
+
+        let tmpCanvas = document.createElement('canvas');
+        let tmpCtx = tmpCanvas.getContext('2d');
+        tmpCanvas.width = newWidth;
+        tmpCanvas.height = newHeight;
+        tmpCtx.drawImage(this.el, 0, 0, newWidth, newHeight);
+
+        this.el.width = newWidth;
+        this.el.height = newHeight;
+        this.ctx.drawImage(tmpCanvas, 0, 0)
     }
 
     zoomContains(){
-        
-        let referenceWidth = this.el.parentElement.clientWidth;
-        let referenceHeight = this.el.parentElement.clientHeight;
         let ratio = Math.min(
-            referenceWidth / this.config.view.width,
-            referenceHeight / this.config.view.height
+            this.el.parentElement.clientWidth / this.config.view.width,
+            this.el.parentElement.clientHeight / this.config.view.height
         );
         this.scale(ratio)
     }
 
     zoomIn(){
-        ;
-        this.scale(this.zoom + 0.1)
+        this.scale(this.zoom+0.1)
     }
 
     zoomOut(){
-        this.scale(this.zoom-0.1 > 0 ? this.zoom-0.1 : 0.1)
+        this.scale(this.zoom-0.1)
     }
 
     zoomReset(){
