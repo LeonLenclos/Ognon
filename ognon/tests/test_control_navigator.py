@@ -60,7 +60,7 @@ def test_go_to_layer(cursor):
 	assert navigator.go_to_layer(cursor, 1) is None
 	assert cursor.get_pos('layer') == 1
 
-def test_lower_layr(cursor):
+def test_lower_layer(cursor):
 	cursor.set_pos(anim="testing-layers")
 	navigator.go_to_layer(cursor, 1)
 	assert navigator.lower_layer(cursor) is None
