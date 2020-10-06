@@ -65,3 +65,10 @@ def test_endafter(cursor):
     anim_ref = model.AnimRef(name='master', tags=['endafter 3'])    
     cursor.proj.anims['anim_with_tags'] = model.Anim(layers=[model.Layer(elements=[anim_ref])])
     assert cursor.get_element_pos(anim='anim_with_tags', layer=0, frm=2) == (0, anim_ref, 1)
+
+
+def test_draft(cursor):
+    pass # WARNING: untested
+    
+def test_mask(cursor):
+    pass # WARNING: untested

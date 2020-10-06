@@ -2,7 +2,9 @@
 
 from .. import projects
 from . import change_project_state
+from . import change_cursor_state
 
+@change_cursor_state
 def load(cursor, name=None):
     """
     Just call the projects.load function so it load project from default directory.
@@ -10,6 +12,7 @@ def load(cursor, name=None):
     name = name or cursor.proj.name
     cursor.proj = projects.load(name)
 
+@change_cursor_state
 def get(cursor, name=None):
     """
     Just call the projects.get function so it first try to get an already loaded

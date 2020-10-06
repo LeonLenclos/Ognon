@@ -10,17 +10,8 @@ from . import projects
 from . import PROJECTS_DIR
 from .cursor import NoProjectError
 
-def get(cursor, request):
-    """
-    Take a dict with view function names as keys and a dict of kwargs as values.
+from . import tags
 
-    Return a dict with view function names as keys and what they return as values
-    """
-    reply = {}
-    for view_function, kwargs in request.items(): 
-        fun = globals()[view_function]
-        reply[view_function] = fun(cursor, **kwargs)
-    return reply
 
 def get_path(cursor, file=""):
     """
@@ -48,7 +39,7 @@ def get_projects(cursor):
     """
     Return a list of all projects in the projects dir
     """
-    return [proj for proj in projects.get_saved_projects_list()]
+    return sorted([proj for proj in projects.get_saved_projects_list()])
 
 def get_view_config(cursor, option=None):
     """
@@ -61,11 +52,18 @@ def get_view_config(cursor, option=None):
     else:
         return cursor.proj.config['view']
 
+
+def get_config(cursor):
+    """
+    Return the project configuration
+    """
+    return cursor.proj.config
+
 def get_anims(cursor):
     """
     Return a list of the projects' anims.
     """
-    return [anim for anim in cursor.proj.anims]
+    return sorted([anim for anim in cursor.proj.anims])
 
 def get_playing(cursor):
     """
@@ -79,7 +77,7 @@ def get_timeline(cursor):
 
     The 'len' field contain the animation length. 
     The 'layers' field contain a list of layers as lists of elements. 
-    Each element is describe as a dict with his type and his length.
+    Each element is describe as a dict with elements infos from get_element_infos.
 
     So the output may look like this :
     ::
@@ -87,36 +85,33 @@ def get_timeline(cursor):
         {
             'len':4,
             'layers':[
-                [{'len':1, 'type':'Cell'}],
-                [{'len':1, 'type':'Cell'}, {'len':1, 'type':'Cell'}],
-                [{'len':1, 'type':'Cell'}, {'len':3, 'type':'Animref'}]
+                [{...}],
+                [{...}, {...}],
+                [{...}, {...}]
             ]
         }
     """
+    # TODO: add an 'empty' key in element dict
     return {
         'len':cursor.anim_len(),
-        'layers':[[{
-            'type':type(element).__name__,
-            'len':cursor.element_len(element),
-            } for element in layer.elements
-            ] for layer in cursor.get_anim().layers
-        ],
+        'layers':[[get_element_infos(cursor, element=element)
+                for element in layer.elements]
+            for layer in cursor.get_anim().layers]
     }
 
 def get_cursor_infos(cursor):
     """
     Return a dict containing informations about the cursor state
 
-    keys are : 'project_name', 'project_state_id', 'project_draw_state_id', 'playing', 'loop', 'anim', 'frm', 'layer'
+    keys are : 'project_name', 'playing', 'clipboard', 'anim', 'frm', 'layer'
     """
     infos = {
         'project_name':cursor.proj.name,
-        'project_state_id':cursor.proj.state_id,
-        'project_draw_state_id':cursor.proj.draw_state_id,
         'playing':cursor.playing,
+        'clipboard':cursor.clipboard is not None,
     }
-    infos.update(cursor._pos)
-    # infos.update(cursor.get_pos())
+    # infos.update(cursor._pos) DEL ?
+    infos.update(cursor.get_pos())
     return infos
 
 def get_project_defined(cursor):
@@ -128,13 +123,21 @@ def get_project_defined(cursor):
     except NoProjectError:
         return False
 
-def get_element_infos(cursor):
+def get_element_infos(cursor, anim=None, layer=None, frm=None, element=None):
     """
     Return a dict containing informations about the current element
-
     keys are : 'type', 'len', 'tags', 'name'
+
+    Alternatives frm index and anim name can be passed.
+    If an element is passed, return element infos and ignore position args.
     """
-    e = cursor.get_element()
+    e = element if element is not None else cursor.get_element(anim, layer, frm)
+
+    try:
+        empty = len(e.lines)==0
+    except AttributeError:
+        empty = False
+
     infos = {
         'type':type(e).__name__,
         'len':cursor.element_len(e),
@@ -143,43 +146,77 @@ def get_element_infos(cursor):
     }
     return infos
 
-def get_lines(cursor, frm=None, anim=None, draft=False):
+def get_lines(cursor, anim=None, frm=None, playing=None):
     """
-    Return a list of all current lines.
+    Return all current visible lines as a list of dict.
 
-    Alternatives frm index and anim name can be passed.
+    Each dict has 'coords' and specials lines dict also has a 'line_type' key.
 
-    If draft is set to True, return only 'draft' tagged elements lines.
-    Else, do not return 'draft' tagged elements lines.
-    
-    The output is a list of lists since ognon lines can be describe as list of
-    coords. (e.g. [x1, y1, x2, y2, x3, y3])
+    Alternatives frm index, anim name and playing value can be passed.
     """
-    lines=[]
+    playing = playing if playing is not None else cursor.playing
+
+    lines = []
+
+    if not playing :
+        lines += get_onion_skin(cursor)
+
     for i in range(len(cursor.get_anim(anim).layers)):
-        pos = cursor.get_element_pos(layer=i, frm=frm, anim=anim)
-        if pos is not None:
-            _, element, at = pos
-            if ('draft' in element.tags) is not draft:
-                continue
-            if type(element) is model.Cell:
-                lines += [line.coords for line in element.lines]
-            if type(element) is model.AnimRef:
-                lines += get_lines(cursor, anim=element.name, frm=at)
+        try:
+            pos = _, element, at = cursor.get_element_pos(anim, i, frm)
+        except TypeError:
+            continue
+
+        # get lines from cell
+        if type(element) is model.Cell:
+            element_lines = [{'coords': line.coords} for line in element.lines]
+        # get lines from animref
+        elif type(element) is model.AnimRef:
+            element_lines = get_lines(cursor, element.name, at, True)
+        else:
+            continue
+
+        for line in element_lines:
+
+            # add 'selected' if not playing
+            if not playing and pos == cursor.get_element_pos():
+                line['line_type'] = line.get('line_type', set()).union({'selected'})
+
+            # calculate tags
+            for tag in element.tags:
+                line['coords'] = tags.calculate_coords(line['coords'],
+                    playing, at, cursor.element_len(element), tag)
+                line_type = tags.calculate_line_type(line.get('line_type', set()), playing, tag)
+                if line_type:
+                    line['line_type'] = line_type
+
+        lines += element_lines
+
     return lines
 
-def get_onion_skin(cursor, frm=None, anim=None, onion_range=(0,)):
+
+def get_drawing(cursor):
+    # WARNING : untested
+    return {
+        'playing': cursor.playing,
+        'lines':get_lines(cursor)
+    }
+
+def get_onion_skin(cursor, anim=None, frm=None):
     """
-    Return a dict of anim lines.
-
-    Keys are given by the onion_range arg and are the frm to look at, relatively
-    to the current frm. (eg. `onion_range=(-1,0)` means : 'look at the current
-    frm and the previous frm')
-
-    Values are given by the get_lines function passing the frm argument.
+    Return a list of onion skin lines.
     """
     frm = frm if frm is not None else cursor.get_pos('frm')
-    return {
-        idx: get_lines(cursor, frm=cursor.constrain_frm(frm+idx), anim=anim)
-        for idx in onion_range
-    }
+    lines=[]
+    lines += [{
+            'coords':line['coords'],
+            'line_type':line.get('line_type', set()).union({'onion_skin_backward'})
+        }
+        for line in get_lines(cursor, anim=anim, frm=cursor.constrain_frm(frm-1), playing=True)]
+    lines += [{
+            'coords':line['coords'],
+            'line_type':line.get('line_type', set()).union({'onion_skin_forward'})
+        }
+        for line in get_lines(cursor, anim=anim, frm=cursor.constrain_frm(frm+1), playing=True)]
+
+    return lines

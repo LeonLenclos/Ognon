@@ -1,5 +1,7 @@
 """This module provide control functions to export frms and anims"""
 
+# NOTE : consider mooving from PIL to aggdraw or cairo
+
 import itertools
 
 import PIL.Image
@@ -24,13 +26,19 @@ def _frm_to_pilimage(cursor, frm=None):
     bg_color = cursor.proj.config['view']['background_color']
     line_color = cursor.proj.config['view']['line_color']
 
+    # super sampling is for antialiasing resize
+    supersampling = 4
+    scale *= supersampling
+
     img = PIL.Image.new("RGB", (width*scale, height*scale), bg_color)
     draw = PIL.ImageDraw.Draw(img)
         
-    for line in view.get_lines(cursor, frm=frm):
-        coords = [coord * scale for coord in line]
-        draw.line(tuple(coords), line_color, width=stroke*scale)
+    for line in view.get_lines(cursor, frm=frm, playing=True):
+        coords = [coord * scale for coord in line['coords']]
+        coords_grouped = [(x, y) for x, y in zip(*[iter(coords)]*2)]
+        draw.line(tuple(coords_grouped), fill=line_color, width=stroke*scale, joint='curve')
 
+    img = img.resize((int(width*scale/supersampling), int(height*scale/supersampling)), PIL.Image.ANTIALIAS)
     return img
 
 def _frm_to_img(cursor, ext, frm=None):
@@ -95,17 +103,21 @@ def anim_to_gif(cursor):
     duration = 1000/cursor.proj.config['play']['fps']
     anim = cursor.get_pos('anim')
     path = view.get_path(cursor, name_format.format(anim=anim))
+
+    options = {
+        'save_all':True,
+        'append_images':map(
+            _frm_to_pilimage,
+            itertools.repeat(cursor),
+            range(1, cursor.anim_len())),
+        'duration':duration,
+    }
+
+    if cursor.proj.config['play']['loop']:
+        options['loop'] = 0
+
     try:
-        _frm_to_pilimage(cursor, 0).save(
-            path,
-            save_all=True,
-            append_images=map(
-                _frm_to_pilimage,
-                itertools.repeat(cursor),
-                range(1, cursor.anim_len())),
-            duration=duration,
-            loop=0
-        )
+        _frm_to_pilimage(cursor, 0).save(path, **options)
     except FileNotFoundError:
         raise ExportDestNotFoundError()
 

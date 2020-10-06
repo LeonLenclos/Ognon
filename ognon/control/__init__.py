@@ -4,6 +4,17 @@ They all takes a :class:`Cursor` object as first argument and does not return
 any value.
 """
 
+def change_cursor_state(fun):
+    """
+    This decorator is for control function that change the cursor state.
+    It make the function increment the cursor's state_id before doing stuff.
+    """
+    def wrapped(cursor, *args, **kwargs):
+        cursor.state_id += 1
+        return fun(cursor, *args, **kwargs)
+    return wrapped
+
+
 def change_project_state(fun):
     """
     This decorator is for control function that change the project state.

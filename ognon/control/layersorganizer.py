@@ -5,6 +5,7 @@ This module provide control functions to create, delete layers into animation.
 from .. import model
 from . import navigator
 from . import change_project_state
+from . import change_cursor_state
 
 @change_project_state
 def add_layer(cursor):
@@ -13,6 +14,7 @@ def add_layer(cursor):
     cursor.get_anim().layers.insert(idx, model.Layer())
 
 @change_project_state
+@change_cursor_state
 def del_layer(cursor):
     """Delete the the current layer from the anim."""
     _pop_layer_at(cursor, cursor.get_pos('layer'))

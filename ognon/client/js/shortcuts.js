@@ -1,78 +1,34 @@
-let shortcuts = {};
-let specials = {};
-let keysPressed = [];
-
-fetch('/js/shortcuts-ognon-keyboard.json')
-.then(response=>response.json())
-.then(json=>shortcuts=json);
-
-shortcutRepresentation = (keysArray) =>
-    keysArray.map((key, i)=>key == ' ' ? 'Space' : key).join('+');
-
-doShortcut = action => {
-    console.log('do ', action)
-    args = {};
-    if(action.args){
-        args = action.args;
-    }
-    if(action.control){
-        fetch('/control'+action.control, initOptions(args))
-        .then(handleResponse)
-        .then(()=>{
-            if(action.modulesMethod){
-                callModulesMethod(action.modulesMethod)
-            }
-            if(action.modulesMethods){
-                for (var i = 0; i < action.modulesMethods.length; i++) {
-                    callModulesMethod(action.modulesMethods[i]);
-                }
-            }
-        })
-    }
-    if(action.specials){
-        specials[action.specials](args);
-    }
+let ognKeyboardShortcuts = {
+    '!':{action:'selectTool', args:{tool:'draw'}},
+    ':':{action:'selectTool', args:{tool:'erease'}},
+    ';':{action:'selectTool', args:{tool:'move'}},
+    'u':{action:'elementMoveBackward'},
+    'j':{action:'elementMoveForward'},
+    'y':{action:'elementCopy'},
+    'h':{action:'elementPaste'},
+    'b':{action:'layerDel'},
+    'v':{action:'drawingClear'},
+    'c':{action:'elementDel'},
+    'f':{action:'elementAddCellAfter'},
+    'r':{action:'elementAddCellBefore'},
+    'e':{action:'navigationFirstFrm'},
+    'd':{action:'navigationLastFrm'},
+    'z':{action:'navigationPrevFrm'},
+    's':{action:'navigationNextFrm'},
+    'a':{action:'navigationAutoRun'},
+    'q':{action:'navigationPlay'},
 };
 
-window.addEventListener("keydown", e =>{
-    if(!keysPressed.includes(e.key))
-        keysPressed.push(e.key);
-
-    if(shortcuts[shortcutRepresentation(keysPressed)]){
-        if(e.target.localName != 'input'){
-            doShortcut(shortcuts[shortcutRepresentation(keysPressed)]);
-            e.preventDefault();
-        }
-    }
-}); 
-
-window.addEventListener("keyup", e =>{
-    keysPressed = keysPressed.filter(item => item != e.key);
-});
-
-specials.toggleSleekView = () => {
-    document.body.classList.toggle('sleek');
-}
-
-specials.autoUpdateOnPlay = () => {
-    if(autoUpdateOnPlay){
-        autoUpdateOnPlay();
-    }
-}
-
-specials.shortcutsHelp = () => {
-    console.log('shortcuts Help :')
-    console.log(shortcuts)
-    for(let sc in shortcuts){
-        console.log(sc + ': ' + shortcuts[sc].description)
-    }
-}
-
-specials.selectDraw = () => {
-    let selector = document.getElementById('tool-selector');
-    selector.selectedIndex = 0;
-}
-specials.selectErease = () => {
-    let selector = document.getElementById('tool-selector');
-    selector.selectedIndex = 1;
-}
+// Add Turing Test Shortcucts.
+let ttKeyboardShorcuts = {
+    '=':{action:'projectGet', args:{name:'tt1'}},
+    '$':{action:'projectGet', args:{name:'tt2'}},
+    '*':{action:'projectGet', args:{name:'tt3'}},
+    'œ':{action:'animSelect', args:{name:'master'}},
+    '&':{action:'animSelect', args:{name:'a'}},
+    'é':{action:'animSelect', args:{name:'b'}},
+    '"':{action:'animSelect', args:{name:'c'}},
+    '\'':{action:'animSelect', args:{name:'d'}},
+    '(':{action:'animSelect', args:{name:'e'}},
+};
+Object.assign(ognKeyboardShortcuts, ttKeyboardShorcuts)

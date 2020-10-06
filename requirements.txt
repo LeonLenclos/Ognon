@@ -1,0 +1,5 @@
+Pillow
+pytest
+python-osc
+requests
+ptpython

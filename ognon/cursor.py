@@ -4,6 +4,7 @@ The cursor is the most importants object of the ognon's structure.
 It is a required argument for every control and view functions.
 """
 from . import model
+from . import projects
 from . import tags
 
 class NoProjectError(AttributeError):
@@ -35,7 +36,7 @@ class Cursor():
         """
         Init a cursor with an optional ognon project.
         """
-        self._proj = proj
+        self._proj = proj or projects.new('new_project')
         self._pos = {
             'anim':'master',
             'layer':0,
@@ -43,6 +44,7 @@ class Cursor():
         }
         self.playing = False
         self.clipboard = None
+        self.state_id = 0
 
     @property
     def proj(self):
@@ -208,6 +210,7 @@ class Cursor():
         else:
             # len is 0 if no layers
             return 0
+
     def element_len(self, elmt, ignonre_tags=False):
         """
         Return the length of the given element

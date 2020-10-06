@@ -1,5 +1,5 @@
 """
-Ognon is a a local-only web application for the creation of 2D animation.
+Ognon is a local-only web application for the creation of 2D animation.
 Run `python -m ognon` to start the server. Then browse http://localhost:40460
 """
 import os
@@ -12,6 +12,7 @@ PROJECTS_DIR = os.path.expanduser('~/ognons/')
 from . import model
 from . import server
 from . import view
+from . import clients
 from . import cursor
 from . import projects
 from . import tags
