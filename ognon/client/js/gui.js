@@ -262,8 +262,8 @@ class LightboxCanvas {
 
     zoomContains(){
         let ratio = Math.min(
-            this.el.parentElement.clientWidth / this.config.view.width,
-            this.el.parentElement.clientHeight / this.config.view.height
+            this.el.parentElement.parentElement.clientWidth -10 / this.config.view.width,
+            this.el.parentElement.parentElement.clientHeight -10 / this.config.view.height
         );
         this.scale(ratio)
     }
