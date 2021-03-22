@@ -51,7 +51,7 @@ def test_set_pos(cursor):
 
     # test set_pos without project
     cursor.proj = None
-    with pytest.raises(cursor_module.NoProjectError):
+    with pytest.raises(cursor_module.UndefinedProjectError):
         cursor.set_pos()
 
 
