@@ -47,28 +47,31 @@ def call_function(path, *args, **kwargs):
     return the result.
     """
     def handle_error(*err_msg):
-        logging.warning(err_msg[0])
+        logging.warning('An error occurred during the call to {path}\n\t{error}'
+            .format(path=path, error='\n\t'.join(err_msg)))
         raise Exception(*err_msg)
 
     try:
         f = get_function(path)
     except (ImportError, AttributeError):
-        handle_error('Function not found - {path}'.format(path=path))
+        handle_error('Function not found')
 
     try:
         return f(*args, **kwargs)
     except NotImplementedError:
-        handle_error('Not implemented - {path}'.format(path=path))
-    except cursor.NoProjectError:
-        handle_error('Undefine project',
+        handle_error('Not implemented')
+    except cursor.UndefinedProjectError:
+        handle_error('Undefined project',
             'You must first get a project.')
     except control.exporter.ExportDestNotFoundError:
         handle_error('Destination not found',
             'You must save the project before exporting it.')
+    except control.projectmanager.ProjectNotFoundError:
+        handle_error('Project not found',
+            'You can\'t load a project that does not exists. Save it first.')
     except Exception:
         traceback.print_exc()
-        handle_error('Oups...',
-            'An error occurs in the server.')
+        handle_error('Oups...')
 
 
 def get_cursor(name='default'):

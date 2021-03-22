@@ -18,13 +18,16 @@ projects = {}
 
 def get_saved_projects_list():
     """
-    Return a list of all of saved projects name.
+    Return a list of all saved projects name.
 
     Return a list of dirs in the projects directory. ignore dirs starting with a
     dot or an underscore.
     """
     ignore_files = lambda d: d[0] not in ('.', '_')
-    return list(filter(ignore_files, os.listdir(PROJECTS_DIR)))
+    try:
+        return list(filter(ignore_files, os.listdir(PROJECTS_DIR)))
+    except FileNotFoundError:
+        return []
 
 def load_from_path(path):
     """
@@ -54,7 +57,7 @@ def load(name):
     Load the project in the default projects directory, store it in the projects
     dict and return it.
     """
-    return load_from_path(PROJECTS_DIR + name)
+    return load_from_path(os.path.join(PROJECTS_DIR, name))
 
 def new(name):
     """
@@ -101,7 +104,7 @@ def save(project):
     """
     Save the project in the projects directory
     """
-    save_project_at(project, PROJECTS_DIR + project.name)
+    save_project_at(project, os.path.join(PROJECTS_DIR, project.name))
 
 def close(name):
     """
@@ -113,4 +116,4 @@ def delete(name):
     """
     Delete project from disk.
     """
-    shutil.rmtree(PROJECTS_DIR + name)
+    shutil.rmtree(os.path.join(PROJECTS_DIR, name))
