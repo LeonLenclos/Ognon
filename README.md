@@ -1,3 +1,5 @@
+This branch contains the version of ognon used in the [Turing Test](http://turing-test.cienokill.fr/) show.
+
 # Ognon
 
 Ognon is a a local-only web application for the creation of 2D animation.
