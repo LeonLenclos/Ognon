@@ -1,3 +1,5 @@
+import pytest
+
 from ..control import projectmanager
 from .. import view
 from .. import projects
@@ -13,6 +15,9 @@ def test_get(cursor):
 	assert cursor.proj.name == 'fresh_new_project'
 
 def test_load(cursor):
+	with pytest.raises(projectmanager.ProjectNotFoundError):
+		projectmanager.load(cursor, 'unexisting_project_to_load')
+
 	os.mkdir(proj_dir + 'project_on_disk')
 	assert projectmanager.load(cursor, 'project_on_disk') is None
 	assert cursor.proj.name == 'project_on_disk'

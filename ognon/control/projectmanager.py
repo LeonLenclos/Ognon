@@ -4,13 +4,21 @@ from .. import projects
 from . import change_project_state
 from . import change_cursor_state
 
+class ProjectNotFoundError(FileNotFoundError):
+    """This error is raised when project to be loaded is not found."""
+    pass
+
 @change_cursor_state
 def load(cursor, name=None):
     """
     Just call the projects.load function so it load project from default directory.
     """
     name = name or cursor.proj.name
-    cursor.proj = projects.load(name)
+    try:
+        cursor.proj = projects.load(name)
+    except FileNotFoundError:
+        raise ProjectNotFoundError()    
+
 
 @change_cursor_state
 def get(cursor, name=None):

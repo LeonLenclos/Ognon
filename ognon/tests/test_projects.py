@@ -3,10 +3,13 @@ from .. import projects
 from .. import model
 
 proj_dir = projects.PROJECTS_DIR = '/tmp/ogn/ognons/'
-if not os.path.isdir(proj_dir):
-	os.makedirs(proj_dir)
+# if not os.path.isdir(proj_dir):
+# 	os.makedirs(proj_dir)
 
 def test_get_saved_projects_list():
+
+	projects.get_saved_projects_list()
+	
 	os.mkdir(proj_dir + "dir1")
 	os.mkdir(proj_dir + "dir2")
 	os.mkdir(proj_dir + "_dir3")

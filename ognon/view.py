@@ -8,7 +8,7 @@ import os
 from . import model
 from . import projects
 from . import PROJECTS_DIR
-from .cursor import NoProjectError
+from .cursor import UndefinedProjectError
 
 from . import tags
 
@@ -120,7 +120,7 @@ def get_project_defined(cursor):
     """
     try:
         return cursor.proj is not None
-    except NoProjectError:
+    except UndefinedProjectError:
         return False
 
 def get_element_infos(cursor, anim=None, layer=None, frm=None, element=None):

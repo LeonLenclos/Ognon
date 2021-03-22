@@ -7,7 +7,7 @@ from . import model
 from . import projects
 from . import tags
 
-class NoProjectError(AttributeError):
+class UndefinedProjectError(AttributeError):
     """
     This exception will be raised if a cursor action require a poject. And no
     one is selected."""
@@ -49,7 +49,7 @@ class Cursor():
     @property
     def proj(self):
         if not self._proj:
-            raise NoProjectError
+            raise UndefinedProjectError
         return self._proj
     
     @proj.setter
@@ -83,7 +83,7 @@ class Cursor():
 
         If no arguments are passed, just constain the three values.
 
-        If no project, raise a NoProjectError
+        If no project, raise a UndefinedProjectError
         """
 
         # Set position.
