@@ -154,3 +154,8 @@ Build the docs with
 
  $ cd docs/
  $ make html
+
+Requires to have ``python3-sphinx`` installed
+
+.. seealso:: Sphinx :  https://www.sphinx-doc.org/
+

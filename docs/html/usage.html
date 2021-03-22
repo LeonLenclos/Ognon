@@ -1,19 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Usage &#8212; Ognon 1.α documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Ognon web interface" href="ognon_web_interface.html" />
@@ -57,10 +55,10 @@
 </div>
 <p>We got :</p>
 <ul class="simple">
-<li>The Ognon version</li>
-<li>The location on your computer where ognon saves and exports files</li>
-<li>The adress where the http server is serving</li>
-<li>The adress where the osc server is serving</li>
+<li><p>The Ognon version</p></li>
+<li><p>The location on your computer where ognon saves and exports files</p></li>
+<li><p>The adress where the http server is serving</p></li>
+<li><p>The adress where the osc server is serving</p></li>
 </ul>
 <p>If you visit the http adress (e.g. with firefox), you will find the <em>web interface</em>. This is where you can edit and manage your projects.</p>
 <p><strong>You can now read the web interface guide</strong> -&gt; <a class="reference internal" href="ognon_web_interface.html#ognonwebinterface"><span class="std std-ref">Ognon web interface</span></a>.</p>
@@ -68,12 +66,12 @@
 <div class="section" id="advanced-command-line-options">
 <h2>Advanced command line options<a class="headerlink" href="#advanced-command-line-options" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">-h</span></code> : get the help</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--test</span></code> or <code class="docutils literal notranslate"><span class="pre">-t</span></code>  : run the tests (pytest)</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--browse</span></code> or <code class="docutils literal notranslate"><span class="pre">-b</span></code>  : open a web browser at the server adress</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--no-osc</span></code> : do not start the osc server</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--ip-adress</span> <span class="pre">1.2.3.4</span></code> : set the server ip adress (default is localhost)</li>
-<li><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--projects-dir</span> <span class="pre">/path/to/projects/directory/</span></code> : set a different projects directory.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--help</span></code> or <code class="docutils literal notranslate"><span class="pre">-h</span></code> : get the help</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--test</span></code> or <code class="docutils literal notranslate"><span class="pre">-t</span></code>  : run the tests (pytest)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--browse</span></code> or <code class="docutils literal notranslate"><span class="pre">-b</span></code>  : open a web browser at the server adress</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--no-osc</span></code> : do not start the osc server</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--ip-adress</span> <span class="pre">1.2.3.4</span></code> : set the server ip adress (default is localhost)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python</span> <span class="pre">-m</span> <span class="pre">ognon</span> <span class="pre">--projects-dir</span> <span class="pre">/path/to/projects/directory/</span></code> : set a different projects directory.</p></li>
 </ul>
 </div>
 <div class="section" id="http-server-api">
@@ -91,8 +89,8 @@
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <p>When a request is sent to the server, two parameters can be passed. They are both optional.</p>
 <ul class="simple">
-<li><cite>cursor</cite> (string) : the id of the cursor to be used. (default is ‘default’)</li>
-<li><cite>args</cite> (object) : the args to be passed to the function. Keys are arguments names, values are arguments values. Can be ommited if the function take no other args than the cursor.</li>
+<li><p><cite>cursor</cite> (string) : the id of the cursor to be used. (default is ‘default’)</p></li>
+<li><p><cite>args</cite> (object) : the args to be passed to the function. Keys are arguments names, values are arguments values. Can be ommited if the function take no other args than the cursor.</p></li>
 </ul>
 </div>
 <div class="section" id="example">
@@ -102,7 +100,7 @@
 <span class="p">{</span>
         <span class="nx">cursor</span><span class="o">:</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
         <span class="nx">args</span><span class="o">:</span><span class="p">{</span>
-                <span class="nx">coords</span><span class="o">:</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">]</span>
+                <span class="nx">coords</span><span class="o">:</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span><span class="mf">0</span><span class="p">,</span><span class="mf">50</span><span class="p">,</span><span class="mf">50</span><span class="p">]</span>
         <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -114,12 +112,12 @@
 <p>Ognon run two servers at the same time. The HTTP server (that is used in the web interface to get pages and to post requests) and the OSC server. The OSC server expects roughly the same types of requests than the POST handler of the HTTP server. But since the OSC protocole is simpler than HTTP, it will do less.</p>
 <p>The Ognon OSC server should be able to handle requests on any <em>control function</em>. The request adress should be the path to the <em>control function</em> and a cursor id must be passed as a first argument.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Untested : Some requests may not be supported by the osc server. Because of the types of parameters.</p>
+<p class="admonition-title">Warning</p>
+<p>Untested : Some requests may not be supported by the osc server. Because of the types of parameters.</p>
 </div>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">OSC specification on the official website : <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
+<p class="admonition-title">See also</p>
+<p>OSC specification on the official website : <a class="reference external" href="http://opensoundcontrol.org/spec-1_0">http://opensoundcontrol.org/spec-1_0</a></p>
 </div>
 <div class="section" id="id1">
 <h3>Paths<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
@@ -138,29 +136,29 @@
 <div class="section" id="id2">
 <h3>Example<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0) :</dt>
-<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/run</span> <em><span class="pre">cursor-id</span></em></code></dd>
+<li><dl class="simple">
+<dt>To run the animation (<code class="docutils literal notranslate"><span class="pre">/step</span></code> in Ognon v0) :</dt><dd><p><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/run</span> <em><span class="pre">cursor-id</span></em></code></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>To play/pause the animation :</dt>
-<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/play</span> <em><span class="pre">cursor-id</span></em></code></dd>
+<li><dl class="simple">
+<dt>To play/pause the animation :</dt><dd><p><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/play</span> <em><span class="pre">cursor-id</span></em></code></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0) :</dt>
-<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_first_frm</span> <em><span class="pre">cursor-id</span></em></code></dd>
+<li><dl class="simple">
+<dt>To go to the first frame of the animation (<code class="docutils literal notranslate"><span class="pre">/reset</span></code> in Ognon v0) :</dt><dd><p><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_first_frm</span> <em><span class="pre">cursor-id</span></em></code></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>To go to the nth frame of the animation :</dt>
-<dd><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_frm</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">n</span></em></code></dd>
+<li><dl class="simple">
+<dt>To go to the nth frame of the animation :</dt><dd><p><code class="samp docutils literal notranslate"><span class="pre">/control/navigator/go_to_frm</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">n</span></em></code></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>To select an animation  :</dt>
-<dd><code class="samp docutils literal notranslate"><span class="pre">control/animsmanager/select_anim</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">name-of-the-animation</span></em></code></dd>
+<li><dl class="simple">
+<dt>To select an animation  :</dt><dd><p><code class="samp docutils literal notranslate"><span class="pre">control/animsmanager/select_anim</span> <em><span class="pre">cursor-id</span></em> <em><span class="pre">name-of-the-animation</span></em></code></p>
+</dd>
 </dl>
 </li>
 </ul>
@@ -169,12 +167,12 @@
 <h3>Control Ognon with OSC and Puredata<a class="headerlink" href="#control-ognon-with-osc-and-puredata" title="Permalink to this headline">¶</a></h3>
 <div class="figure align-center" id="id3">
 <img alt="_images/simple-ognon-osc-client.png" src="_images/simple-ognon-osc-client.png" />
-<p class="caption"><span class="caption-text"><em>simple-ognon-osc-client.pd</em></span></p>
+<p class="caption"><span class="caption-text"><em>simple-ognon-osc-client.pd</em></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p><a class="reference download internal" download="" href="_downloads/22ce9620a8e0c3e47ff9b70f01145f25/simple-ognon-osc-client.pd"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">simple-ognon-osc-client.pd</span></code></a></p>
+<p><a class="reference download internal" download="" href="_downloads/d5594efa3272aab40eadea506160ae86/simple-ognon-osc-client.pd"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">simple-ognon-osc-client.pd</span></code></a></p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">The good tutorial to use OSC with puredata :  <a class="reference external" href="http://write.flossmanuals.net/pure-data/osc/">http://write.flossmanuals.net/pure-data/osc/</a></p>
+<p class="admonition-title">See also</p>
+<p>The good tutorial to use OSC with puredata :  <a class="reference external" href="http://write.flossmanuals.net/pure-data/osc/">http://write.flossmanuals.net/pure-data/osc/</a></p>
 </div>
 </div>
 </div>
@@ -184,6 +182,11 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd docs/
 $ make html
 </pre></div>
+</div>
+<p>Requires to have <code class="docutils literal notranslate"><span class="pre">python3-sphinx</span></code> installed</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Sphinx :  <a class="reference external" href="https://www.sphinx-doc.org/">https://www.sphinx-doc.org/</a></p>
 </div>
 </div>
 </div>
@@ -231,17 +234,15 @@ $ make html
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -258,7 +259,7 @@ $ make html
       &copy;2019, Léon Lenclos.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
