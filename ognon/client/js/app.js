@@ -19,14 +19,14 @@ class App {
         }
 
         // Shortcuts
-        this.shortcuts = ognKeyboardShortcuts;
+        this.shortcuts = shortcutsSets.std;
         this.keysPressed = new Set();
 
         window.addEventListener("keydown", e =>{
             if(e.target.localName == 'input') return;
             this.keysPressed.add(e.key)
             let repr = shortcutRepresentation(Array.from(this.keysPressed))
-            console.log(Array.from(this.keysPressed))
+            console.log(repr)
 
             if(this.shortcuts[repr]){
                 this.doAction(this.shortcuts[repr].action, this.shortcuts[repr].args);
