@@ -34,9 +34,9 @@ def get_function(path):
     try:
         return functions[path]
     except KeyError:
-        module_path, fun_name = os.path.split(path.rstrip(os.sep))
+        module_path, fun_name = os.path.split(path.rstrip('/'))
         module = importlib.import_module(
-            name=module_path.replace(os.sep,'.'),
+            name=module_path.replace('/','.'),
             package='ognon')
         functions[path] = getattr(module, fun_name)
         return functions[path]
@@ -116,24 +116,28 @@ class OgnonHTTPHandler(http.server.SimpleHTTPRequestHandler):
         Handler for GET request.
         """
         logging.info('http - GET {path}'.format(path=self.path))
+
+        def page_path(page):
+            return utils.pkgabspath('client'+page)
+        
         path = urlparse(self.path).path
         if path == '/':
             path = '/edit.html'
 
-        file_path = utils.pkgabspath('client') + path
+        file_path = page_path(path)
         content = ''
-        mimetype = self.guess_type(file_path)
-
+        code = 200
         try:
             with open(file_path, 'rb') as f:
-                self.send_response(200)
                 content = f.read()
         except FileNotFoundError:
-            with open(utils.pkgabspath('client/404.html'), 'rb') as f:
-                self.send_response(404)
+            file_path = page_path('/404.html')
+            code = 404
+            with open(file_path, 'rb') as f:
                 content = f.read()
 
-
+        mimetype = self.guess_type(file_path)
+        self.send_response(code)
         self.send_header('Content-type', mimetype)
         self.end_headers()
         self.write(content)
